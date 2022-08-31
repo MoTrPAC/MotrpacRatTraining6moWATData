@@ -1,0 +1,27 @@
+utils::globalVariables(
+  c(
+    "rank.metric",
+    "any_sig",
+    "gs_subcat",
+    "gs_exact_source",
+    "gs_description",
+    "maxOverlap",
+    "overlap",
+    "overlapRatio",
+    "padj",
+    "pval",
+    "padj_mat",
+    "padj_cutoff",
+    "bg_fill",
+    "scale_by",
+    "cell_size",
+    "col_fun",
+    "NES_mat",
+    "obsolete",
+    "id",
+    "name",
+    "gs_description",
+    "i.name"
+  )
+)
+
