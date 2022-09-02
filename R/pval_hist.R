@@ -16,7 +16,7 @@ pval_hist <- function(x,
                       ylims = c(0, NA),
                       scale = 2.5) {
   ggplot(x) +
-    geom_histogram(aes(x = !!sym(pval_column)),
+    geom_histogram(aes(x = !!sym(pval)),
                    breaks = seq(0, 1, 0.05),
                    color = "black", fill = "lightgrey") +
     scale_x_continuous(breaks = seq(0, 1, 0.2),
