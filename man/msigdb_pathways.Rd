@@ -5,21 +5,30 @@
 \alias{msigdb_pathways}
 \title{Pathways from MSigDB v7.5.1}
 \format{
-A \code{data.frame} with 8652 rows (pathways) and 4 variables: \describe{
+A \code{data.frame} with 6552 rows (pathways) and 5 variables:
+\describe{
 \item{gs_exact_source}{character; unique pathway identifier.}
 \item{gs_subcat}{character; the database to which the pathway belongs. One
 of "GO:BP", "GO:MF", "GO:CC", "CP:REACTOME", or "CP:KEGG".}
 \item{gs_description}{character; description of each pathway.}
-\item{entrez_gene}{character list; Entrez gene IDs for each pathway.} }
+\item{entrez_gene}{character list; Entrez gene IDs for each pathway.}
+\item{num_genes}{numeric; pathway size.}
+}
 }
 \usage{
 data(msigdb_pathways)
 }
 \description{
+Gene sets / pathways from the Molecular Signatures Database
+(MSigDB).
+}
+\details{
 Reactome, Gene Ontology (Biological Process, Cellular Component,
 Molecular Function), and KEGG pathways from version 7.5.1 of the Molecular
 Signatures Database (MSigDB). Obtained via \code{\link[msigdbr]{msigdbr}}
-and reformatted. Results filtered to pathways with at least 10 genes.
+and reformatted. Results filtered to pathways with at least 15 and no more
+than 500 genes. Filtering by size was done because smaller gene sets tend
+to be less reliable, while larger gene sets tend to be less interpretable.
 }
 \references{
 Liberzon, A., Birger, C., Thorvaldsdóttir, H., Ghandi, M.,

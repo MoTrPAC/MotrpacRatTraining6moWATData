@@ -21,8 +21,10 @@
 #' @param cell_width same as `cell_height`.
 #' @param extend numeric;
 #' @param rot numeric; angle in \[0,360\] to rotate set intersection labels.
-#' @param hjust numeric;
-#' @param vjust numeric;
+#' @param hjust numeric; a numeric vector specifying horizontal justification of
+#'   intersection size bar labels.
+#' @param vjust numeric; A numeric vector specifying vertical justification of
+#'   intersection size bar labels.
 #' @param bar_label_gp graphical parameters specified by
 #'   \code{\link[grid]{gpar}}. Passed to
 #'   \code{\link[ComplexHeatmap]{HeatmapAnnotation}}. Modifies the annotation
@@ -88,10 +90,10 @@ plot_upset <- function(...,
     show_heatmap_legend = FALSE,
     row_order = row_order,
     column_order = column_order,
-    height = length(ss) * cell_height,
-    width = length(cs) * cell_width,
+    height = length(ss)*cell_height,
+    width = length(cs)*cell_width,
     rect_gp = gpar(type = "none"),
-    # layer function from ComplexHeatmap::UpSet
+    ## layer function from ComplexHeatmap::UpSet
     layer_fun = function(j, i, x, y, w, h, fill) {
       n_row <- round(1/as.numeric(h[1]))
       n_col <- round(1/as.numeric(w[1]))
@@ -105,7 +107,8 @@ plot_upset <- function(...,
       grid.points(x, y, size = unit(min(3, min(as.numeric(cell_height),
                                                as.numeric(cell_width))),
                                     "mm"), pch = 16,
-                  gp = gpar(col = ifelse(pindex(m, i, j), "black", "#cccccc")))
+                  gp = gpar(col = ifelse(pindex(m, i, j),
+                                         "black", "#cccccc")))
       for (k in seq_len(n_col)) {
         i_range <- range(which(subm[, k] == 1))
         grid.lines(c(k - 0.5, k - 0.5)/n_col,
@@ -114,21 +117,36 @@ plot_upset <- function(...,
       }
     },
     ##
-    top_annotation = HeatmapAnnotation(`Intersection Size` = anno_barplot(
-      x = cs,
-      extend = extend, border = FALSE, gp = gpar(fill = "black"),
-      height = unit(1.2, "in"), which = "column", axis = FALSE),
-      annotation_name_gp = annotation_name_gp, annotation_name_side = "left",
+    top_annotation = HeatmapAnnotation(
+      "Intersection Size" = anno_barplot(
+        x = cs,
+        extend = extend,
+        border = FALSE,
+        gp = gpar(fill = "black"),
+        height = unit(1.2, "in"),
+        which = "column",
+        axis = FALSE
+      ),
+      annotation_name_gp = annotation_name_gp,
+      annotation_name_side = "left",
       annotation_name_rot = 90),
     ##
-    right_annotation = HeatmapAnnotation("N differential features" = anno_barplot(
-      x = ss,
-      extend = extend, border = FALSE, gp = gpar(fill = "black"),
-      name = "test name",
-      width = unit(1.2, "in")*bar_ratio, which = "row",
-      axis = FALSE), which = "row", annotation_name_gp = annotation_name_gp,
-      annotation_name_side = "bottom", annotation_name_rot = 0)),
-    val = heatmap_args, keep.null = TRUE) # update arguments
+    right_annotation = HeatmapAnnotation(
+      "N differential features" = anno_barplot(
+        x = ss,
+        extend = extend,
+        border = FALSE,
+        gp = gpar(fill = "black"),
+        width = unit(1.2, "in")*bar_ratio,
+        which = "row",
+        axis = FALSE
+      ),
+      which = "row",
+      annotation_name_gp = annotation_name_gp,
+      annotation_name_side = "bottom",
+      annotation_name_rot = 0)
+  ),
+  val = heatmap_args, keep.null = TRUE) # update arguments
 
   # Save plot
   if (!identical(filename, character(0))) {

@@ -1,6 +1,6 @@
 Package: WATManuscript2022
 Type: Package
-Title: R Package for WAT Companion Paper
+Title: R Package for scWAT Companion Paper
 Version: 0.1.0
 Authors@R: 
     c(
@@ -29,12 +29,15 @@ Imports:
     dynamicTreeCut,
     edgeR,
     fgsea,
+    ggplot2,
+    ggrepel,
     graphics,
     grDevices,
     limma,
     msigdbr (>= 7.5.1),
     MSnbase,
     ontologyIndex,
+    scales,
     statmod,
     stats,
     tibble,
@@ -42,6 +45,5 @@ Imports:
     WGCNA
 Suggests:
     dplyr,
-    renv,
     usethis
 RoxygenNote: 7.2.0

@@ -39,7 +39,8 @@ A \code{\link[data.table]{data.table}} with results for each
 contrast. See \code{\link[fgsea]{fgsea}} for more details.
 }
 \description{
-Custom wrapper for \code{\link[fgsea]{fgsea}}.
+Custom wrapper for \code{\link[fgsea]{fgsea}} for use with
+output of \code{\link{msigdbr2}}.
 }
 \author{
 Tyler Sagendorf

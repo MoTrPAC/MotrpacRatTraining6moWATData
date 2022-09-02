@@ -16,8 +16,7 @@
 #'
 #' @returns A \code{\link[data.table]{data.table}} with columns
 #'   "gs_exact_source" (term ID), "gs_subcat" (subcategory), "gs_description"
-#'   (term description), and a list column for the gene IDs specified by
-#'   `genes`.
+#'   (term description), and a list column of gene IDs specified by `genes`.
 #'
 #'
 #' @importFrom data.table rbindlist `.SD` `:=` setnames setDF
@@ -38,13 +37,10 @@
 #'   Tidy Data Format. R package version 7.5.1,
 #'   \url{https:://igordot.github.io/msigdbr}
 #'
-#'
-#' @author Tyler Sagendorf
-#'
 #' @examples
 #' x <- msigdbr2(species = "rat",
 #'               genes = "gene_symbol",
-#'               gs_subcat = "CP:REACTOME")
+#'               gs_subcat = c("CP:REACTOME", "GO:MF"))
 
 msigdbr2 <- function(species = "Homo sapiens",
                      genes = c("gene_symbol", "entrez_gene", "ensembl_gene"),
@@ -52,6 +48,7 @@ msigdbr2 <- function(species = "Homo sapiens",
                      capitalize = FALSE)
 {
   mcol <- msigdbr_collections()
+
   # Check that all gs_subcat are valid
   for (i in seq_along(gs_subcat)) {
     if (!(gs_subcat[i] %in% mcol$gs_subcat)) {
@@ -59,6 +56,7 @@ msigdbr2 <- function(species = "Homo sapiens",
                   " is not a valid subcategory. See ?msigdbr_collections."))
     }
   }
+
   # Get categories
   gs_cat <- mcol[mcol$gs_subcat %in% gs_subcat, c("gs_subcat", "gs_cat")]
   gs_cat <- deframe(gs_cat)[gs_subcat]
@@ -79,28 +77,6 @@ msigdbr2 <- function(species = "Homo sapiens",
 
   # Update GO descriptions
   paths <- update_GO_names(paths, capitalize = capitalize)
-
-  # go_subcats <- c("GO:MF", "GO:CC", "GO:BP")
-  # if (any(gs_subcat %in% go_subcats)) {
-  #   file <- .obo_file()
-  #   message(paste("Updating GO term descriptions.\nUsing", file))
-  #   go_basic_list <- get_OBO(file,
-  #                            propagate_relationships = "is_a",
-  #                            extract_tags = "minimal")
-  #
-  #   # Convert to data.frame with fewer columns
-  #   go.dt <- as.data.frame(go_basic_list)
-  #   setDT(go.dt)
-  #   go.dt <- go.dt[obsolete != TRUE & grepl("^GO", id), list(id, name)]
-  #   setnames(go.dt, old = "id", new = "gs_exact_source")
-  #
-  #   # Update gs_description with OBO file names
-  #   paths <- merge(paths, go.dt, by = "gs_exact_source",
-  #                  all.x = TRUE, sort = FALSE)
-  #   paths[, `:=` (gs_description = ifelse(gs_subcat %in% go_subcats,
-  #                                         name, gs_description),
-  #                 name = NULL)]
-  # }
 
   setDF(paths)
   return(paths)

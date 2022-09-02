@@ -30,8 +30,7 @@ lowercase letters. Improves appearance of plots, such as those produced by
 \value{
 A \code{\link[data.table]{data.table}} with columns
 "gs_exact_source" (term ID), "gs_subcat" (subcategory), "gs_description"
-(term description), and a list column for the gene IDs specified by
-\code{genes}.
+(term description), and a list column of gene IDs specified by \code{genes}.
 }
 \description{
 Wrapper around \code{\link[msigdbr]{msigdbr}}. Reformats pathway
@@ -40,7 +39,7 @@ data for use with \code{\link{fgsea2}}.
 \examples{
 x <- msigdbr2(species = "rat",
               genes = "gene_symbol",
-              gs_subcat = "CP:REACTOME")
+              gs_subcat = c("CP:REACTOME", "GO:MF"))
 }
 \references{
 Liberzon, A., Birger, C., Thorvaldsdóttir, H., Ghandi, M.,
@@ -51,7 +50,4 @@ Mesirov, J. P., & Tamayo, P. (2015). The Molecular Signatures Database
 Dolgalev, I. (2022). msigdbr: MSigDB Gene Sets for Multiple Organisms in a
 Tidy Data Format. R package version 7.5.1,
 \url{https:://igordot.github.io/msigdbr}
-}
-\author{
-Tyler Sagendorf
 }

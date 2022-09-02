@@ -39,6 +39,3 @@ values in the tails and those close to 0 that are not as interesting. The
 log2 fold-change should not be used as the ranking metric, as it does not
 capture variability in the measurements.
 }
-\author{
-Tyler Sagendorf
-}

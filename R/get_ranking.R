@@ -30,8 +30,6 @@
 #' @importFrom tibble deframe
 #'
 #' @export get_ranking
-#'
-#' @author Tyler Sagendorf
 
 get_ranking <- function(x,
                        genes,

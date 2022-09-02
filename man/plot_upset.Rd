@@ -59,9 +59,11 @@ titles.}
 
 \item{rot}{numeric; angle in [0,360] to rotate set intersection labels.}
 
-\item{hjust}{numeric;}
+\item{hjust}{numeric; a numeric vector specifying horizontal justification of
+intersection size bar labels.}
 
-\item{vjust}{numeric;}
+\item{vjust}{numeric; A numeric vector specifying vertical justification of
+intersection size bar labels.}
 
 \item{bar_label_gp}{graphical parameters specified by
 \code{\link[grid]{gpar}}. Passed to

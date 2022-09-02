@@ -1,6 +1,7 @@
 #' @title Fast Gene Set Enrichment Analysis
 #'
-#' @description Custom wrapper for \code{\link[fgsea]{fgsea}}.
+#' @description Custom wrapper for \code{\link[fgsea]{fgsea}} for use with
+#'   output of \code{\link{msigdbr2}}.
 #'
 #' @param pathways output of \code{\link{msigdbr2}}.
 #' @param stats output of \code{\link{get_ranking}}.

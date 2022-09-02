@@ -106,9 +106,7 @@ enrichmat <- function(x,
   x <- subset(x, get(rownames_column) %in% top_pathways)
 
   # Only plot pathways that are significantly enriched at least once
-  if (plot_sig_only) {
-    x <- subset(x, subset = any_sig == TRUE)
-  }
+  if (plot_sig_only) { x <- subset(x, subset = any_sig == TRUE) }
 
   x <- unique(x[, cols_to_keep, with = FALSE])
   x[, .N, by = get(rownames_column)] # number of entries by row name
@@ -143,8 +141,8 @@ enrichmat <- function(x,
   # if (!is.null(breaks)) {
   #   colorRamp2_args[["breaks"]] <- breaks
   # } else {
-  colorRamp2_args[["breaks"]] <- round(colorRamp2_args[["breaks"]],
-                                       digits = 1)
+  colorRamp2_args[["breaks"]] <- range_extend(colorRamp2_args[["breaks"]],
+                                              nearest = 0.1)
   # }
 
   # Create heatmap ------------------------------------------------

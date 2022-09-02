@@ -1,16 +1,24 @@
 #' @title Pathways from MSigDB v7.5.1
 #'
-#' @description Reactome, Gene Ontology (Biological Process, Cellular Component,
-#'   Molecular Function), and KEGG pathways from version 7.5.1 of the Molecular
-#'   Signatures Database (MSigDB). Obtained via \code{\link[msigdbr]{msigdbr}}
-#'   and reformatted. Results filtered to pathways with at least 10 genes.
+#' @description Gene sets / pathways from the Molecular Signatures Database
+#'   (MSigDB).
 #'
-#' @format A `data.frame` with 8652 rows (pathways) and 4 variables: \describe{
+#' @format A `data.frame` with 6552 rows (pathways) and 5 variables:
+#' \describe{
 #'   \item{gs_exact_source}{character; unique pathway identifier.}
 #'   \item{gs_subcat}{character; the database to which the pathway belongs. One
 #'   of "GO:BP", "GO:MF", "GO:CC", "CP:REACTOME", or "CP:KEGG".}
 #'   \item{gs_description}{character; description of each pathway.}
-#'   \item{entrez_gene}{character list; Entrez gene IDs for each pathway.} }
+#'   \item{entrez_gene}{character list; Entrez gene IDs for each pathway.}
+#'   \item{num_genes}{numeric; pathway size.}
+#' }
+#'
+#' @details Reactome, Gene Ontology (Biological Process, Cellular Component,
+#'   Molecular Function), and KEGG pathways from version 7.5.1 of the Molecular
+#'   Signatures Database (MSigDB). Obtained via \code{\link[msigdbr]{msigdbr}}
+#'   and reformatted. Results filtered to pathways with at least 15 and no more
+#'   than 500 genes. Filtering by size was done because smaller gene sets tend
+#'   to be less reliable, while larger gene sets tend to be less interpretable.
 #'
 #' @references Liberzon, A., Birger, C., Thorvaldsdóttir, H., Ghandi, M.,
 #'   Mesirov, J. P., & Tamayo, P. (2015). The Molecular Signatures Database
@@ -56,7 +64,9 @@
 
 #' @title scWAT Proteomics MSnSet
 #'
-#' @description An MSnSet object containing the subcutaneous white adipose tissue (scWAT) proteomics data provided by the MoTrPAC Bioinformatics Center.
+#' @description An MSnSet object containing the subcutaneous white adipose
+#'   tissue (scWAT) proteomics data provided by the MoTrPAC Bioinformatics
+#'   Center.
 #'
 #' @format An \code{\link[MSnbase]{MSnSet-class}} object.
 #'
@@ -66,4 +76,57 @@
 #'
 #' @keywords datasets
 "m_prot"
+
+
+#' @title scWAT Transcriptomics MSnSet
+#'
+#' @description An MSnSet object containing the subcutaneous white adipose
+#'   tissue (scWAT) transcriptomics data provided by the MoTrPAC Bioinformatics
+#'   Center.
+#'
+#' @format An \code{\link[MSnbase]{MSnSet-class}} object with 16443 features and
+#'   48 samples.
+#'
+#'   # exprs
+#'
+#'   `exprs(m_trnscrpt)` is a count matrix that has been filtered to remove 321
+#'   low-count features with \code{\link[edgeR]{filterByExpr}}.
+#'
+#'   # fData
+#'
+#'   `fData(m_trnscrpt)` is a \code{\link[base]{data.frame}} with 16443 rows and
+#'   3 variables:
+#'   \describe{
+#'     \item{entrez_id}{character list; the Entrez gene(s) associated with each
+#'     feature (Ensembl gene).}
+#'     \item{gene_symbol}{character list; the gene symbol(s) associated with
+#'     each feature.}
+#'     \item{n}{integer; number of genes annotated to each feature.}
+#'   }
+#'
+#'   Prior to collapsing the `entrez_id` and `gene_symbol` columns into lists,
+#'   any rows where `gene_symbol` began with "LOC" were removed unless that
+#'   would remove entire features. This reduces the impact of the one-to-many
+#'   feature-to-gene mapping on FGSEA results.
+#'
+#'   # pData
+#'
+#'   `pData(m_trnscrpt)` is a \code{\link[base]{data.frame}} with 48 rows
+#'   (samples) and 9 variables:
+#'   \describe{
+#'     \item{viallabel}{character; unique sample identifier.}
+#'     \item{pct_globin}{numeric; }
+#'     \item{rin}{numeric; RNA integrity number (RIN).}
+#'     \item{pct_umi_dup}{numeric; }
+#'     \item{median_5_3_bias}{numeric; }
+#'     \item{sex}{character; "M" for males, "F" for females.}
+#'     \item{timepoint}{character; "SED" for sedentary control animals. Otherwise, the weeks of exercise training that the animals underwent ("1W", "2W", "4W", "8W").}
+#'     \item{exp_group}{character; the experimental group (each combination of `sex` and `timepoint`).}
+#'     \item{bid}{character; Unique 5 digit numeric identifier of all samples collected for an acute test/sample collection period. All samples collected during that period will have the same BID. Same as first 5 digits of `viallabel`.}
+#'   }
+#'
+#' @details Two outlier samples ("90423", "90410") were removed (48 remain). Then,
+#'  `pct_globin`, `rin`, `pct_umi_dup`, and `median_5_3_bias` were mean-imputed,
+#'  centered, and scaled.
+"m_trnscrpt"
 
