@@ -19,6 +19,8 @@
 #' @import ggplot2
 #' @importFrom ggrepel geom_label_repel
 #' @importFrom scales extended_breaks
+#'
+#' @export plot_volcano
 
 plot_volcano <- function(x,
                          logFC = "logFC",
@@ -84,7 +86,7 @@ plot_volcano <- function(x,
       geom_label_repel(
         mapping = aes(label = !!sym(label)),
         na.rm = TRUE,
-        size = 5*scale/0.352778, # convert points to mm
+        size = 5*scale*0.352778, # convert points to mm
         max.overlaps = Inf,
         nudge_x = x[["nudge_x"]],
         nudge_y = 0.1,

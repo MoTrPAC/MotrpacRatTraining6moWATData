@@ -26,7 +26,7 @@ Default is "adj.P.Val".}
 If provided, a horizontal dashed line will be added to the plot.}
 
 \item{label}{character; name of a column in \code{x} used to label the points. Any
-points that should not be labelled should have a missing label.}
+points that should not be labelled should be \code{NA}.}
 
 \item{scale}{numeric; scaling factor used when saving the plot. Default is
 2.5.}
