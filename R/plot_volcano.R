@@ -5,8 +5,8 @@
 #' @param x a `matrix` or `data.frame` containing differential analysis results.
 #' @param logFC character; name of a column in `x` containing log2 fold-changes.
 #'   Default is "logFC".
-#' @param pval character; name of a column in `x` contain (adjusted) p-values.
-#'   Default is "adj.P.Val".
+#' @param pval character; name of a column in `x` containing (adjusted)
+#'   p-values. Default is "adj.P.Val".
 #' @param pval_cutoff numeric; cutoff for p-values to be considered significant.
 #'   If provided, a horizontal dashed line will be added to the plot.
 #' @param label character; name of a column in `x` used to label the points. Any

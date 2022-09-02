@@ -19,8 +19,8 @@ plot_volcano(
 \item{logFC}{character; name of a column in \code{x} containing log2 fold-changes.
 Default is "logFC".}
 
-\item{pval}{character; name of a column in \code{x} contain (adjusted) p-values.
-Default is "adj.P.Val".}
+\item{pval}{character; name of a column in \code{x} containing (adjusted)
+p-values. Default is "adj.P.Val".}
 
 \item{pval_cutoff}{numeric; cutoff for p-values to be considered significant.
 If provided, a horizontal dashed line will be added to the plot.}
