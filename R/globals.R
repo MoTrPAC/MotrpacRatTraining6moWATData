@@ -21,7 +21,9 @@ utils::globalVariables(
     "id",
     "name",
     "gs_description",
-    "i.name"
+    "i.name",
+    "log10_pval",
+    "pval_column"
   )
 )
 
