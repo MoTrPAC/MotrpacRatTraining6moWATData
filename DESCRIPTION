@@ -31,7 +31,6 @@ Imports:
     edgeR,
     fgsea,
     ggplot2,
-    ggrepel,
     graphics,
     grDevices,
     limma,

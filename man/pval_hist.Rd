@@ -9,8 +9,8 @@ pval_hist(x, pval = "adj.P.Val", ylims = c(0, NA), scale = 2.5)
 \arguments{
 \item{x}{a \code{matrix} or \code{data.frame} containing differential analysis results.}
 
-\item{pval}{character; name of a column in \code{x} containing (adjusted)
-p-values. Default is "adj.P.Val".}
+\item{pval}{character; the name of a column in \code{x} containing p-values or
+adjusted p-values.}
 
 \item{ylims}{numeric vector of length 2. Limits of y-axis.}
 
@@ -19,5 +19,5 @@ p-values. Default is "adj.P.Val".}
 }
 \description{
 Create p-value histograms with
-  \code{\link[ggplot2]{ggplot2-package}}.
+\code{\link[ggplot2]{ggplot2-package}}.
 }

@@ -22,8 +22,12 @@ utils::globalVariables(
     "name",
     "gs_description",
     "i.name",
+    "logFC",
+    "adj.P.Val",
+    "sign_logFC",
     "log10_pval",
-    "pval_column"
+    "contrast",
+    "label"
   )
 )
 

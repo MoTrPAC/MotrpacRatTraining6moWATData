@@ -4,7 +4,13 @@
 #'   \code{\link[ggplot2]{ggplot2-package}}.
 #'
 #' @inheritParams plot_volcano
+#' @param pval character; the name of a column in `x` containing p-values or
+#'   adjusted p-values.
 #' @param ylims numeric vector of length 2. Limits of y-axis.
+#'
+#' @returns A `ggplot2` object.
+#'
+#' @md
 #'
 #' @import ggplot2
 #' @importFrom scales extended_breaks
@@ -34,8 +40,11 @@ pval_hist <- function(x,
           axis.line.y.right = element_blank(),
           axis.text = element_text(size = 5*scale),
           strip.background = element_blank(),
-          strip.text = element_text(size = 6.5*scale),
+          strip.text = element_text(size = 6.5*scale,
+                                    hjust = 0),
           panel.spacing = unit(0.08*scale, "in"),
-          plot.title = element_text(size = 7*scale))
+          plot.title = element_text(size = 7*scale),
+          panel.spacing.x = unit(0.3, "in"),
+          plot.margin = unit(c(5, 10, 5, 5), "pt"))
 }
 

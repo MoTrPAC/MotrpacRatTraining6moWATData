@@ -6,31 +6,21 @@
 \usage{
 plot_volcano(
   x,
-  logFC = "logFC",
-  pval = "adj.P.Val",
-  pval_cutoff,
-  label,
-  scale = 2.5
+  pval_cutoff = 0.05,
+  scale = 2.5,
+  colors = c("#3366ff", "darkred")
 )
 }
 \arguments{
 \item{x}{a \code{matrix} or \code{data.frame} containing differential analysis results.}
 
-\item{logFC}{character; name of a column in \code{x} containing log2 fold-changes.
-Default is "logFC".}
-
-\item{pval}{character; name of a column in \code{x} containing (adjusted)
-p-values. Default is "adj.P.Val".}
-
-\item{pval_cutoff}{numeric; cutoff for p-values to be considered significant.
-If provided, a horizontal dashed line will be added to the plot.}
-
-\item{label}{character; name of a column in \code{x} used to label the points. Any
-points that should not be labelled should be \code{NA}.}
+\item{pval_cutoff}{numeric; cutoff for p-values to be considered significant. Adds a dashed horizontal line to the plot.}
 
 \item{scale}{numeric; scaling factor used when saving the plot. Default is
 2.5.}
+
+\item{colors}{character; length 2 vector of negative and positive logFC colors. Only points with "adj.P.Val" < \code{pval_cutoff} will be colored.}
 }
 \description{
-Create a volcano plot with optional labels.
+Create a volcano plot.
 }
