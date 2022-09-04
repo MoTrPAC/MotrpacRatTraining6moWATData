@@ -43,6 +43,14 @@
 # m1$covariates <- NULL
 # m_trnscrpt <- m1
 #
+# fData(m_trnscrpt) <- fData(m_trnscrpt) %>%
+#   mutate(across(where(is.list),
+#                 ~ unlist(lapply(.x, function(xi) {
+#                   paste(ifelse(xi == "NA", NA_character_, xi),
+#                         collapse = ", ")
+#                 }))
+#   ))
+#
 # usethis::use_data(m_trnscrpt, internal = FALSE, overwrite = TRUE,
 #                   version = 3, compress = "bzip2")
 
