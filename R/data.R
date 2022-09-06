@@ -52,14 +52,38 @@
 #'   genomes. *Nucleic acids research, 28*(1), 27–30.
 #'   \url{https://doi.org/10.1093/nar/28.1.27}
 #'
-#' @usage data(msigdb_pathways)
-#'
-#' @author Tyler Sagendorf
+#' @usage data("msigdb_pathways")
 #'
 #' @keywords datasets
 #'
 #' @md
 "msigdb_pathways"
+
+
+
+#' @title PhosphoSitePlus Kinase-Substrate Relationship Data
+#'
+#' @description Kinase-substrate relationship data used to infer kinase activity
+#'   from changes in phosphorylation sites.
+#'
+#' @usage data("KS_data")
+#'
+#' @details The "Kinase_Substrate_Dataset.xlsx" file, downloaded from
+#'   PhosphoSitePlus on 2022-06-05
+#'   (\url{https://www.phosphosite.org/staticDownloads}), was filtered to human
+#'   kinases and substrates. Additionally, instances of auto-phosphorylation
+#'   were removed.
+#'
+#' @references Hornbeck, P. V., Zhang, B., Murray, B., Kornhauser, J. M.,
+#'   Latham, V., & Skrzypek, E. (2015). PhosphoSitePlus, 2014: mutations, PTMs
+#'   and recalibrations. *Nucleic acids research, 43*(Database issue),
+#'   D512--D520. \url{https://doi.org/10.1093/nar/gku1267}
+#'
+#' @md
+#'
+"KS_data"
+
+
 
 
 #' @title scWAT Proteomics MSnSet
@@ -70,12 +94,28 @@
 #'
 #' @format An \code{\link[MSnbase]{MSnSet-class}} object.
 #'
-#' @usage data(m_prot)
-#'
-#' @author Tyler Sagendorf
+#' @usage data("m_prot")
 #'
 #' @keywords datasets
 "m_prot"
+
+
+
+
+#' @title scWAT Phospho-proteomics MSnSet
+#'
+#' @description An MSnSet object containing the subcutaneous white adipose
+#'   tissue (scWAT) phospho-proteomics data provided by the MoTrPAC Bioinformatics
+#'   Center.
+#'
+#' @format An \code{\link[MSnbase]{MSnSet-class}} object.
+#'
+#' @usage data("m_phospho")
+#'
+#' @keywords datasets
+"m_phospho"
+
+
 
 
 #' @title scWAT Transcriptomics MSnSet
@@ -83,6 +123,8 @@
 #' @description An MSnSet object containing the subcutaneous white adipose
 #'   tissue (scWAT) transcriptomics data provided by the MoTrPAC Bioinformatics
 #'   Center.
+#'
+#' @usage data("m_trnscrpt")
 #'
 #' @format An \code{\link[MSnbase]{MSnSet-class}} object with 16443 features and
 #'   48 samples.
@@ -115,10 +157,10 @@
 #'   (samples) and 9 variables:
 #'   \describe{
 #'     \item{viallabel}{character; unique sample identifier.}
-#'     \item{pct_globin}{numeric; }
+#'     \item{pct_globin}{numeric; percent of reads mapping to globin.}
 #'     \item{rin}{numeric; RNA integrity number (RIN).}
-#'     \item{pct_umi_dup}{numeric; }
-#'     \item{median_5_3_bias}{numeric; }
+#'     \item{pct_umi_dup}{numeric; percent of PCR duplicates as quantified with Unique Molecular Identifiers (UMIs).}
+#'     \item{median_5_3_bias}{numeric; median 5'-3' bias.}
 #'     \item{sex}{character; "M" for males, "F" for females.}
 #'     \item{timepoint}{character; "SED" for sedentary control animals. Otherwise, the weeks of exercise training that the animals underwent ("1W", "2W", "4W", "8W").}
 #'     \item{exp_group}{character; the experimental group (each combination of `sex` and `timepoint`).}
@@ -129,4 +171,21 @@
 #'  `pct_globin`, `rin`, `pct_umi_dup`, and `median_5_3_bias` were mean-imputed,
 #'  centered, and scaled.
 "m_trnscrpt"
+
+
+
+
+#' @title scWAT Metabolomics MSnSet
+#'
+#' @description An MSnSet object containing the subcutaneous white adipose
+#'   tissue (scWAT) metabolomics data provided by the MoTrPAC Bioinformatics
+#'   Center.
+#'
+#' @format An \code{\link[MSnbase]{MSnSet-class}} object with 1063 non-redundant features and 50 samples.
+#'
+#' @usage data("m_metab")
+#'
+#' @keywords datasets
+"m_metab"
+
 

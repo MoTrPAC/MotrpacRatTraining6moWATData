@@ -8,14 +8,11 @@
 An \code{\link[MSnbase]{MSnSet-class}} object.
 }
 \usage{
-data(m_prot)
+data("m_prot")
 }
 \description{
 An MSnSet object containing the subcutaneous white adipose
   tissue (scWAT) proteomics data provided by the MoTrPAC Bioinformatics
   Center.
-}
-\author{
-Tyler Sagendorf
 }
 \keyword{datasets}

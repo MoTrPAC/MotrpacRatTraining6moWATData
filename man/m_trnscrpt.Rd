@@ -36,10 +36,10 @@ An \code{\link[MSnbase]{MSnSet-class}} object with 16443 features and
   (samples) and 9 variables:
   \describe{
     \item{viallabel}{character; unique sample identifier.}
-    \item{pct_globin}{numeric; }
+    \item{pct_globin}{numeric; percent of reads mapping to globin.}
     \item{rin}{numeric; RNA integrity number (RIN).}
-    \item{pct_umi_dup}{numeric; }
-    \item{median_5_3_bias}{numeric; }
+    \item{pct_umi_dup}{numeric; percent of PCR duplicates as quantified with Unique Molecular Identifiers (UMIs).}
+    \item{median_5_3_bias}{numeric; median 5'-3' bias.}
     \item{sex}{character; "M" for males, "F" for females.}
     \item{timepoint}{character; "SED" for sedentary control animals. Otherwise, the weeks of exercise training that the animals underwent ("1W", "2W", "4W", "8W").}
     \item{exp_group}{character; the experimental group (each combination of `sex` and `timepoint`).}
@@ -47,7 +47,7 @@ An \code{\link[MSnbase]{MSnSet-class}} object with 16443 features and
   }
 }
 \usage{
-m_trnscrpt
+data("m_trnscrpt")
 }
 \description{
 An MSnSet object containing the subcutaneous white adipose

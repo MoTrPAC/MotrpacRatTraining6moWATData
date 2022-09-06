@@ -16,7 +16,7 @@ of "GO:BP", "GO:MF", "GO:CC", "CP:REACTOME", or "CP:KEGG".}
 }
 }
 \usage{
-data(msigdb_pathways)
+data("msigdb_pathways")
 }
 \description{
 Gene sets / pathways from the Molecular Signatures Database
@@ -62,8 +62,5 @@ reactions, pathways and biological processes. \strong{Nucleic acids research,
 Kanehisa, M., & Goto, S. (2000). KEGG: kyoto encyclopedia of genes and
 genomes. \emph{Nucleic acids research, 28}(1), 27–30.
 \url{https://doi.org/10.1093/nar/28.1.27}
-}
-\author{
-Tyler Sagendorf
 }
 \keyword{datasets}
