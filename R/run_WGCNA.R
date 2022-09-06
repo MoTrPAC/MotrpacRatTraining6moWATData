@@ -28,12 +28,13 @@
 #'
 #' @md
 #'
-#' @importFrom MSnbase exprs pData fData `fData<-` `pData<-`
+#' @importFrom MSnbase exprs pData fData `fData<-` `pData<-` featureNames
 #' @importFrom WGCNA pickSoftThreshold adjacency TOMsimilarity labels2colors
 #'   plotDendroAndColors moduleEigengenes mergeCloseModules standardColors bicor
 #' @importFrom stats hclust as.dist cor
 #' @importFrom dynamicTreeCut cutreeDynamic
 #' @importFrom graphics par text
+#' @importFrom tibble deframe
 #'
 #' @export run_WGCNA
 #'
@@ -157,7 +158,9 @@ run_WGCNA <- function(eset,
 
   # Calculate eigengenes --------------------
   MEList <- moduleEigengenes(expr = datExpr,
-                             colors = moduleColors)
+                             colors = moduleColors,
+                             # excludeGrey = TRUE,
+                             softPower = power) ## updated 2022-09-06
   MEs <- MEList$eigengenes
 
   # Eigengene dissimilarity clustering
@@ -206,19 +209,30 @@ run_WGCNA <- function(eset,
     dynamicMods <- as.numeric(dynamicMods) - ("grey" %in% moduleColors)
   }
 
-  # Reorder ME columns by color
-  col_idx <- match(colnames(MEs),
-                   paste0("ME", c("grey", standardColors(n = 50))))
-  MEs <- MEs[, order(col_idx)]
+  ## Reformat results ----
+  modules <- data.frame(modulecolor = moduleColors,
+                        moduleID = paste0(module_prefix, dynamicMods))
+  color2name <- deframe(unique(modules))
+  rownames(modules) <- modules$feature <- featureNames(eset)
 
-  # Update MSnSet ---------------------
-  message("Updating MSnSet ----")
-  fData(eset)[["moduleColor"]] <- moduleColors
-  fData(eset)[["moduleID"]] <- paste0(module_prefix, dynamicMods)
+  colnames(MEs) <- color2name[sub("^ME", "", colnames(MEs))]
 
-  pData(eset) <- cbind(pData(eset), MEs)
+  ME_long <- pData(eset)[, c("sex", "timepoint")]
+  setDT(ME_long)
+  ME_long <- cbind(ME_long, MEs)
 
-  message("Done!")
-  return(eset)
+  ME_long <- melt(ME_long, id.vars = c("sex", "timepoint"),
+                  variable.name = "moduleID",
+                  value.name = "ME")
+  ME_long[, `:=` (moduleNum = as.numeric(
+    sub(paste0("^", module_prefix), "", moduleID)
+    ))]
+  setorderv(ME_long, cols = "moduleNum")
+  ME_long[, `:=` (moduleID = factor(moduleID,
+                                    levels = unique(moduleID)))]
+  setDF(ME_long)
+  MEs <- ME_long
+
+  return(list(modules = modules, MEs = MEs))
 }
 
