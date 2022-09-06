@@ -3,10 +3,12 @@
 #' @description Create a volcano plot.
 #'
 #' @param x a `matrix` or `data.frame` containing differential analysis results.
-#' @param pval_cutoff numeric; cutoff for p-values to be considered significant. Adds a dashed horizontal line to the plot.
+#' @param pval_cutoff numeric; cutoff for p-values to be considered significant.
+#'   Adds a dashed horizontal line to the plot.
 #' @param scale numeric; scaling factor used when saving the plot. Default is
 #'   2.5.
-#' @param colors character; length 2 vector of negative and positive logFC colors. Only points with "adj.P.Val" < `pval_cutoff` will be colored.
+#' @param colors character; length 3 vector of significantly-negative,
+#'   significantly-positive, and non-significant (NS) logFC colors.
 #'
 #' @returns A `ggplot2` object.
 #'
@@ -21,7 +23,7 @@
 plot_volcano <- function(x,
                          pval_cutoff = 0.05,
                          scale = 2.5,
-                         colors = c("#3366ff", "darkred"))
+                         colors = c("#3366ff", "darkred", "grey"))
 {
   setDT(x)
 
@@ -70,8 +72,7 @@ plot_volcano <- function(x,
       expand = expansion(mult = c(0.01, 0.1))
     ) +
     scale_color_manual(values = colors,
-                       breaks = c("down", "up"),
-                       na.value = "grey")
+                       breaks = levels(x[["sign_logFC"]]))
 
   # add annotations
   p <- p +

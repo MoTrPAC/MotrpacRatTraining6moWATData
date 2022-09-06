@@ -35,6 +35,7 @@
 #' @importFrom dynamicTreeCut cutreeDynamic
 #' @importFrom graphics par text
 #' @importFrom tibble deframe
+#' @importFrom data.table setDT setDF melt setorderv `:=`
 #'
 #' @export run_WGCNA
 #'
