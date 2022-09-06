@@ -70,7 +70,7 @@ plot_volcano <- function(x,
       expand = expansion(mult = c(0.01, 0.1))
     ) +
     scale_color_manual(values = colors,
-                       breaks = c("-1", "1"),
+                       breaks = c("down", "up"),
                        na.value = "grey")
 
   # add annotations

@@ -21,6 +21,9 @@ plot_volcano(
 
 \item{colors}{character; length 2 vector of negative and positive logFC colors. Only points with "adj.P.Val" < \code{pval_cutoff} will be colored.}
 }
+\value{
+A \code{ggplot2} object.
+}
 \description{
 Create a volcano plot.
 }

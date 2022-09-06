@@ -17,6 +17,9 @@ adjusted p-values.}
 \item{scale}{numeric; scaling factor used when saving the plot. Default is
 2.5.}
 }
+\value{
+A \code{ggplot2} object.
+}
 \description{
 Create p-value histograms with
 \code{\link[ggplot2]{ggplot2-package}}.

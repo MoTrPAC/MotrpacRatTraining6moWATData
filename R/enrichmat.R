@@ -96,10 +96,10 @@ enrichmat <- function(x,
 
   setDT(x)
   x[, `:=` (any_sig = any(get(padj_column) < padj_cutoff),
-            mean_log10_padj = mean(-log10(get(padj_column)),
+            criteria = max(-log10(get(padj_column)),
                                    na.rm = TRUE)),
     by = rownames_column]
-  setorderv(x, cols = c("contrast", "mean_log10_padj"),
+  setorderv(x, cols = c("contrast", "criteria"),
             order = c(1, -1))
   top_pathways <- head(unique(x[, get(rownames_column)]),
                        n = n_top)
@@ -141,8 +141,8 @@ enrichmat <- function(x,
   # if (!is.null(breaks)) {
   #   colorRamp2_args[["breaks"]] <- breaks
   # } else {
-  colorRamp2_args[["breaks"]] <- range_extend(colorRamp2_args[["breaks"]],
-                                              nearest = 0.1)
+  # colorRamp2_args[["breaks"]] <- range_extend(colorRamp2_args[["breaks"]],
+  #                                             nearest = 0.1)
   # }
 
   # Create heatmap ------------------------------------------------
@@ -264,20 +264,19 @@ heatmap_color_fun <- function(NES_mat,
 {
   # Color function
   NES_mat <- NES_mat[!is.na(NES_mat)]
+  extended_range <- range_extend(NES_mat, nearest = 0.1)
+
   if (all(sign(NES_mat) %in% c(0, +1))) {
-    breaks <- c(0, 1, max(NES_mat))
+    breaks <- c(0, 1, extended_range[2])
     colors <- c("white", "white", colors[2])
   } else if (all(sign(NES_mat) %in% c(0, -1))) {
-    breaks <- c(min(NES_mat), -1, 0)
+    breaks <- c(extended_range[1], -1, 0)
     colors <- c(colors[1], "white", "white")
   } else {
-    breaks <- c(min(NES_mat), -1, 1, max(NES_mat))
+    breaks <- c(extended_range[1], -1, 1, extended_range[2])
     colors <- c(colors[1], rep("white", 2), colors[2])
   }
-  return(
-    list(breaks = breaks,
-         colors = colors)
-  )
+  return(list(breaks = breaks, colors = colors))
 }
 
 
