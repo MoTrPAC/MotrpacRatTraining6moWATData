@@ -5,80 +5,53 @@
 \title{Create Annotated UpSet Plot}
 \usage{
 plot_upset(
-  ...,
-  mode = c("distinct", "intersect", "union"),
-  top_n_comb = 10,
-  scale_set_bars = FALSE,
-  row_labels = character(0),
-  row_names_gp = gpar(fontsize = 6.5),
-  annotation_name_gp = gpar(fontsize = 6.5, fontface = "bold"),
-  heatmap_args = list(),
-  cell_height = unit(4, "mm"),
-  cell_width = cell_height,
-  extend = 0.2,
-  rot = 45,
-  hjust = 0,
-  vjust = 0,
-  bar_label_gp = gpar(fontsize = 6),
+  x,
+  top_n_sets = 10,
+  comb_title = "Intersection Size",
+  set_title = "Set Size",
+  scale = 2,
+  barplot_args = list(),
   filename = character(0),
-  height = 2.5,
-  width = 2.7,
-  save_args = list()
+  height = 2 * scale,
+  width = 3.4 * scale,
+  units = "in",
+  save_args = list(),
+  upset_args = list()
 )
 }
 \arguments{
-\item{...}{The input sets. If it is represented as a single variable, it should be a matrix/data frame or a list. If it is multiple variables, it should be name-value pairs, see Input section for explanation.}
+\item{x}{list; named list of elements in each set. Passed to
+\code{\link[ComplexHeatmap]{make_comb_mat}}.}
 
-\item{mode}{The mode for forming the combination set, see Mode section.}
+\item{top_n_sets}{Number of sets with largest size.}
 
-\item{top_n_comb}{integer; number of largest intersections to display.
-Default is 10.}
+\item{comb_title}{character; title of top barplot annotation. Default is
+"Intersection Size".}
 
-\item{scale_set_bars}{logical;}
+\item{set_title}{character; title of right barplot annotation. Default is
+"Set Size".}
 
-\item{row_labels}{character; labels for each set (row of UpSet plot).
-Defaults to rownames of \code{\link[ComplexHeatmap]{make_comb_mat}} output.}
+\item{scale}{numeric; scaling factor for all plot elements. Improves
+appearance. Default is 2.}
 
-\item{row_names_gp}{graphical parameters specified by
-\code{\link[grid]{gpar}}. Modifies \code{row_labels}.}
+\item{barplot_args}{list; additional arguments passed to
+\code{\link[ComplexHeatmap]{anno_barplot}}.}
 
-\item{annotation_name_gp}{graphical parameters specified by
-\code{\link[grid]{gpar}}. Passed to
-\code{\link[ComplexHeatmap]{HeatmapAnnotation}}. Modifies the barplot
-titles.}
+\item{filename}{character; the filename used to save the UpSet plot. If
+provided, the plot will not be displayed.}
 
-\item{heatmap_args}{list; additional arguments passed to
-\code{\link[ComplexHeatmap]{Heatmap}}.}
+\item{height}{numeric; the save height.}
 
-\item{cell_height}{\code{unit} object; the height of each heatmap cell. Default is
-\code{unit(4, "mm")}.}
+\item{width}{numeric; the save width.}
 
-\item{cell_width}{same as \code{cell_height}.}
-
-\item{extend}{numeric;}
-
-\item{rot}{numeric; angle in [0,360] to rotate set intersection labels.}
-
-\item{hjust}{numeric; a numeric vector specifying horizontal justification of
-intersection size bar labels.}
-
-\item{vjust}{numeric; A numeric vector specifying vertical justification of
-intersection size bar labels.}
-
-\item{bar_label_gp}{graphical parameters specified by
-\code{\link[grid]{gpar}}. Passed to
-\code{\link[ComplexHeatmap]{HeatmapAnnotation}}. Modifies the annotation
-labels.}
-
-\item{filename}{character; the filename used to save the heatmap. If
-\code{character(0)} (default), the heatmap will be displayed instead.}
-
-\item{height}{numeric; height of the file in \code{units}.}
-
-\item{width}{same as \code{height}.}
+\item{units}{character; the units of \code{height} and \code{width}. Default is "in"
+(inches).}
 
 \item{save_args}{list; additional arguments passed to the graphics device.
 See \code{\link[grDevices]{png}} for options.}
+
+\item{upset_args}{list; additional arguments passed to
+\code{\link[ComplexHeatmap]{UpSet}}.}
 }
 \description{
 Create an UpSet plot annotated with intersection and set sizes.
