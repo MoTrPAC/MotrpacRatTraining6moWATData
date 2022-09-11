@@ -71,6 +71,7 @@ run_WGCNA <- function(eset,
   # Transpose for WGCNA
   datExpr <- t(exprs(eset))
 
+  # Choose soft-thresholding power
   if (missing(power)) {
     message("Choosing soft-thresholding power ----")
     # Choosing the soft-thresholding power
@@ -79,7 +80,8 @@ run_WGCNA <- function(eset,
                              verbose = 5,
                              RsquaredCut = RsquaredCut,
                              networkType = "signed",
-                             corFnc = bicor)
+                             corFnc = bicor,
+                             corOptions = list(use = "pairwise.complete.obs"))
     power <- sft$powerEstimate
 
     if (is.na(power)) {
@@ -122,10 +124,11 @@ run_WGCNA <- function(eset,
   adjacency <- adjacency(datExpr = datExpr,
                          power = power,
                          type = "signed",
-                         corFnc = bicor)
+                         corFnc = bicor,
+                         corOptions = list(use = "pairwise.complete.obs"))
 
   # Topological Overlap Matrix (TOM) and dissimilarity matrix
-  TOM <- TOMsimilarity(adjacency, TOMType = "unsigned")
+  TOM <- TOMsimilarity(adjMat = adjacency, TOMType = "unsigned")
   dissTOM <- 1 - TOM
 
   # Hierarchical clustering based on dissTOM
@@ -160,7 +163,6 @@ run_WGCNA <- function(eset,
   # Calculate eigengenes --------------------
   MEList <- moduleEigengenes(expr = datExpr,
                              colors = moduleColors,
-                             # excludeGrey = TRUE,
                              softPower = power) ## updated 2022-09-06
   MEs <- MEList$eigengenes
 

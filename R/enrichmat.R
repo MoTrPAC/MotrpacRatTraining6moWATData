@@ -24,6 +24,8 @@
 #'   Default is 0.05.
 #' @param plot_sig_only logical; whether to plot only those `n_top` terms that
 #'   have at least one `padj_column` value less than `padj_cutoff`.
+#' @param padj_fill character; the background color used for values in
+#'   `padj_column` that are less than `padj_cutoff`. Default is "lightgrey".
 #' @param colors character; vector of length 2 specifying the colors for the
 #'   largest negative and largest positive values, respectively. Defaults to
 #'   version of blue (#3366ff) and red (specifically, darkred).
@@ -41,6 +43,8 @@
 #'   "in" (inches).
 #' @param heatmap_args list; additional arguments passed to
 #'   \code{\link[ComplexHeatmap]{Heatmap}}.
+#' @param padj_args list; additional arguments passed to
+#'   \code{\link[ComplexHeatmap]{Legend}}. Modifies the adjusted p-value legend.
 #' @param save_args list; additional arguments passed to the graphics device.
 #'   See \code{\link[grDevices]{png}} for options.
 #' @param draw_args list; additional arguments passed to
@@ -54,6 +58,7 @@
 #' @importFrom grid gpar unit grid.circle grid.rect convertUnit
 #' @importFrom utils modifyList head
 #' @importFrom grDevices bmp dev.off jpeg png tiff
+#' @importFrom latex2exp TeX
 #'
 #' @export enrichmat
 #'
@@ -69,6 +74,7 @@ enrichmat <- function(x,
                       padj_legend_title = padj_column,
                       padj_cutoff = 0.05,
                       plot_sig_only = TRUE,
+                      padj_fill = "grey",
                       colors = c("#3366ff", "darkred"),
                       scale_by = c("row", "column", "none"),
                       cell_size = unit(14, "points"),
@@ -77,6 +83,7 @@ enrichmat <- function(x,
                       width = 5,
                       units = "in",
                       heatmap_args = list(),
+                      padj_args = list(),
                       save_args = list(),
                       draw_args = list())
 {
@@ -109,10 +116,10 @@ enrichmat <- function(x,
   if (plot_sig_only) { x <- subset(x, subset = any_sig == TRUE) }
 
   x <- unique(x[, cols_to_keep, with = FALSE])
-  x[, .N, by = get(rownames_column)] # number of entries by row name
+  n <- x[, .N, by = rownames_column][["N"]] # number of entries by row name
 
   # Multiple rownames_column entries per contrast
-  if (!all(x[[".N"]] == max(x[[".N"]]))) {
+  if (!all(n == max(n))) {
     stop("rownames_column is not uniquely defined for each contrast.")
   }
 
@@ -149,7 +156,7 @@ enrichmat <- function(x,
   # Arguments that will be passed to ComplexHeatmap::Heatmap
   base_heatmap_args <- list(
     matrix = NES_mat,
-    col = do.call(what = colorRamp2, args = colorRamp2_args),
+    col = do.call(what = circlize::colorRamp2, args = colorRamp2_args),
     heatmap_legend_param = list(
       title = NES_column,
       at = colorRamp2_args$breaks,
@@ -190,15 +197,20 @@ enrichmat <- function(x,
   ht <- do.call(what = Heatmap, args = heatmap_args)
 
   # Legend for background fill
-  lt <- Legend(
+  # base args
+  lt_args <- list(
     title = padj_legend_title,
     at = 1:2,
-    labels = parse(text = paste0("phantom()", c("<", ">="), padj_cutoff)),
-    legend_gp = gpar(fill = c("lightgrey", "white")),
+    labels = latex2exp::TeX(c("$< 0.05$", "$\\geq 0.05$")),
+    legend_gp = gpar(fill = c(padj_fill, "white")),
     grid_height = heatmap_args$heatmap_legend_param$grid_width,
     grid_width = heatmap_args$heatmap_legend_param$grid_width,
     border = "black", nrow = 2, direction = "horizontal"
   )
+  lt_args <- modifyList(x = lt_args, val = padj_args,
+                        keep.null = TRUE)
+
+  lt <- do.call(what = Legend, args = lt_args)
 
   if (!identical(filename, character(0))) {
     on.exit(dev.off())
@@ -213,7 +225,7 @@ enrichmat <- function(x,
   }
   draw_args <- modifyList(
     x = list(object = ht,
-             heatmap_legend_list = list(lt),
+             annotation_legend_list = list(lt),
              merge_legends = TRUE,
              legend_gap = unit(0.15, "in")),
     val = draw_args, keep.null = TRUE)
@@ -232,7 +244,7 @@ layer_fun <- function(j, i, x, y, w, h, f)
   grid.rect(x = x, y = y, width = w, height = h,
             gp = gpar(col = NA,
                       fill = ifelse(pindex(padj_mat, i, j) < padj_cutoff,
-                                    "lightgrey",
+                                    padj_fill, # lightgrey
                                     ifelse(is.na(pindex(padj_mat, i, j)),
                                            NA, "white"))
             ))

@@ -13,6 +13,7 @@ enrichmat(
   padj_legend_title = padj_column,
   padj_cutoff = 0.05,
   plot_sig_only = TRUE,
+  padj_fill = "grey",
   colors = c("#3366ff", "darkred"),
   scale_by = c("row", "column", "none"),
   cell_size = unit(14, "points"),
@@ -21,6 +22,7 @@ enrichmat(
   width = 5,
   units = "in",
   heatmap_args = list(),
+  padj_args = list(),
   save_args = list(),
   draw_args = list()
 )
@@ -56,6 +58,9 @@ Default is 0.05.}
 \item{plot_sig_only}{logical; whether to plot only those \code{n_top} terms that
 have at least one \code{padj_column} value less than \code{padj_cutoff}.}
 
+\item{padj_fill}{character; the background color used for values in
+\code{padj_column} that are less than \code{padj_cutoff}. Default is "lightgrey".}
+
 \item{colors}{character; vector of length 2 specifying the colors for the
 largest negative and largest positive values, respectively. Defaults to
 version of blue (#3366ff) and red (specifically, darkred).}
@@ -80,6 +85,9 @@ Default is "row" to better visualize patterns across contrasts.}
 
 \item{heatmap_args}{list; additional arguments passed to
 \code{\link[ComplexHeatmap]{Heatmap}}.}
+
+\item{padj_args}{list; additional arguments passed to
+\code{\link[ComplexHeatmap]{Legend}}. Modifies the adjusted p-value legend.}
 
 \item{save_args}{list; additional arguments passed to the graphics device.
 See \code{\link[grDevices]{png}} for options.}

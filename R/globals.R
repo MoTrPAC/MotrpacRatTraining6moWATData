@@ -27,7 +27,9 @@ utils::globalVariables(
     "sign_logFC",
     "log10_pval",
     "contrast",
-    "label"
+    "label",
+    "padj_fill",
+    "moduleID"
   )
 )
 
