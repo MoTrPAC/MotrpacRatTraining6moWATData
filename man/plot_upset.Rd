@@ -6,8 +6,8 @@
 \usage{
 plot_upset(
   x,
-  top_n_sets = 10,
-  comb_title = "Intersection Size",
+  top_n_comb = 10,
+  comb_title = "Intersection\\nSize",
   set_title = "Set Size",
   scale = 2,
   barplot_args = list(),
@@ -23,7 +23,8 @@ plot_upset(
 \item{x}{list; named list of elements in each set. Passed to
 \code{\link[ComplexHeatmap]{make_comb_mat}}.}
 
-\item{top_n_sets}{Number of sets with largest size.}
+\item{top_n_comb}{numeric; number of largest intersections to show. Default
+is 10.}
 
 \item{comb_title}{character; title of top barplot annotation. Default is
 "Intersection Size".}

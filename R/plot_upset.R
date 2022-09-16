@@ -3,10 +3,11 @@
 #' @description Create an UpSet plot annotated with intersection and set sizes.
 #'   Essentially a modified version of \code{\link[ComplexHeatmap]{UpSet}}.
 #'
-#' @inheritParams ComplexHeatmap::make_comb_mat
 #' @inheritParams enrichmat
 #' @param x list; named list of elements in each set. Passed to
 #'   \code{\link[ComplexHeatmap]{make_comb_mat}}.
+#' @param top_n_comb numeric; number of largest intersections to show. Default
+#'   is 10.
 #' @param comb_title character; title of top barplot annotation. Default is
 #'   "Intersection Size".
 #' @param set_title character; title of right barplot annotation. Default is
@@ -42,8 +43,8 @@
 #'   \url{https://doi.org/10.1109/TVCG.2014.2346248}
 
 plot_upset <- function(x,
-                       top_n_sets = 10,
-                       comb_title = "Intersection Size",
+                       top_n_comb = 10,
+                       comb_title = "Intersection\nSize",
                        set_title = "Set Size",
                        scale = 2,
                        barplot_args = list(),
@@ -54,10 +55,10 @@ plot_upset <- function(x,
                        save_args = list(),
                        upset_args = list())
 {
-  m <- make_comb_mat(x, top_n_sets = top_n_sets)
+  m <- make_comb_mat(x)
   cs <- comb_size(m)
   ss <- set_size(m)
-  m <- m[, order(-cs)]
+  m <- m[, order(-cs)[1:min(length(cs), top_n_comb)]]
   cs <- comb_size(m)
   row_order <- seq_along(ss)
   column_order <- order(-cs)
@@ -72,7 +73,8 @@ plot_upset <- function(x,
       lwd = 1.8*scale,
       pt_size = unit(7*scale, "pt"),
       comb_order = column_order,
-      set_order = row_order
+      set_order = row_order,
+      row_labels = set_name(m)
     ),
     val = upset_args, keep.null = TRUE)
 
@@ -82,24 +84,32 @@ plot_upset <- function(x,
   ## Modify barplot annotations ----
   barplot_args <- modifyList(
     x = list(
-      height = 0.8*unit(1, "in")*scale,
-      width = 0.8*unit(1, "in")*scale,
+      height = 6*unit(12, "pt")*scale,
+      width = 6*unit(12, "pt")*scale,
       gp = gpar(fill = "black", color = "black"),
       add_numbers = TRUE,
       border = FALSE,
-      numbers_gp = gpar(fontsize = 6.5*scale),
+      numbers_gp = gpar(fontsize = 6*scale),
       axis = FALSE
     ),
     val = barplot_args, keep.null = TRUE)
+
+  barplot_args[["row_names_max_width"]] <- max_text_width(
+    text = upset_args[["row_labels"]],
+    gp = upset_args[["row_names_gp"]]
+  )
+
+
 
   if (!("top_annotation" %in% names(upset_args))) {
     up@top_annotation <- HeatmapAnnotation(
       comb_size = do.call(what = anno_barplot,
                           args = c(list(x = cs), barplot_args)),
       annotation_name_gp = gpar(fontsize = 7*scale),
-      annotation_name_rot = 90,
+      annotation_name_rot = 0,
       annotation_label = comb_title,
-      annotation_name_side = "left"
+      annotation_name_side = "left",
+      height = unit(12, "pt")*6*scale
     )
   }
 
@@ -110,7 +120,8 @@ plot_upset <- function(x,
       annotation_name_gp = gpar(fontsize = 7*scale),
       annotation_name_rot = 0,
       annotation_label = set_title,
-      which = "row"
+      which = "row",
+      width = unit(12, "pt")*4*scale
     )
   }
 
