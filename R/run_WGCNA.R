@@ -84,13 +84,6 @@ run_WGCNA <- function(eset,
                              corOptions = list(use = "pairwise.complete.obs"))
     power <- sft$powerEstimate
 
-    if (is.na(power)) {
-      stop(paste("No values of powerVector satisfy SFT.R.sq >=",
-                 RsquaredCut))
-    }
-    msg <- "The estimated soft-thresholding power is %d."
-    message(sprintf(msg, power))
-
     # Plot the Scale-free topology fit index and Mean connectivity
     # sizeGrWindow(9, 5)
     par(mfrow = c(1, 2))
@@ -119,6 +112,14 @@ run_WGCNA <- function(eset,
     message(sprintf(msg, power))
   }
 
+  if (is.na(power)) {
+    stop(paste("No values of powerVector satisfy SFT.R.sq >=",
+               RsquaredCut))
+  } else if (missing(msg)) {
+    msg <- "The estimated soft-thresholding power is %d."
+    message(sprintf(msg, power))
+  }
+
   message("Calculating adjacency and Topological Overlap matrices ----")
   ## Adjacency matrix
   adjacency <- adjacency(datExpr = datExpr,
@@ -141,7 +142,7 @@ run_WGCNA <- function(eset,
                                deepSplit = 2,
                                pamRespectsDendro = FALSE,
                                minClusterSize = 30)
-  table(dynamicMods) # module sizes
+  dynamicMods <- factor(dynamicMods, levels = sort(unique(dynamicMods)))
 
   # Convert numeric labels to colors
   moduleColors <- labels2colors(labels = dynamicMods)
@@ -220,11 +221,11 @@ run_WGCNA <- function(eset,
 
   colnames(MEs) <- color2name[sub("^ME", "", colnames(MEs))]
 
-  ME_long <- pData(eset)[, c("sex", "timepoint")]
+  ME_long <- pData(eset)[, c("bid", "sex", "timepoint")]
   setDT(ME_long)
   ME_long <- cbind(ME_long, MEs)
 
-  ME_long <- melt(ME_long, id.vars = c("sex", "timepoint"),
+  ME_long <- melt(ME_long, id.vars = c("bid", "sex", "timepoint"),
                   variable.name = "moduleID",
                   value.name = "ME")
   ME_long[, `:=` (moduleNum = as.numeric(
@@ -232,9 +233,15 @@ run_WGCNA <- function(eset,
     ))]
   setorderv(ME_long, cols = "moduleNum")
   ME_long[, `:=` (moduleID = factor(moduleID,
-                                    levels = unique(moduleID)))]
+                                    levels = unique(moduleID)),
+                  sex = factor(sex, levels = c("F", "M")),
+                  timepoint = factor(timepoint,
+                                     levels = c("SED", paste0(2^(0:3), "W")))
+                  )]
   setDF(ME_long)
   MEs <- ME_long
+
+  modules$moduleID <- factor(modules$moduleID, levels = levels(MEs$moduleID))
 
   return(list(modules = modules, MEs = MEs))
 }
