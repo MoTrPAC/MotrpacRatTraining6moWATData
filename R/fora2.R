@@ -28,6 +28,7 @@
 fora2 <- function(pathways,
                   genes,
                   universe,
+                  gene_column = "entrez_gene",
                   minSize = 1,
                   maxSize = Inf,
                   adjust.method = "scale",
@@ -37,12 +38,9 @@ fora2 <- function(pathways,
   adjust.method <- match.arg(adjust.method,
                              choices = c("scale", p.adjust.methods))
 
-  # if (!is.list(stats)) {
-  #   stop("`stats` must be a named list.")
-  # }
-
   # List of pathways to test
-  paths <- deframe(pathways[, -c("gs_subcat", "gs_description")])
+  setDT(pathways)
+  paths <- deframe(pathways[, list(gs_exact_source, get(gene_column))])
 
   # Run FGSEA on each contrast
   res <- lapply(names(genes), function(group_i) {
@@ -51,7 +49,7 @@ fora2 <- function(pathways,
                   universe = universe,
                   minSize = minSize,
                   maxSize = maxSize)
-    res_i[["cluster"]] <- group_i
+    res_i[["module"]] <- group_i
     return(res_i)
   })
   res <- rbindlist(res)
@@ -64,7 +62,7 @@ fora2 <- function(pathways,
                by.x = "pathway", by.y = "gs_exact_source")
 
   # p-value adjustment
-  by <- "cluster"
+  by <- "module"
   if (!adjust.globally) { by <- c(by, "gs_subcat") }
 
   # Transform p-values to account for overlap ratio
@@ -75,8 +73,10 @@ fora2 <- function(pathways,
   } else {
     res[, padj := p.adjust(pval, method = adjust.method), by = by]
   }
+  res[, module := factor(module, levels = unique(module))]
 
   setorderv(res, cols = c(by, "padj"))
+
 
   return(res)
 }

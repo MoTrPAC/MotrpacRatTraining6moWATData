@@ -8,6 +8,7 @@ fora2(
   pathways,
   genes,
   universe,
+  gene_column = "entrez_gene",
   minSize = 1,
   maxSize = Inf,
   adjust.method = "scale",
