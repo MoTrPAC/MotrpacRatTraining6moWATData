@@ -22,7 +22,8 @@ Encoding: UTF-8
 LazyData: true
 LazyDataCompression: bzip2
 Depends: 
-    R (>= 3.5.0)
+    R (>= 3.5.0),
+    MSnbase
 Imports: 
     circlize,
     ComplexHeatmap (>= 2.12.0),
@@ -36,7 +37,6 @@ Imports:
     latex2exp,
     limma,
     msigdbr (>= 7.5.1),
-    MSnbase,
     ontologyIndex,
     scales,
     statmod,
