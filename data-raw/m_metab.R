@@ -38,6 +38,8 @@
 # # Create MSnSet
 # m_metab <- MSnSet(exprs = x, fData = f_data, pData = p_data)
 
+# m_metab$bid <- m_metab$viallabel
+# m_metab$sex <- substr(m_metab$sex, 1, 1)
 
 # Save MSnSet
 # usethis::use_data(m_metab, internal = FALSE, overwrite = TRUE,
