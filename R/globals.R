@@ -29,7 +29,10 @@ utils::globalVariables(
     "contrast",
     "label",
     "padj_fill",
-    "moduleID"
+    "moduleID",
+    "module",
+    "sex",
+    "timepoint"
   )
 )
 

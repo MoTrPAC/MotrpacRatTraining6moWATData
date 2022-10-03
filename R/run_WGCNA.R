@@ -62,8 +62,7 @@
 #'   version 1.63-1, \url{https://CRAN.R-project.org/package=dynamicTreeCut}.
 
 run_WGCNA <- function(eset,
-                      power,
-                      powerVector = 1:20,
+                      power = 1:20,
                       RsquaredCut = 0.90,
                       module_prefix = "", # "P", "M", "T"
                       merge_modules)
@@ -71,18 +70,24 @@ run_WGCNA <- function(eset,
   # Transpose for WGCNA
   datExpr <- t(exprs(eset))
 
+  # Check if correlations can be calculated for all pair of features
+  if (anyNA(datExpr %*% t(datExpr))) {
+    stop(paste("Too many missing values to calculate correlations.",
+               "Consider filtering to features with fewer than 50% missing ",
+               "values or imputing missing values.", sep = "\t"))
+  }
+
   # Choose soft-thresholding power
-  if (missing(power)) {
+  if (length(power) > 1) {
     message("Choosing soft-thresholding power ----")
     # Choosing the soft-thresholding power
     sft <- pickSoftThreshold(data = datExpr,
-                             powerVector = powerVector,
+                             powerVector = power,
                              verbose = 5,
                              RsquaredCut = RsquaredCut,
                              networkType = "signed",
                              corFnc = bicor,
                              corOptions = list(use = "pairwise.complete.obs"))
-    power <- sft$powerEstimate
 
     # Plot the Scale-free topology fit index and Mean connectivity
     # sizeGrWindow(9, 5)
@@ -97,7 +102,7 @@ run_WGCNA <- function(eset,
          main = "Scale independence")
     text(sft$fitIndices[, 1],
          -sign(sft$fitIndices[, 3])*sft$fitIndices[, 2],
-         labels = powerVector, cex = cex1, col = "red")
+         labels = power, cex = cex1, col = "red")
     abline(h = 0.90, col = "red")
 
     plot(sft$fitIndices[, 1], sft$fitIndices[, 5],
@@ -106,17 +111,20 @@ run_WGCNA <- function(eset,
          type = "n",
          main = "Mean connectivity")
     text(sft$fitIndices[, 1], sft$fitIndices[, 5],
-         labels = powerVector, cex = cex1, col = "red")
+         labels = power, cex = cex1, col = "red")
+
+    # Power estimate
+    power <- sft$powerEstimate
+
+    if (is.na(power)) {
+      stop(paste("No values of powerVector satisfy SFT.R.sq >=",
+                 RsquaredCut))
+    } else {
+      msg <- "The estimated soft-thresholding power is %d."
+      message(sprintf(msg, power))
+    }
   } else {
     msg <- "Using soft-thresholding power of %d."
-    message(sprintf(msg, power))
-  }
-
-  if (is.na(power)) {
-    stop(paste("No values of powerVector satisfy SFT.R.sq >=",
-               RsquaredCut))
-  } else if (missing(msg)) {
-    msg <- "The estimated soft-thresholding power is %d."
     message(sprintf(msg, power))
   }
 
@@ -142,11 +150,11 @@ run_WGCNA <- function(eset,
                                deepSplit = 2,
                                pamRespectsDendro = FALSE,
                                minClusterSize = 30)
-  dynamicMods <- factor(dynamicMods, levels = sort(unique(dynamicMods)))
 
   # Convert numeric labels to colors
   moduleColors <- labels2colors(labels = dynamicMods)
-  sort(table(moduleColors), decreasing = TRUE)
+
+  dynamicMods <- factor(dynamicMods, levels = sort(unique(dynamicMods)))
 
   # Plot the dendrogram
   par(mfrow = c(1, 1))
@@ -206,15 +214,16 @@ run_WGCNA <- function(eset,
     moduleColors <- merge$colors
     # Eigengenes of the new merged modules:
     MEs <- merge$newMEs
-    # Update dynamicMods
-    color_lvls <- c("grey", standardColors(n = 50))
-    color_lvls <- color_lvls[color_lvls %in% moduleColors]
-    dynamicMods <- factor(moduleColors, levels = color_lvls)
-    dynamicMods <- as.numeric(dynamicMods) - ("grey" %in% moduleColors)
   }
 
+  # Update dynamicMods
+  color_lvls <- c("grey", standardColors(n = 50))
+  color_lvls <- color_lvls[color_lvls %in% moduleColors]
+  dynamicMods <- factor(moduleColors, levels = color_lvls)
+  dynamicMods <- as.numeric(dynamicMods) - ("grey" %in% moduleColors)
+
   ## Reformat results ----
-  modules <- data.frame(modulecolor = moduleColors,
+  modules <- data.frame(moduleColor = moduleColors,
                         moduleID = paste0(module_prefix, dynamicMods))
   color2name <- deframe(unique(modules))
   rownames(modules) <- modules$feature <- featureNames(eset)

@@ -78,7 +78,7 @@ plot_volcano <- function(x,
   p <- p +
     geom_label(data = unique(x[, list(contrast, label)]),
                aes(label = label, x = -Inf, y = Inf),
-               size = 5*2.5*0.35, label.size = NA,
+               size = 5*scale*0.35, label.size = NA,
                label.padding = unit(4, "pt"),
                fill = alpha("white", 0.5),
                hjust = 0, vjust = 0) +

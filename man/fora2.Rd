@@ -22,6 +22,9 @@ fora2(
 
 \item{universe}{character vector of background genes.}
 
+\item{gene_column}{character; the name of the column in pathways containing
+the elements of each gene set.}
+
 \item{minSize}{integer; minimum size of gene sets allowed for testing.}
 
 \item{maxSize}{integer; maximum size of gene sets allowed for testing.}

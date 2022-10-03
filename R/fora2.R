@@ -5,6 +5,8 @@
 #' @param pathways output of \code{link{msigdbr2}}.
 #' @param genes named list of genes.
 #' @param universe character vector of background genes.
+#' @param gene_column character; the name of the column in pathways containing
+#'   the elements of each gene set.
 #' @param minSize integer; minimum size of gene sets allowed for testing.
 #' @param maxSize integer; maximum size of gene sets allowed for testing.
 #' @param adjust.method character string; p-value correction method. Either
