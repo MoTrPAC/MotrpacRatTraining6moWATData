@@ -6,8 +6,7 @@
 \usage{
 run_WGCNA(
   eset,
-  power,
-  powerVector = 1:20,
+  power = 1:20,
   RsquaredCut = 0.9,
   module_prefix = "",
   merge_modules
@@ -22,9 +21,6 @@ not accepted.}
 of \code{powerVector} that satisfies scale-free fit R^2 at least equal to
 \code{RsquaredCut} will be used.}
 
-\item{powerVector}{integer vector of soft powers to check. Values should not
-exceed 30.}
-
 \item{RsquaredCut}{numeric; desired minimum scale-free fit R^2. Ignored if
 \code{power} is provided.}
 
@@ -35,6 +31,9 @@ create the "moduleID" column in \code{fData(eset)}.}
 determine whether highly-correlated (r=0.85) modules should be combined
 based on plots that the function creates. Must be provided if session is
 not interactive.}
+
+\item{powerVector}{integer vector of soft powers to check. Values should not
+exceed 30.}
 }
 \value{
 An \code{\link[MSnbase]{MSnSet-class}} object with modified \code{pData}
