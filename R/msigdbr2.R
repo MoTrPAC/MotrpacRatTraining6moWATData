@@ -72,7 +72,7 @@ msigdbr2 <- function(species = "Homo sapiens",
 
   cols <- c("gs_subcat", "gs_exact_source", "gs_description", genes)
   paths <- unique(paths[, cols, with = FALSE])
-  paths <- paths[, lapply(.SD, function(xi) list(as.character(xi))),
+  paths <- paths[, lapply(.SD, list),
                  by = c("gs_subcat", "gs_exact_source", "gs_description")]
 
   # Update GO descriptions
