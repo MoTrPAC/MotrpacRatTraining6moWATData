@@ -62,12 +62,7 @@ f_data <- FEATURE_TO_GENE %>%
   # "LOC" or "NEWGENE" unless there are no other genes
   filter(!(grepl("^LOC|^NEWGENE", gene_symbol) &
              !all(grepl("^LOC|^NEWGENE", gene_symbol)))) %>%
-  # For each transcript, remove all rows with a missing
-  # entrez gene unless all entrez genes are missing.
-  # This will help with the one-to-many mapping
-  filter(!(is.na(entrez_gene) & any(!is.na(entrez_gene)))) %>%
   # Collapse duplicates
-  group_by(feature_ID) %>%
   summarise(across(c(gene_symbol, entrez_gene),
                    ~ ifelse(all(is.na(.x)), NA_character_,
                             paste(.x, collapse = ";")))) %>%
@@ -75,10 +70,10 @@ f_data <- FEATURE_TO_GENE %>%
   `rownames<-`(.[["feature_ID"]]) %>%
   .[rownames(count_mat), ] # reorder features
 
-# How many transcripts have more than one gene? About 1%
+# How many transcripts have more than one gene? About 1.2%
 table(grepl(";", f_data$gene_symbol))
 # FALSE  TRUE
-# 16383   164
+# 16352   195
 
 # Create MSnset
 TRNSCRPT_MSNSET <- MSnSet(exprs = count_mat, fData = f_data, pData = p_data)

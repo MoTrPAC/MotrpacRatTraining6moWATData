@@ -29,7 +29,14 @@ p_data <- p_data[colnames(expr_mat), ]
 
 # Rat-to-human phosphosite mapping
 rat2human <- RAT_TO_HUMAN_PHOSPHO %>%
-  `colnames<-`(c("feature_ID", "human_feature_ID"))
+  `colnames<-`(c("feature_ID", "human_feature_ID")) %>%
+  filter(!is.na(feature_ID)) %>%
+  mutate(site = sub(".*_", "", feature_ID),
+         human_uniprot = sub("_.*", "", human_feature_ID),
+         human_site = sub(".*_", "", human_feature_ID),
+         across(contains("site"),
+                ~ sub(";$", "", gsub("[sty]", ";", .x)))) %>%
+  select(feature_ID, site, everything())
 
 # Feature data
 f_data <- FEATURE_TO_GENE %>%

@@ -40,6 +40,15 @@ f_data <- FEATURE_TO_GENE %>%
   `rownames<-`(.[["feature_ID"]]) %>%
   .[rownames(expr_mat), ] # reorder features
 
+# How many gene symbols or entrez IDs are missing?
+table(is.na(f_data$gene_symbol))
+# FALSE  TRUE
+#  9908    56
+
+table(is.na(f_data$entrez_gene))
+# FALSE
+#  9964
+
 # Create MSnset
 PROT_MSNSET <- MSnSet(exprs = expr_mat, fData = f_data, pData = p_data)
 
