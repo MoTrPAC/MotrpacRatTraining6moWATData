@@ -41,5 +41,6 @@ Suggests:
     usethis
 Remotes:
     github::MoTrPAC/MotrpacRatTraining6moData
+    github::PNNL-Comp-Mass-Spec/motrpacWAT
 RoxygenNote: 7.2.3
 URL: https://pnnl-comp-mass-spec.github.io/motrpacWATData/
