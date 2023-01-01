@@ -1,5 +1,5 @@
 
-# WATManuscript2022
+# motrpacWATData
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -9,7 +9,7 @@ What is the purpose of this package?
 ## Installation
 
 ``` r
-devtools::install_github("PNNL-Comp-Mass-Spec/WATManuscript2022")
+devtools::install_github("PNNL-Comp-Mass-Spec/motrpacWATData")
 ```
 
 ## References

@@ -1,50 +1,44 @@
-Package: WATManuscript2022
+Package: motrpacWATData
 Type: Package
-Title: R Package for scWAT Companion Paper
-Version: 0.1.0
+Title: Data and Analysis Results for the MoTrPAC PASS1B Rat White Adipose Tissue Manuscript
+Version: 0.0.0.9000
 Authors@R: 
-    c(
-    person(given = "Tyler", family = "Sagendorf", 
+  c(
+    person(given = "Tyler J.", family = "Sagendorf",
            email = "tyler.sagendorf@pnnl.gov",
            comment = c(ORCID = "0000-0003-1552-4870"),
            role = c("aut", "cre")),
     person(given = "Zhenxin", family = "Hou",
-           comment = c(ORCID = "0000-0002-1301-0799"),
-           role = "ctb"),
-    person(given = "Vladislav", family = "Petyuk",
-           comment = c(ORCID = "0000-0003-4076-151X"),
-           role = "ctb")
+           comment = c(ORCID = "0000-0002-1301-0799",
+                       "Provided WGCNA-related code, triacylglycerol abundance data, and both notes and data regarding the redundant metabolite filtering process."),
+           role = "aut"),
+    person(given = "Christopher B.", family = "Newgard",
+           comment = c("Provided clinical analyte data."),
+           role = "dtc"),
+    person(given = "Pasquale", family = "Nigro",
+           comment = c(ORCID = "0000-0002-2918-8356",
+                       "Provided WAT histology data."),
+           role = "dtc"),
+    person(given = "Malene E.", family = "Lindholm",
+           comment = c(ORCID = "0000-0002-5763-7833",
+                       "Provided mtDNA qPCR results."),
+           role = "dtc")
     )
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Contains data and code necessary to reproduce analyses that appear 
+    in "Sexual dimorphism and the multi-omic response to exercise training in 
+    rat subcutaneous white adipose tissue".
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 LazyDataCompression: bzip2
 Depends: 
-    R (>= 3.5.0),
-    MSnbase
-Imports: 
-    circlize,
-    ComplexHeatmap (>= 2.12.0),
-    data.table,
-    dynamicTreeCut,
-    edgeR,
-    fgsea,
-    ggplot2,
-    graphics,
-    grDevices,
-    latex2exp,
-    limma,
-    msigdbr (>= 7.5.1),
-    ontologyIndex,
-    scales,
-    statmod,
-    stats,
-    tibble,
-    utils,
-    WGCNA
+    R (>= 3.5.0)
 Suggests:
     dplyr,
+    MotrpacRatTraining6moData,
+    motrpacWAT,
+    MSnbase,
     usethis
-RoxygenNote: 7.2.0
+Remotes:
+    github::MoTrPAC/MotrpacRatTraining6moData
+RoxygenNote: 7.2.3

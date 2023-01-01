@@ -13,7 +13,7 @@ p_data <- PHENO %>%
                             toupper(timepoint)),
          timepoint = factor(timepoint,
                             levels = c("SED", paste0(2^(0:3), "W"))),
-         exp_group = interaction(sex, timepoint, sep = "_")) %>%
+         exp_group = interaction(substr(sex, 1, 1), timepoint, sep = "_")) %>%
   arrange(sex, timepoint) %>%
   mutate(exp_group = factor(exp_group, levels = unique(exp_group)))
 
