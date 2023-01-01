@@ -8,6 +8,13 @@
 \description{
 Contains data and code necessary to reproduce analyses that appear in "Sexual dimorphism and the multi-omic response to exercise training in rat subcutaneous white adipose tissue".
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://pnnl-comp-mass-spec.github.io/motrpacWATData/}
+}
+
+}
 \author{
 \strong{Maintainer}: Tyler J. Sagendorf \email{tyler.sagendorf@pnnl.gov} (\href{https://orcid.org/0000-0003-1552-4870}{ORCID})
 
