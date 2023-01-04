@@ -2,3 +2,54 @@ url: https://pnnl-comp-mass-spec.github.io/motrpacWATData/
 template:
   bootstrap: 5
 
+reference:
+- title: Processed Data
+
+- subtitle: MSnSet Objects
+  contents:
+  - TRNSCRPT_MSNSET
+  - PROT_MSNSET
+  - PHOSPHO_MSNSET
+  - METAB_MSNSET
+
+- title: Analysis Results
+
+- subtitle: Differential Analysis
+  desc: LIMMA differential analysis (DA) results.
+  contents:
+  - WATSC_DA
+
+- subtitle: MSigDB Gene Sets
+  desc: Gene Ontology sets from the Molecular Signatures Database
+  (MSigDB v7.5.1).
+  contents:
+  - MSIGDB_PATHWAYS
+
+- subtitle: Kinase-Substrate Relationship Data
+  desc: Kinase-substrate data from PhosphoSitePlus (PSP).
+  contents:
+  - PSP_KINASE_SUBSTRATE
+
+- subtitle: Enrichment Analysis
+  desc: Fast Gene Set Enrichment Analysis (FGSEA) with the Gene Ontology (GO),
+  MitoCarta3.0, and RefMet chemical subclass databases and Kinase-Substrate
+  Enrichment Analysis (KSEA) with PhosphoSitePlus.
+  contents:
+  - GO_FGSEA
+  - PROT_MITOCARTA_FGSEA
+  - PHOSPHO_KSEA
+  - METAB_FGSEA
+
+- subtitle: WGCNA
+  desc: Weighted Gene Co-Expression Network Analysis (WGCNA).
+  contents:
+  - WATSC_WGCNA
+
+- title: Other
+  desc: Catch-all until I can come up with a better location.
+  contents:
+  - METAB_TG_CONC
+  - MITO_DNA
+  - PLASMA_ANALYTES
+
+

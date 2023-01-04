@@ -2,9 +2,11 @@
 # motrpacWATData
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/PNNL-Comp-Mass-Spec/motrpacWATData/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PNNL-Comp-Mass-Spec/motrpacWATData/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-What is the purpose of this package?
+Contains data and code necessary to reproduce analyses.
 
 ## Installation
 
