@@ -16,42 +16,27 @@ p_data <- PHENO %>%
                             levels = c("SED", paste0(2^(0:3), "W"))),
          exp_group = interaction(substr(sex, 1, 1), timepoint, sep = "_")) %>%
   arrange(sex, timepoint) %>%
-  mutate(exp_group = factor(exp_group, levels = unique(exp_group)))
+  mutate(exp_group = factor(exp_group, levels = unique(exp_group))) %>%
+  # Add columns used in differential analysis
+  inner_join(select(TRNSCRPT_META, viallabel, rin = RIN,
+                    pct_globin, pct_umi_dup, median_5_3_bias),
+             by = "viallabel") %>%
+  # Use code from MotrpacRatTraining6mo::fix_covariates to mean impute, center,
+  # and scale
+  mutate(across(
+    c(rin, pct_globin, pct_umi_dup, median_5_3_bias), function(cov) {
+      cov[is.na(cov)] <- mean(cov)
+      cov <- scale(cov)
+      return(cov)
+    })) %>%
+  `rownames<-`(.[["viallabel"]])
 
 # Normalized transcriptomics data
 count_mat <- TRNSCRPT_WATSC_RAW_COUNTS %>%
   select(feature_ID, where(is.numeric)) %>%
   tibble::column_to_rownames("feature_ID") %>%
   as.matrix() %>%
-  # First round of filtering done in landscape paper
-  .[rownames(.) %in% TRNSCRPT_WATSC_NORM_DATA$feature_ID,
-    !colnames(.) %in% OUTLIERS$viallabel] # remove 2 outlier samples
-# dim(count_mat) # 16764  48
-
-p_data <- p_data[colnames(count_mat), ]
-
-# Remove low-count transcripts
-dge <- DGEList(counts = count_mat,
-               samples = p_data,
-               group = p_data$exp_group)
-keep <- filterByExpr(dge)
-dge <- dge[keep, , keep.lib.sizes = FALSE]
-# Add TMM normalization factors
-dge <- calcNormFactors(dge, method = "TMM")
-
-# # Convert to log2 counts-per-million reads
-# dge$counts <- cpm(dge, log = TRUE)
-
-# Update count matrix and phenodata
-count_mat <- round(dge$counts, digits = 4)
-p_data <- select(dge$samples, -group)
-# dim(count_mat) # 16443    48
-
-# Add additional columns to phenodata for differential analysis
-p_data <- TRNSCRPT_META %>%
-  select(viallabel, rin = RIN, pct_globin, pct_umi_dup, median_5_3_bias) %>%
-  right_join(p_data, by = "viallabel") %>%
-  `rownames<-`(.[["viallabel"]])
+  .[, rownames(p_data)]
 
 # Feature data
 f_data <- FEATURE_TO_GENE %>%
@@ -61,12 +46,12 @@ f_data <- FEATURE_TO_GENE %>%
   # Some transcripts have more than one gene ID
   group_by(feature_ID) %>%
   # For each transcript, remove genes that start with
-  # "LOC", "NEWGENE", or "AAB" unless there are no other genes
-  filter(!(grepl("^LOC|^NEWGENE|^AAB", gene_symbol) &
-             !all(grepl("^LOC|^NEWGENE|^AAB", gene_symbol)))) %>%
-  # If all genes start with "LOC", "NEWGENE", or "AAB",
+  # "LOC" or "NEWGENE" unless there are no other genes
+  filter(!(grepl("^LOC|^NEWGENE", gene_symbol) &
+             !all(grepl("^LOC|^NEWGENE", gene_symbol)))) %>%
+  # If all genes start with "LOC" or "NEWGENE",
   # only keep those with Entrez IDs unless none of them have Entrez IDs
-  filter(!(all(grepl("^LOC|^NEWGENE|^AAB", gene_symbol)) &
+  filter(!(all(grepl("^LOC|^NEWGENE", gene_symbol)) &
              is.na(entrez_gene) & !all(is.na(entrez_gene)))) %>%
   # Collapse duplicates
   summarise(across(c(gene_symbol, entrez_gene),
@@ -76,13 +61,45 @@ f_data <- FEATURE_TO_GENE %>%
   `rownames<-`(.[["feature_ID"]]) %>%
   .[rownames(count_mat), ] # reorder features
 
-# How many transcripts have more than one gene? About 1.2%
-table(grepl(";", f_data$gene_symbol))
-# FALSE  TRUE
-# 16273   170
 
-# Create MSnset
-TRNSCRPT_MSNSET <- MSnSet(exprs = count_mat, fData = f_data, pData = p_data)
+## Following doi: 10.12688/f1000research.9005.3
+# Filter lowly expressed genes
+dge_raw <- DGEList(counts = count_mat,
+                   samples = p_data,
+                   genes = f_data,
+                   group = p_data$exp_group,
+                   remove.zeros = TRUE)
+keep <- filterByExpr(dge_raw) # do not normalize first
+dge_raw <- dge_raw[keep, , keep.lib.sizes = FALSE]
+dim(dge_raw) # 16404  50
+
+# Calculate normalization factors
+dge_raw <- calcNormFactors(dge_raw, method = "TMM")
+
+# How many transcripts have more than one gene? About 1.2%
+table(grepl(";", dge_raw$genes$gene_symbol))
+# FALSE  TRUE
+# 16212   192
+
+# Check for extreme outliers
+CPM <- cpm(dge_raw, log = TRUE)
+
+plotMDS(CPM, top = 1000,
+        label = dge_raw$samples$bid, dim.plot = c(1, 3))
+# 90423 and 90410 are extreme outliers. We will discard these.
+
+# Remove 2 outlier samples and recalculate normalization factors
+dge_raw <- dge_raw[, !colnames(dge_raw) %in% OUTLIERS$viallabel] %>%
+  calcNormFactors.DGEList(method = "TMM")
+
+# Reorder columns
+dge_raw[["samples"]] <- dge_raw[["samples"]] %>%
+  select(-group) %>%
+  relocate(c(lib.size, norm.factors), .after = everything())
+
+# Create MSnset from DGEList
+TRNSCRPT_MSNSET <- with(dge_raw,
+                        MSnSet(exprs = counts, fData = genes, pData = samples))
 
 # Save
 usethis::use_data(TRNSCRPT_MSNSET, internal = FALSE, overwrite = TRUE,

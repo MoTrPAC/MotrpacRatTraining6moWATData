@@ -38,7 +38,7 @@ MITO_DNA <- file.path("data-raw", "WAT_mtDNA.xlsx") %>%
     relative_expr = 2 ^ (-delta_delta_CT)
   ) %>%
   arrange(sex, timepoint) %>%
-  mutate(exp_group = paste(sex, timepoint, sep = "_"),
+  mutate(exp_group = paste(substr(sex, 1, 1), timepoint, sep = "_"),
          exp_group = factor(exp_group, levels = unique(exp_group))) %>%
   select(bid, sex, timepoint, exp_group, everything())
 

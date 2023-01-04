@@ -5,7 +5,8 @@ library(fgsea)
 
 
 # Entrez to gene symbol conversion vector for leading edge
-entrez_to_symbol <- fData(PROT_MSNSET) %>%
+entrez_to_symbol <- pluck(PROT_DA, "MvF_SED") %>%
+  filter(!is.na(entrez_gene)) %>%
   dplyr::select(entrez_gene, gene_symbol) %>%
   deframe()
 

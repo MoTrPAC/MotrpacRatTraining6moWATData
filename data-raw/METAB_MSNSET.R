@@ -35,26 +35,36 @@ new_refmet <- c(
 )
 
 # Pre-filtered data with additional columns
-refmet_df <- file.path("data-raw", "nonredundant_METAB_fData.txt") %>%
+f_data <- file.path("data-raw", "nonredundant_METAB_fData.txt") %>%
   read.delim() %>%
   mutate(feature = feature_ID) %>%
   # isomers: 50:5, 56:6
   mutate(name_in_figures = ifelse(CURRENT_REFMET_NAME %in% names(new_refmet),
                                   new_refmet[CURRENT_REFMET_NAME],
                                   CURRENT_REFMET_NAME)) %>%
-  select(feature_ID, dataset, name_in_figures, lipid_class:sub_class) %>%
+  select(feature_ID, dataset, name_in_figures,
+         contains("class", ignore.case = FALSE),
+         chain_length, double_bond) %>%
   dplyr::rename(refmet_super_class = super_class,
                 refmet_main_class = main_class,
                 refmet_sub_class = sub_class) %>%
+  left_join(METAB_FEATURE_ID_MAP %>%
+              filter(tissue == "WAT-SC") %>%
+              select(dataset, feature_ID = metabolite_name,
+                     rt, mz, neutral_mass, formula),
+            by = c("feature_ID", "dataset")) %>%
+  # Remove spaces in formulas
+  mutate(formula = gsub(" ", "", formula)) %>%
+  relocate(contains("refmet"), .after = name_in_figures) %>%
   `rownames<-`(.[["feature_ID"]])
 
-refmet_df[refmet_df == ""] <- NA
+f_data[f_data == ""] <- NA
 
 # Phenodata
 p_data <- PHENO %>%
   filter(tissue == "WAT-SC",
-         biclabeldata.shiptositeid == "emory sub - georgia tech") %>%
-  select(pid:viallabel, sex, timepoint = group) %>%
+         grepl("georgia tech", biclabeldata.shiptositeid)) %>%
+  select(pid, bid, labelid, sex, timepoint = group) %>%
   mutate(sex = factor(sex,
                       levels = c("female", "male"),
                       labels = c("Female", "Male")),
@@ -65,10 +75,10 @@ p_data <- PHENO %>%
          exp_group = paste(substr(sex, 1, 1), timepoint, sep = "_")) %>%
   arrange(sex, timepoint) %>%
   mutate(exp_group = factor(exp_group, levels = unique(exp_group))) %>%
-  `rownames<-`(.[["bid"]])
+  `rownames<-`(.[["labelid"]])
 
-# Viallabel to bid conversion table for expression data (next step)
-vial_to_bid <- select(PHENO, viallabel, bid) %>%
+# Viallabel to labelid conversion table for expression data (next step)
+vial_to_label <- select(PHENO, viallabel, labelid) %>%
   mutate(across(.fns = as.character))
 
 # Normalized expression data
@@ -78,18 +88,19 @@ expr_mat <- METAB_NORM_DATA_NESTED %>%
   map(rownames_to_column, var = "feature_ID") %>%
   enframe(name = "dataset") %>%
   unnest(value) %>%
-  inner_join(select(refmet_df, feature_ID, dataset),
+  # subset to nonredundant combinations
+  inner_join(select(f_data, feature_ID, dataset),
              by = c("feature_ID", "dataset")) %>%
   pivot_longer(cols = -c(feature_ID, dataset),
                names_to = "viallabel") %>%
-  left_join(vial_to_bid, by = "viallabel") %>%
+  left_join(vial_to_label, by = "viallabel") %>%
   select(-c(viallabel, dataset)) %>%
   filter(!is.na(value)) %>%
   pivot_wider(id_cols = feature_ID,
-              values_from = value, names_from = bid) %>%
+              values_from = value, names_from = labelid) %>%
   column_to_rownames("feature_ID") %>%
   as.matrix() %>%
-  .[rownames(refmet_df), rownames(p_data)]
+  .[rownames(f_data), rownames(p_data)]
 
 ## Current version is more flexible. This one is clearer
 # expr_mat <- METAB_NORM_DATA_NESTED %>%
@@ -104,16 +115,15 @@ expr_mat <- METAB_NORM_DATA_NESTED %>%
 #   }) %>%
 #   enframe(name = "dataset") %>%
 #   unnest(value) %>%
-#   inner_join(select(refmet_df, feature_ID, dataset),
+#   inner_join(select(f_data, feature_ID, dataset),
 #              by = c("feature_ID", "dataset")) %>%
 #   column_to_rownames("feature_ID") %>%
 #   select(-dataset) %>%
 #   as.matrix() %>%
-#   .[refmet_df$feature_ID, rownames(p_data)]
-
+#   .[f_data$feature_ID, rownames(p_data)]
 
 # Create MSnSet
-METAB_MSNSET <- MSnSet(exprs = expr_mat, fData = refmet_df, pData = p_data)
+METAB_MSNSET <- MSnSet(exprs = expr_mat, fData = f_data, pData = p_data)
 
 # Save
 usethis::use_data(METAB_MSNSET, internal = FALSE, overwrite = TRUE,

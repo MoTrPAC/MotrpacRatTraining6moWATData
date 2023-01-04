@@ -1,12 +1,12 @@
 library(motrpacWATData)
-library(motrpacWAT) # FGSEA functions
+library(motrpacWAT)
 library(tidyverse)
 
 
 ## Transcriptomics ----------------------------------------------
 
 table(grepl(";", TRNSCRPT_DA$MvF_SED$entrez_gene))
-# 155 transcripts have multiple genes. Separate to multiple rows
+# 180 transcripts have multiple genes. Separate to multiple rows
 
 TRNSCRPT_DA_SEP <- TRNSCRPT_DA %>%
   map(.f = ~ separate_rows(.x, entrez_gene, gene_symbol, sep = ";") %>%
@@ -110,7 +110,7 @@ usethis::use_data(PROT_FGSEA, internal = FALSE,
 sub_classes <- fData(METAB_MSNSET) %>%
   group_by(refmet_sub_class) %>%
   summarise(feature = list(feature_ID)) %>%
-  mutate(gs_subcat = "refmet_subclass",
+  mutate(gs_subcat = "refmet_sub_class",
          gs_exact_source = refmet_sub_class,
          gs_description = refmet_sub_class,
          set_size = lengths(feature)) %>%
@@ -143,13 +143,13 @@ all_FGSEA <- list(TRNSCRPT_GO    = TRNSCRPT_FGSEA,
                   PROT_MITOCARTA = PROT_MITOCARTA_FGSEA, # MitoCarta FGSEA
                   PHOSPHO_KSEA   = PHOSPHO_KSEA,         # KSEA
                   METAB_REFMET   = METAB_FGSEA) %>%
-  list_transpose() %>% # nice function
+  list_transpose() %>%
   # Flatten leadingEdge columns to work with write_xlsx
   map_depth(.depth = 2, mutate, across(contains("leadingEdge"),
-                                       ~ map_chr(.x, paste, collapse = ", ")))
+                                       .fns = map_chr, paste, collapse = ", "))
 
 paths <- file.path("inst", "supp-tables",
                    sprintf("FGSEA_%s.xlsx", names(all_FGSEA)))
 
-map2(.x = all_FGSEA, .y = paths, .f = writexl::write_xlsx, .progress = TRUE)
+map2(.x = all_FGSEA, .y = paths, .f = writexl::write_xlsx)
 
