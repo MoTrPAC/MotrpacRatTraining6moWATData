@@ -47,7 +47,7 @@
 
     <div class="ref-description section level2">
     <p>An object of class
-  <code>MSnbase::MSnSet</code> containing
+  <code><a href="https://lgatto.github.io/MSnbase/reference/MSnSet-class.html" class="external-link">MSnbase::MSnSet</a></code> containing
   median-MAD-normalized log\(_2\)-transformed protein phosphorylation data
   for differential analysis.</p>
     </div>
@@ -59,11 +59,11 @@
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
-    <p>Object of class <code>MSnbase::MSnSet</code>
+    <p>Object of class <code><a href="https://lgatto.github.io/MSnbase/reference/MSnSet-class.html" class="external-link">MSnbase::MSnSet</a></code>
   with 30304 features and 60 samples.</p>
 <p></p><dl><dt><b>assayData</b></dt>
 <dd><p>Object of class <code>matrix</code> with 30304 rows and 60 columns. See
-      PHOSPHO_WATSC_NORM_DATA for
+      <a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/PHOSPHO_NORM_DATA.html" class="external-link">PHOSPHO_WATSC_NORM_DATA</a> for
       more details.</p></dd>
 
     <dt><b>featureData</b></dt>
@@ -146,32 +146,85 @@
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>RAT_TO_HUMAN_PHOSPHO for details
+    <p><a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/RAT_TO_HUMAN_PHOSPHO.html" class="external-link">RAT_TO_HUMAN_PHOSPHO</a> for details
   of mapping between rat and human phosphorylation sites.</p>
-<p>FEATURE_TO_GENE for details of
+<p><a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/FEATURE_TO_GENE.html" class="external-link">FEATURE_TO_GENE</a> for details of
   feature-to-gene mapping.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code>MSnSet-class</code>,
-  RAT_TO_HUMAN_PHOSPHO,
-  FEATURE_TO_GENE</p></div>
+    <div class="dont-index"><p><code><a href="https://lgatto.github.io/MSnbase/reference/MSnSet-class.html" class="external-link">MSnSet-class</a></code>,
+  <a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/RAT_TO_HUMAN_PHOSPHO.html" class="external-link">RAT_TO_HUMAN_PHOSPHO</a>,
+  <a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/FEATURE_TO_GENE.html" class="external-link">FEATURE_TO_GENE</a></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MSnbase</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in library(MSnbase):</span> there is no package called ‘MSnbase’</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lgatto.github.io/MSnbase" class="external-link">MSnbase</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">PHOSPHO_MSNSET</span>                   <span class="co"># summary</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: MSnbase</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>there is no package called ‘MSnbase’</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .requirePackage(package):</span> unable to find required package ‘MSnbase’</span>
-<span class="r-in"><span><span class="fu">exprs</span><span class="op">(</span><span class="va">PHOSPHO_MSNSET</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span> <span class="co"># assayData (first 10 rows and 5 columns)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in exprs(PHOSPHO_MSNSET):</span> could not find function "exprs"</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">fData</span><span class="op">(</span><span class="va">PHOSPHO_MSNSET</span><span class="op">)</span><span class="op">)</span>      <span class="co"># featureData</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fData(PHOSPHO_MSNSET):</span> could not find function "fData"</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">pData</span><span class="op">(</span><span class="va">PHOSPHO_MSNSET</span><span class="op">)</span><span class="op">)</span>      <span class="co"># phenoData</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in pData(PHOSPHO_MSNSET):</span> could not find function "pData"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MSnSet (storageMode: lockedEnvironment)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> assayData: 30304 features, 60 samples </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   element names: exprs </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> protocolData: none</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> phenoData</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   sampleNames: 90222017006 90258017006 ... 90237017006 (60 total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   varLabels: pid bid ... exp_group (7 total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   varMetadata: labelDescription</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> featureData</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   featureNames: NP_001001504.1_S448s NP_001001512.2_S228s ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     XP_345868.4_T633t (30304 total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   fvarLabels: feature_ID gene_symbol ... human_site (7 total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   fvarMetadata: labelDescription</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> experimentData: use 'experimentData(object)'</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Annotation:  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - - - Processing information - - -</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  MSnbase version: 2.22.0 </span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/exprs.html" class="external-link">exprs</a></span><span class="op">(</span><span class="va">PHOSPHO_MSNSET</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span> <span class="co"># assayData (first 10 rows and 5 columns)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      90222017006 90258017006 90441017006 90266017006</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001001504.1_S448s          NA          NA          NA          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001001512.2_S228s      0.1112     -0.0098      0.1768     -0.2122</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001001801.1_S30s           NA          NA          NA          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S12s      -0.0295      0.0111     -0.1142     -0.1185</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S143s          NA          NA          NA          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S153s     -0.5996      0.3427     -0.3792      0.1080</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S17s      -0.2917      0.2004     -0.7424      0.1419</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S18s      -0.0802      0.1502     -0.1014      0.0237</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S212s          NA          NA          NA          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S22s       0.1182     -0.1563      0.4189     -0.1975</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      90421017006</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001001504.1_S448s          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001001512.2_S228s      0.2223</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001001801.1_S30s           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S12s       0.0288</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S143s          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S153s     -0.4339</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S17s      -0.4537</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S18s       0.0077</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S212s          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S22s       0.1365</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/featureData.html" class="external-link">fData</a></span><span class="op">(</span><span class="va">PHOSPHO_MSNSET</span><span class="op">)</span><span class="op">)</span>      <span class="co"># featureData</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                feature_ID gene_symbol entrez_gene site</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001001504.1_S448s NP_001001504.1_S448s    Gtf2ird1      246770 S448</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001001512.2_S228s NP_001001512.2_S228s       Gtf2i      353256 S228</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001001801.1_S30s   NP_001001801.1_S30s       Akap7      361458  S30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S12s   NP_001002016.2_S12s        Lmna       60374  S12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S143s NP_001002016.2_S143s        Lmna       60374 S143</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S153s NP_001002016.2_S153s        Lmna       60374 S153</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      human_feature_ID human_uniprot human_site</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001001504.1_S448s     Q9UHL9_S448s        Q9UHL9       S448</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001001512.2_S228s             &lt;NA&gt;          &lt;NA&gt;       &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001001801.1_S30s              &lt;NA&gt;          &lt;NA&gt;       &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S12s       P02545_S12s        P02545        S12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S143s     P02545_S143s        P02545       S143</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001002016.2_S153s     P02545_S153s        P02545       S153</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/phenoData.html" class="external-link">pData</a></span><span class="op">(</span><span class="va">PHOSPHO_MSNSET</span><span class="op">)</span><span class="op">)</span>      <span class="co"># phenoData</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  pid   bid       labelid   viallabel    sex timepoint exp_group</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90222017006 10025626 90222 4.457560e-313 90222017006   Male        8W      M_8W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90258017006 10045228 90258 4.459338e-313 90258017006 Female        8W      F_8W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90441017006 10502300 90441 4.468380e-313 90441017006   Male        2W      M_2W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90266017006 10046380 90266 4.459734e-313 90266017006 Female       SED     F_SED</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90421017006 10417702 90421 4.467392e-313 90421017006   Male        1W      M_1W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90410017006 10335064 90410 4.466848e-313 90410017006 Female        4W      F_4W</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

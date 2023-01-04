@@ -47,7 +47,7 @@
 
     <div class="ref-description section level2">
     <p>An object of class
-  <code>MSnbase::MSnSet</code> containing
+  <code><a href="https://lgatto.github.io/MSnbase/reference/MSnSet-class.html" class="external-link">MSnbase::MSnSet</a></code> containing
   median-MAD-normalized log\(_2\)-transformed protein expression data for
   differential analysis and WGCNA.</p>
     </div>
@@ -59,11 +59,11 @@
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
-    <p>Object of class <code>MSnbase::MSnSet</code>
+    <p>Object of class <code><a href="https://lgatto.github.io/MSnbase/reference/MSnSet-class.html" class="external-link">MSnbase::MSnSet</a></code>
   with 9964 features and 60 samples.</p>
 <p></p><dl><dt><b>assayData</b></dt>
 <dd><p>Object of class <code>matrix</code> with 9964 rows and 60 columns. See
-      PROT_WATSC_NORM_DATA for more
+      <a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/PROT_NORM_DATA.html" class="external-link">PROT_WATSC_NORM_DATA</a> for more
       details.</p></dd>
 
     <dt><b>featureData</b></dt>
@@ -126,30 +126,64 @@
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>FEATURE_TO_GENE for details of
+    <p><a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/FEATURE_TO_GENE.html" class="external-link">FEATURE_TO_GENE</a> for details of
   feature-to-gene mapping.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code>MSnSet-class</code>,
-  PROT_WATSC_NORM_DATA,
-  FEATURE_TO_GENE</p></div>
+    <div class="dont-index"><p><code><a href="https://lgatto.github.io/MSnbase/reference/MSnSet-class.html" class="external-link">MSnSet-class</a></code>,
+  <a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/PROT_NORM_DATA.html" class="external-link">PROT_WATSC_NORM_DATA</a>,
+  <a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/FEATURE_TO_GENE.html" class="external-link">FEATURE_TO_GENE</a></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MSnbase</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in library(MSnbase):</span> there is no package called ‘MSnbase’</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lgatto.github.io/MSnbase" class="external-link">MSnbase</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">PROT_MSNSET</span>                   <span class="co"># display summary</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: MSnbase</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>there is no package called ‘MSnbase’</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .requirePackage(package):</span> unable to find required package ‘MSnbase’</span>
-<span class="r-in"><span><span class="fu">exprs</span><span class="op">(</span><span class="va">PROT_MSNSET</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span> <span class="co"># assayData (first 10 rows and 5 columns)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in exprs(PROT_MSNSET):</span> could not find function "exprs"</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">fData</span><span class="op">(</span><span class="va">PROT_MSNSET</span><span class="op">)</span><span class="op">)</span>      <span class="co"># featureData</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fData(PROT_MSNSET):</span> could not find function "fData"</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">pData</span><span class="op">(</span><span class="va">PROT_MSNSET</span><span class="op">)</span><span class="op">)</span>      <span class="co"># phenoData</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in pData(PROT_MSNSET):</span> could not find function "pData"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MSnSet (storageMode: lockedEnvironment)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> assayData: 9964 features, 60 samples </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   element names: exprs </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> protocolData: none</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> phenoData</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   sampleNames: 90222017006 90258017006 ... 90237017006 (60 total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   varLabels: pid bid ... exp_group (7 total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   varMetadata: labelDescription</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> featureData</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   featureNames: AP_004893.1 AP_004894.1 ... YP_665639.1 (9964 total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   fvarLabels: feature_ID gene_symbol entrez_gene</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   fvarMetadata: labelDescription</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> experimentData: use 'experimentData(object)'</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Annotation:  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - - - Processing information - - -</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  MSnbase version: 2.22.0 </span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/exprs.html" class="external-link">exprs</a></span><span class="op">(</span><span class="va">PROT_MSNSET</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span> <span class="co"># assayData (first 10 rows and 5 columns)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                90222017006 90258017006 90441017006 90266017006 90421017006</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AP_004893.1        0.06250    -0.00673     0.06530    -0.12847     0.42877</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AP_004894.1       -0.35726    -0.00678    -0.00001    -0.09093     0.34666</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AP_004895.1       -0.29374     0.16927     0.04853    -0.08151     0.34469</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AP_004896.1        0.03139    -0.05546     0.06703    -0.09930     0.22900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AP_004898.1       -0.20785     0.18767     0.10063    -0.33669     0.15039</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AP_004899.1             NA          NA          NA          NA          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AP_004901.1             NA          NA          NA          NA          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AP_004904.1       -0.12326    -0.35704    -0.24179    -0.01929     0.79072</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001000516.1    -0.42419     0.11770     0.41690    -0.09733    -0.35746</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NP_001001505.1    -0.17732    -0.13575    -0.03853     0.15163    -0.19405</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/featureData.html" class="external-link">fData</a></span><span class="op">(</span><span class="va">PROT_MSNSET</span><span class="op">)</span><span class="op">)</span>      <span class="co"># featureData</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              feature_ID gene_symbol entrez_gene</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AP_004893.1 AP_004893.1      Mt-nd2       26194</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AP_004894.1 AP_004894.1      Mt-co1       26195</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AP_004895.1 AP_004895.1      Mt-co2       26198</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AP_004896.1 AP_004896.1     Mt-atp8       26196</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AP_004898.1 AP_004898.1      Mt-co3       26204</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AP_004899.1 AP_004899.1      Mt-nd3       26199</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/phenoData.html" class="external-link">pData</a></span><span class="op">(</span><span class="va">PROT_MSNSET</span><span class="op">)</span><span class="op">)</span>      <span class="co"># phenoData</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  pid   bid       labelid   viallabel    sex timepoint exp_group</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90222017006 10025626 90222 4.457560e-313 90222017006   Male        8W      M_8W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90258017006 10045228 90258 4.459338e-313 90258017006 Female        8W      F_8W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90441017006 10502300 90441 4.468380e-313 90441017006   Male        2W      M_2W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90266017006 10046380 90266 4.459734e-313 90266017006 Female       SED     F_SED</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90421017006 10417702 90421 4.467392e-313 90421017006   Male        1W      M_1W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90410017006 10335064 90410 4.466848e-313 90410017006 Female        4W      F_4W</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

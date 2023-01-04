@@ -108,12 +108,12 @@
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Differential analysis was performed with
-  <code>motrpacWAT::limma_full</code> on the MSnSet
+  <code><a href="https://pnnl-comp-mass-spec.github.io/motrpacWAT/reference/limma_full.html" class="external-link">motrpacWAT::limma_full</a></code> on the MSnSet
   objects (See Also section).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code>topTable</code>, <code>limma_full</code>,
+    <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/limma/man/toptable.html" class="external-link">topTable</a></code>, <code><a href="https://pnnl-comp-mass-spec.github.io/motrpacWAT/reference/limma_full.html" class="external-link">limma_full</a></code>,
   <code><a href="PROT_MSNSET.html">PROT_MSNSET</a></code>, <code><a href="PHOSPHO_MSNSET.html">PHOSPHO_MSNSET</a></code>,
   <code><a href="TRNSCRPT_MSNSET.html">TRNSCRPT_MSNSET</a></code>, <code><a href="METAB_MSNSET.html">METAB_MSNSET</a></code></p></div>
     </div>
@@ -123,7 +123,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Number of differential features (-ome-wide FDR &lt; 0.05)</span></span></span>
 <span class="r-in"><span><span class="co"># Convenience function</span></span></span>
 <span class="r-in"><span><span class="va">f1</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">with</span>, <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">contrast</span>, <span class="va">adj.P.Val</span> <span class="op">&lt;</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">with</span>, <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">contrast</span>, <span class="va">adj.P.Val</span> <span class="op">&lt;</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">f1</span><span class="op">(</span><span class="va">PROT_DA</span><span class="op">)</span>     <span class="co"># Proteins</span></span></span>

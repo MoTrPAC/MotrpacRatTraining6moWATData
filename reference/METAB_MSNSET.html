@@ -47,7 +47,7 @@
 
     <div class="ref-description section level2">
     <p>An object of class
-  <code>MSnbase::MSnSet</code> containing
+  <code><a href="https://lgatto.github.io/MSnbase/reference/MSnSet-class.html" class="external-link">MSnbase::MSnSet</a></code> containing
   log\(_2\)-transformed metabolite data for differential analysis and
   WGCNA.</p>
     </div>
@@ -59,11 +59,11 @@
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
-    <p>Object of class <code>MSnbase::MSnSet</code>
+    <p>Object of class <code><a href="https://lgatto.github.io/MSnbase/reference/MSnSet-class.html" class="external-link">MSnbase::MSnSet</a></code>
   with 1063 features and 50 samples.</p>
 <p></p><dl><dt><b>assayData</b></dt>
 <dd><p>Object of class <code>matrix</code> with 1063 rows and 50 columns. See
-      METAB_NORM_DATA_NESTED for
+      <a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/METAB_NORM_DATA_NESTED.html" class="external-link">METAB_NORM_DATA_NESTED</a> for
       more details.</p></dd>
 
     <dt><b>featureData</b></dt>
@@ -166,27 +166,144 @@
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p>MSnSet-class,
-  METAB_FEATURE_ID_MAP,
-  METAB_NORM_DATA_NESTED,
+    <div class="dont-index"><p><a href="https://lgatto.github.io/MSnbase/reference/MSnSet-class.html" class="external-link">MSnSet-class</a>,
+  <a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/METAB_FEATURE_ID_MAP.html" class="external-link">METAB_FEATURE_ID_MAP</a>,
+  <a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/METAB_NORM_DATA_NESTED.html" class="external-link">METAB_NORM_DATA_NESTED</a>,
   <a href="https://www.metabolomicsworkbench.org/databases/refmet/index.php" class="external-link">Metabolomics
   Workbench RefMet Database</a></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MSnbase</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in library(MSnbase):</span> there is no package called ‘MSnbase’</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lgatto.github.io/MSnbase" class="external-link">MSnbase</a></span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: BiocGenerics</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘BiocGenerics’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:stats’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     IQR, mad, sd, var, xtabs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     Filter, Find, Map, Position, Reduce, anyDuplicated, aperm, append,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     as.data.frame, basename, cbind, colnames, dirname, do.call,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     duplicated, eval, evalq, get, grep, grepl, intersect, is.unsorted,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     lapply, mapply, match, mget, order, paste, pmax, pmax.int, pmin,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     pmin.int, rank, rbind, rownames, sapply, setdiff, sort, table,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     tapply, union, unique, unsplit, which.max, which.min</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: Biobase</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Welcome to Bioconductor</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     Vignettes contain introductory material; view with</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     'browseVignettes()'. To cite Bioconductor, see</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     'citation("Biobase")', and for packages 'citation("pkgname")'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: mzR</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: Rcpp</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: S4Vectors</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: stats4</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘S4Vectors’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     I, expand.grid, unname</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: ProtGenerics</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘ProtGenerics’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:stats’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     smooth</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> This is MSnbase version 2.24.2 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Visit https://lgatto.github.io/MSnbase/ to get started.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘MSnbase’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:base’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     trimws</span>
 <span class="r-in"><span><span class="va">METAB_MSNSET</span>                   <span class="co"># summary</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: MSnbase</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>there is no package called ‘MSnbase’</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .requirePackage(package):</span> unable to find required package ‘MSnbase’</span>
-<span class="r-in"><span><span class="fu">exprs</span><span class="op">(</span><span class="va">METAB_MSNSET</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span> <span class="co"># assayData (first 10 rows and 5 columns)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in exprs(METAB_MSNSET):</span> could not find function "exprs"</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">fData</span><span class="op">(</span><span class="va">METAB_MSNSET</span><span class="op">)</span><span class="op">)</span>      <span class="co"># featureData</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fData(METAB_MSNSET):</span> could not find function "fData"</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">pData</span><span class="op">(</span><span class="va">METAB_MSNSET</span><span class="op">)</span><span class="op">)</span>      <span class="co"># phenoData</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in pData(METAB_MSNSET):</span> could not find function "pData"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MSnSet (storageMode: lockedEnvironment)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> assayData: 1063 features, 50 samples </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   element names: exprs </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> protocolData: none</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> phenoData</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   sampleNames: 90245014701 90248014701 ... 90227014701 (50 total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   varLabels: pid bid ... exp_group (6 total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   varMetadata: labelDescription</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> featureData</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   featureNames: 3-methyl-2-oxovalerate 5'-methylthioadenosine ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     sedoheptulose-7-phosphate (1063 total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   fvarLabels: feature_ID dataset ... formula (13 total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   fvarMetadata: labelDescription</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> experimentData: use 'experimentData(object)'</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Annotation:  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - - - Processing information - - -</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  MSnbase version: 2.24.2 </span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/exprs.html" class="external-link">exprs</a></span><span class="op">(</span><span class="va">METAB_MSNSET</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span> <span class="co"># assayData (first 10 rows and 5 columns)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        90245014701 90248014701  90252014701 90265014701</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3-methyl-2-oxovalerate    1.178894   0.9060579  0.008567142  -0.8926003</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5'-methylthioadenosine   -3.528231  -4.2752777 -7.236768016  -6.3275334</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> adenosine                 4.437239   4.1397055  4.679195002   4.1583898</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ADP                       3.410435   3.0386412  4.437419080   3.9750911</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Alanine                         NA  -0.4870398 -0.179877286  -0.4590593</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AMP                       2.528949   0.9225197  2.897239407   2.4056311</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Anserine                        NA  -7.1303497 -0.209715023  -1.5475741</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Arginine                        NA  -2.3855330 -2.218783654  -2.5437574</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Asparagine                      NA  -2.4311125 -1.990426951  -2.3243017</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Aspartic Acid                   NA  -2.2169214 -2.077245870  -1.5561938</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        90266014701</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3-methyl-2-oxovalerate   0.4339056</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5'-methylthioadenosine  -4.1024668</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> adenosine                4.5390403</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ADP                      3.9017748</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Alanine                 -0.3163109</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AMP                      2.6180835</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Anserine                -2.5877989</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Arginine                -1.6949176</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Asparagine              -1.8801836</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Aspartic Acid           -1.6443759</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/featureData.html" class="external-link">fData</a></span><span class="op">(</span><span class="va">METAB_MSNSET</span><span class="op">)</span><span class="op">)</span>      <span class="co"># featureData</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                    feature_ID          dataset</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3-methyl-2-oxovalerate 3-methyl-2-oxovalerate       metab-t-ka</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5'-methylthioadenosine 5'-methylthioadenosine      metab-t-nuc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> adenosine                           adenosine metab-u-hilicpos</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ADP                                       ADP      metab-t-nuc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Alanine                               Alanine   metab-t-amines</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AMP                                       AMP      metab-t-nuc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                   name_in_figures refmet_super_class</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3-methyl-2-oxovalerate 3-Methyl-2-oxovaleric acid      Organic acids</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5'-methylthioadenosine     5'-Methylthioadenosine      Nucleic acids</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> adenosine                               Adenosine      Nucleic acids</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ADP                                           ADP      Nucleic acids</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Alanine                                   Alanine      Organic acids</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AMP                                           AMP      Nucleic acids</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                               refmet_main_class       refmet_sub_class</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3-methyl-2-oxovalerate               Keto acids Short-chain keto acids</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5'-methylthioadenosine                  Purines Purine ribonucleosides</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> adenosine                               Purines Purine ribonucleosides</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ADP                                     Purines            Purine rNDP</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Alanine                Amino acids and peptides            Amino acids</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AMP                                     Purines            Purine rNMP</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        lipid_class chain_length double_bond    rt       mz</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3-methyl-2-oxovalerate        &lt;NA&gt;           NA          NA  0.00   0.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5'-methylthioadenosine        &lt;NA&gt;           NA          NA  0.00   0.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> adenosine                     &lt;NA&gt;           NA          NA  5.03 268.1034</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ADP                           &lt;NA&gt;           NA          NA  0.00   0.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Alanine                       &lt;NA&gt;           NA          NA 13.30 260.3000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AMP                           &lt;NA&gt;           NA          NA  0.00   0.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        neutral_mass       formula</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3-methyl-2-oxovalerate     130.0630       C6H10O3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5'-methylthioadenosine     297.0896   C11H15N5O3S</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> adenosine                  267.0968    C10H13N5O4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ADP                        427.0294 C10H15N5O10P2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Alanine                     89.0477       C3H7NO2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AMP                        347.0631   C10H14N5O7P</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/phenoData.html" class="external-link">pData</a></span><span class="op">(</span><span class="va">METAB_MSNSET</span><span class="op">)</span><span class="op">)</span>      <span class="co"># phenoData</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  pid   bid       labelid    sex timepoint exp_group</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90245014701 10043527 90245 4.458696e-313 Female       SED     F_SED</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90248014701 10043950 90248 4.458844e-313 Female       SED     F_SED</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90252014701 10044337 90252 4.459042e-313 Female       SED     F_SED</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90265014701 10046119 90265 4.459684e-313 Female       SED     F_SED</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90266014701 10046380 90266 4.459734e-313 Female       SED     F_SED</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90560014701 10700102 90560 4.474259e-313 Female        1W      F_1W</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
