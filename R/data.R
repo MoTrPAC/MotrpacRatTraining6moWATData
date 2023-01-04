@@ -229,7 +229,7 @@
 #'   }
 #'
 #' @details The original 32883 transcripts were filtered with
-#'   \link[edgeR]{filterByExpr} using \code{group =
+#'   \code{\link[edgeR]{filterByExpr}} using \code{group =
 #'   TRNSCRPT_MSNSET[["exp_group"]]}. Then, library sizes were TMM normalized
 #'   with \link[edgeR]{calcNormFactors}. Two outlier samples (90423017005 and
 #'   90410017005) were removed before variables \code{pct_globin}, \code{rin},
