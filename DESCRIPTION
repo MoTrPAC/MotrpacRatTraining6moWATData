@@ -1,6 +1,7 @@
 Package: motrpacWATData
 Type: Package
-Title: Data and Analysis Results for the MoTrPAC PASS1B Rat White Adipose Tissue Manuscript
+Title: Data and Analysis Results for the MoTrPAC PASS1B Rat White Adipose Tissue 
+    Companion Paper
 Version: 0.0.0.9000
 Authors@R: 
   c(
@@ -38,6 +39,9 @@ Suggests:
     MotrpacRatTraining6moData (>= 1.7.0),
     motrpacWAT,
     MSnbase,
+    purrr,
+    tibble,
+    tidyr,
     usethis
 Remotes:
     github::MoTrPAC/MotrpacRatTraining6moData,
