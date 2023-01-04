@@ -5,51 +5,53 @@
 \alias{MSIGDB_PATHWAYS}
 \title{MSigDB Gene Ontology sets}
 \format{
-A \code{data.frame} with 6552 rows (pathways) and 5 columns:
+A \code{data.frame} with 5106 rows and 5 columns:
 \describe{
-\item{gs_subcat}{character; the database to which the gene set belongs. One
-of "GO:BP", "GO:MF", or "GO:CC".}
-\item{gs_exact_source}{character; unique gene set identifier.}
-\item{gs_description}{character; description of each gene set.}
-\item{entrez_gene}{numeric list; Entrez gene identifiers in each set.}
-\item{set_size}{numeric; gene set size. Length of \code{entrez_gene}.}
+  \item{\code{gs_subcat}}{character; the database to which the gene set
+  belongs. One of "GO:BP", "GO:MF", or "GO:CC".}
+  \item{\code{gs_exact_source}}{character; unique gene set identifier.}
+  \item{\code{gs_description}}{character; gene set description.}
+  \item{\code{entrez_gene}}{numeric list; Entrez gene identifiers in each
+  set.} \item{\code{set_size}}{numeric; gene set size. Lengths of
+  \code{entrez_gene}.}
 }
 }
 \usage{
 MSIGDB_PATHWAYS
 }
 \description{
-Gene sets from the Molecular Signatures Database. Used
-for Fast Gene Set Enrichment Analysis (FGSEA).
+Gene sets from the Molecular Signatures Database (MSigDB). Used
+  for Fast Gene Set Enrichment Analysis (FGSEA).
 }
 \details{
 Gene Ontology (Biological Process, Cellular Component, Molecular
-Function) pathways from version 7.5.1 of the Molecular Signatures Database
-(MSigDB). Obtained via \code{\link[msigdbr]{msigdbr}} (\code{organism = "Rattus norvegicus"}) and reformatted. Results filtered to pathways with at least
-15 and no more than 300 genes. Filtering by size was done because smaller
-gene sets tend to be less reliable, while larger gene sets tend to be less
-interpretable.
+  Function) pathways from version 7.5.1 of the Molecular Signatures Database
+  (MSigDB). Obtained via \link[msigdbr]{msigdbr} (\code{organism =
+  "Rattus norvegicus"}) and reformatted. Prefiltered to pathways with at
+  least 15 and no more than 300 genes. Filtering by size was done because
+  smaller gene sets tend to be less reliable, while larger gene sets tend to
+  be less interpretable.
 }
 \references{
 Liberzon, A., Birger, C., Thorvaldsdóttir, H., Ghandi, M.,
-Mesirov, J. P., & Tamayo, P. (2015). The Molecular Signatures Database
-(MSigDB) hallmark gene set collection. \emph{Cell systems, 1}(6), 417–425.
-\url{https://doi.org/10.1016/j.cels.2015.12.004}
+  Mesirov, J. P., & Tamayo, P. (2015). The Molecular Signatures Database
+  (MSigDB) hallmark gene set collection. \emph{Cell systems, 1}(6), 417--425.
+  \url{https://doi.org/10.1016/j.cels.2015.12.004}
 
-Dolgalev, I. msigdbr: MSigDB Gene Sets for Multiple Organisms in a Tidy
-Data Format. R package version 7.5.1,
-\url{https:://igordot.github.io/msigdbr}
+  Dolgalev, I. msigdbr: MSigDB Gene Sets for Multiple Organisms in a Tidy
+  Data Format. R package version 7.5.1,
+  \url{https:://igordot.github.io/msigdbr}
 
-Ashburner, M., Ball, C. A., Blake, J. A., Botstein, D., Butler, H., Cherry,
-J. M., Davis, A. P., Dolinski, K., Dwight, S. S., Eppig, J. T., Harris, M.
-A., Hill, D. P., Issel-Tarver, L., Kasarskis, A., Lewis, S., Matese, J. C.,
-Richardson, J. E., Ringwald, M., Rubin, G. M., & Sherlock, G. (2000). Gene
-ontology: tool for the unification of biology. The Gene Ontology
-Consortium. \emph{Nature genetics, 25}(1), 25–29.
-\url{https://doi.org/10.1038/75556}
+  Ashburner, M., Ball, C. A., Blake, J. A., Botstein, D., Butler, H., Cherry,
+  J. M., Davis, A. P., Dolinski, K., Dwight, S. S., Eppig, J. T., Harris, M.
+  A., Hill, D. P., Issel-Tarver, L., Kasarskis, A., Lewis, S., Matese, J. C.,
+  Richardson, J. E., Ringwald, M., Rubin, G. M., & Sherlock, G. (2000). Gene
+  ontology: tool for the unification of biology. The Gene Ontology
+  Consortium. \emph{Nature genetics, 25}(1), 25--29.
+  \url{https://doi.org/10.1038/75556}
 
-Gene Ontology Consortium (2021). The Gene Ontology resource: enriching a
-GOld mine. \emph{Nucleic acids research, 49}(D1), D325–D334.
-\url{https://doi.org/10.1093/nar/gkaa1113}
+  Gene Ontology Consortium (2021). The Gene Ontology resource: enriching a
+  GOld mine. \emph{Nucleic acids research, 49}(D1), D325--D334.
+  \url{https://doi.org/10.1093/nar/gkaa1113}
 }
 \keyword{datasets}

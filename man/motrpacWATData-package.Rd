@@ -4,7 +4,7 @@
 \name{motrpacWATData-package}
 \alias{motrpacWATData}
 \alias{motrpacWATData-package}
-\title{motrpacWATData: Data and Analysis Results for the MoTrPAC PASS1B Rat White Adipose Tissue Manuscript}
+\title{motrpacWATData: Data and Analysis Results for the MoTrPAC PASS1B Rat White Adipose Tissue Companion Paper}
 \description{
 Contains data and code necessary to reproduce analyses that appear in "Sexual dimorphism and the multi-omic response to exercise training in rat subcutaneous white adipose tissue".
 }

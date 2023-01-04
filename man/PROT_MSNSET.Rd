@@ -5,56 +5,79 @@
 \alias{PROT_MSNSET}
 \title{Proteomics MSnSet}
 \format{
-An \code{\link[MSnbase]{MSnSet-class}} object with 9964 features and
-60 samples.
-\subsection{\code{assayData}}{
+Object of class \code{\link[MSnbase:MSnSet-class]{MSnbase::MSnSet}}
+  with 9964 features and 60 samples.
 
-A \code{matrix} with 9964 rows and 60 columns.
-}
+  \describe{
+    \item{\bold{assayData}}{
+      Object of class \code{matrix} with 9964 rows and 60 columns. See
+      \link[MotrpacRatTraining6moData]{PROT_WATSC_NORM_DATA} for more
+      details.
+    }
+    \item{\bold{featureData}}{
+      Object of class \code{data.frame} with 9964 rows and 3 variables
+      containing additional feature information:
 
-\subsection{\code{featureData}}{
+      \describe{
+         \item{\code{feature_ID}}{character; Reference Sequence (RefSeq)
+         protein identifier.}
+         \item{\code{gene_symbol}}{character; official gene symbol.}
+         \item{\code{entrez_gene}}{integer; Entrez gene identifier.}
+      }
+    }
+    \item{\bold{phenoData}}{
+      Object of class \code{data.frame} with 60 rows and 7 variables
+      containing additional sample information:
 
-A \code{data.frame} with 9964 rows and 3 variables containing additional feature
-information:
-\describe{
-\item{feature_ID}{character; Reference Sequence (RefSeq) protein
-identifier.}
-\item{gene_symbol}{character list; the gene symbol associated with each
-protein.}
-\item{entrez_gene}{numeric list; the Entrez gene identifier associated
-with each protein.}
-}
-}
-
-\subsection{\code{phenoData}}{
-
-A \code{data.frame} with 60 rows and 7 variables containing sample information:
-\describe{
-\item{pid}{numeric; }
-\item{bid}{numeric; }
-\item{labelid}{numeric; }
-\item{viallabel}{character; }
-\item{sex}{factor; the sex of the rat with 2 levels "Female" and "Male".}
-\item{timepoint}{factor; exercise training group. Either "SED"
-(sedentary) or the number of weeks of training ("1W", "2W", "4W", "8W").}
-\item{exp_group}{factor; unique combination of \code{sex} (first letter) and
-\code{timepoint}.}
-}
-}
+      \describe{
+        \item{\code{pid}}{integer; randomly generated 8-digit identifier used
+        in linkage to phenotypic data. All samples from the same animal have
+        the same PID.}
+        \item{\code{bid}}{integer; unique 5 digit identifier of all
+        samples collected for an acute test/sample collection period. All
+        samples collected during that period will have the same BID.}
+        \item{\code{labelid}}{integer; unique 11 digit specimen label
+        identifier, originating at the collection site, that provides
+        a link to specimen processing and is used for shipments to the
+        biorepository. Same as \code{viallabel} only in instances
+        where aliquots are not further processed at the biorepository.}
+        \item{\code{viallabel}}{character; unique 11 digit sample vial
+        identifier. Starts with the \code{bid}.}
+        \item{\code{sex}}{factor; the sex of the rat with levels "Female" and
+        "Male".}
+        \item{\code{timepoint}}{factor; exercise training group. Either "SED"
+        (sedentary) or the number of weeks of training ("1W", "2W", "4W",
+        "8W").}
+        \item{\code{exp_group}}{factor; experimental group. Unique
+        combination of \code{sex} (first letter) and \code{timepoint}.}
+      }
+    }
+  }
 }
 \usage{
 PROT_MSNSET
 }
 \description{
-An \code{\link[MSnbase]{MSnSet-class}} object containing
-proteomics data from rat WAT provided by MoTrPAC.
+An object of class
+  \code{\link[MSnbase:MSnSet-class]{MSnbase::MSnSet}} containing
+  median-MAD-normalized log\eqn{_2}-transformed protein expression data for
+  differential analysis and WGCNA.
+}
+\details{
+\link[MotrpacRatTraining6moData]{FEATURE_TO_GENE} for details of
+  feature-to-gene mapping.
 }
 \examples{
-PROT_MSNSET # summary
 library(MSnbase)
-exprs(PROT_MSNSET)[1:6, 1:5] # assayData
-head(fData(PROT_MSNSET))     # featureData
-head(pData(PROT_MSNSET))     # phenoData
+PROT_MSNSET                   # display summary
+exprs(PROT_MSNSET)[1:10, 1:5] # assayData (first 10 rows and 5 columns)
+head(fData(PROT_MSNSET))      # featureData
+head(pData(PROT_MSNSET))      # phenoData
 
+}
+\seealso{
+\code{\link[MSnbase]{MSnSet-class}},
+  \link[MotrpacRatTraining6moData]{PROT_WATSC_NORM_DATA},
+  \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}
 }
 \keyword{datasets}

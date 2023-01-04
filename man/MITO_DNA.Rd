@@ -5,20 +5,21 @@
 \alias{MITO_DNA}
 \title{Mitochondrial DNA qPCR}
 \format{
-A \code{data.frame} with 30 rows and 8 columns:
+\code{data.frame} with 30 rows and 8 columns:
+
 \describe{
-\item{bid}{numeric; }
-\item{sex}{factor; the sex of the rat with 2 levels "Female" and "Male".}
-\item{timepoint}{factor; exercise training group. Either "SED"
-(sedentary) or the number of weeks of training ("1W", "2W", "4W", "8W").}
-\item{exp_group}{factor; unique combination of \code{sex} (first letter) and
-\code{timepoint}.}
-\item{mean_delta_CT}{numeric; mean of the duplicate \eqn{\Delta C_T} values
-from each sample.}
-\item{SE_delta_CT}{numeric; standard error of \code{mean_delta_CT}.}
-\item{delta_delta_CT}{numeric; \code{mean_delta_CT} values centered on the mean
-of the "F_SED" \code{exp_group}.}
-\item{relative_expr}{numeric; \eqn{2^{-\Delta \Delta C_T}} values.}
+  \item{bid}{numeric; }
+  \item{sex}{factor; the sex of the rat with 2 levels "Female" and "Male".}
+  \item{timepoint}{factor; exercise training group. Either "SED"
+  (sedentary) or the number of weeks of training ("1W", "2W", "4W", "8W").}
+  \item{exp_group}{factor; unique combination of \code{sex} (first letter)
+  and \code{timepoint}.}
+  \item{mean_delta_CT}{numeric; mean of the duplicate \eqn{\Delta C_T} values
+  from each sample.}
+  \item{SE_delta_CT}{numeric; standard error of \code{mean_delta_CT}.}
+  \item{delta_delta_CT}{numeric; \code{mean_delta_CT} values centered on the
+  mean of the "F_SED" \code{exp_group}.}
+  \item{relative_expr}{numeric; \eqn{2^{-\Delta \Delta C_T}} values.}
 }
 }
 \usage{
@@ -28,7 +29,6 @@ MITO_DNA
 qPCR data.
 }
 \examples{
-head(MITO_DNA)
-
+head(MITO_DNA, 10)
 }
 \keyword{datasets}

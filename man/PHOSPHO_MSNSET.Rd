@@ -5,59 +5,94 @@
 \alias{PHOSPHO_MSNSET}
 \title{Phosphoproteomics MSnSet}
 \format{
-An \code{\link[MSnbase]{MSnSet-class}} object with 9964 features and
-60 samples.
-\subsection{\code{assayData}}{
+Object of class \code{\link[MSnbase:MSnSet-class]{MSnbase::MSnSet}}
+  with 30304 features and 60 samples.
 
-A \code{matrix} with 30304 rows and 60 columns.
-}
+  \describe{
+    \item{\bold{assayData}}{
+      Object of class \code{matrix} with 30304 rows and 60 columns. See
+      \link[MotrpacRatTraining6moData]{PHOSPHO_WATSC_NORM_DATA} for
+      more details.
+    }
+    \item{\bold{featureData}}{
+      Object of class \code{data.frame} with 30304 rows and 7 variables
+      containing additional feature information:
 
-\subsection{\code{featureData}}{
+      \describe{
+         \item{\code{feature_ID}}{character; Reference Sequence (RefSeq)
+         protein identifier followed by an underscore and position(s) of
+         phosphorylation.}
+         \item{\code{gene_symbol}}{character; official gene symbol.}
+         \item{\code{entrez_gene}}{integer; Entrez gene identifier.}
+         \item{\code{site}}{character; phosphorylation site(s) extracted from
+         \code{feature_ID} column and stripped of trailing lowercase amino
+         acid letters (s, t, y). Multiple sites are separated by semicolons.}
+         \item{\code{human_feature_ID}}{character; human UniProt accession
+         followed by an underscore and positions of phosphorylation.}
+         \item{\code{human_uniprot}}{character; human UniProt accession
+         extracted from \code{human_feature_ID} column.}
+         \item{\code{human_site}}{character; human phosphorylation site(s)
+         extracted from \code{human_feature_ID} column and stripped of
+         trailing lowercase amino acid letters (s, t, y). Multiple sites are
+         separated by semicolons.}
+      }
+    }
+    \item{\bold{phenoData}}{
+      Object of class \code{data.frame} with 60 rows and 7 variables
+      containing additional sample information:
 
-A \code{data.frame} with 30304 rows and 7 variables containing additional
-feature information:
-\describe{
-\item{feature_ID}{character; }
-\item{gene_symbol}{character list; the gene symbol associated with each
-protein.}
-\item{entrez_gene}{numeric list; the Entrez gene identifier associated
-with each protein.}
-\item{site}{character; }
-\item{human_feature_ID}{character; }
-\item{human_uniprot}{character; }
-\item{human_site}{character; }
-}
-}
-
-\subsection{\code{phenoData}}{
-
-A \code{data.frame} with 60 rows and 7 variables containing sample information:
-\describe{
-\item{pid}{numeric; }
-\item{bid}{numeric; }
-\item{labelid}{numeric; }
-\item{viallabel}{character; }
-\item{sex}{factor; the sex of the rat with 2 levels "Female" and "Male".}
-\item{timepoint}{factor; exercise training group. Either "SED"
-(sedentary) or the number of weeks of training ("1W", "2W", "4W", "8W").}
-\item{exp_group}{factor; unique combination of \code{sex} (first letter) and
-\code{timepoint}.}
-}
-}
+      \describe{
+        \item{\code{pid}}{integer; randomly generated 8-digit identifier used
+        in linkage to phenotypic data. All samples from the same animal have
+        the same PID.}
+        \item{\code{bid}}{integer; unique 5 digit identifier of all
+        samples collected for an acute test/sample collection period. All
+        samples collected during that period will have the same BID.}
+        \item{\code{labelid}}{integer; unique 11 digit specimen label
+        identifier, originating at the collection site, that provides
+        a link to specimen processing and is used for shipments to the
+        biorepository. Same as \code{viallabel} only in instances
+        where aliquots are not further processed at the biorepository.}
+        \item{\code{viallabel}}{character; unique 11 digit sample vial
+        identifier. Starts with the \code{bid}.}
+        \item{\code{sex}}{factor; the sex of the rat with levels "Female" and
+        "Male".}
+        \item{\code{timepoint}}{factor; exercise training group. Either "SED"
+        (sedentary) or the number of weeks of training ("1W", "2W", "4W",
+        "8W").}
+        \item{\code{exp_group}}{factor; experimental group. Unique
+        combination of \code{sex} (first letter) and \code{timepoint}.}
+      }
+    }
+  }
 }
 \usage{
 PHOSPHO_MSNSET
 }
 \description{
-An \code{\link[MSnbase]{MSnSet-class}} object containing
-phosphoproteomics data from rat WAT provided by MoTrPAC.
+An object of class
+  \code{\link[MSnbase:MSnSet-class]{MSnbase::MSnSet}} containing
+  median-MAD-normalized log\eqn{_2}-transformed protein phosphorylation data
+  for differential analysis.
+}
+\details{
+\link[MotrpacRatTraining6moData]{RAT_TO_HUMAN_PHOSPHO} for details
+  of mapping between rat and human phosphorylation sites.
+
+  \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE} for details of
+  feature-to-gene mapping.
 }
 \examples{
-PHOSPHO_MSNSET # summary
 library(MSnbase)
-exprs(PHOSPHO_MSNSET)[1:5, 1:5] # assayData
-head(fData(PHOSPHO_MSNSET))     # featureData
-head(pData(PHOSPHO_MSNSET))     # phenoData
+PHOSPHO_MSNSET                   # summary
+exprs(PHOSPHO_MSNSET)[1:10, 1:5] # assayData (first 10 rows and 5 columns)
+head(fData(PHOSPHO_MSNSET))      # featureData
+head(pData(PHOSPHO_MSNSET))      # phenoData
 
+}
+\seealso{
+\code{\link[MSnbase]{MSnSet-class}},
+  \link[MotrpacRatTraining6moData]{RAT_TO_HUMAN_PHOSPHO},
+  \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}
 }
 \keyword{datasets}

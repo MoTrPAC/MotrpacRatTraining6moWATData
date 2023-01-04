@@ -5,75 +5,99 @@
 \alias{TRNSCRPT_MSNSET}
 \title{Transcriptomics MSnSet}
 \format{
-An \code{\link[MSnbase]{MSnSet-class}} object with 16443 features and
-48 samples.
-\subsection{\code{assayData}}{
+Object of class \code{\link[MSnbase:MSnSet-class]{MSnbase::MSnSet}}
+  with 16404 features and 48 samples.
 
-A \code{matrix} of counts with 16443 rows and 48 columns.
-}
+  \describe{
+    \item{\bold{assayData}}{
+      Object of class \code{matrix} with 16404 rows and 48 columns containing
+      RSEM gene counts.
+    }
+    \item{\bold{featureData}}{
+      Object of class \code{data.frame} with 16404 rows and 3 variables
+      containing additional feature information:
 
-\subsection{\code{featureData}}{
+      \describe{
+         \item{\code{feature_ID}}{character; Reference Sequence (RefSeq)
+         protein identifier.}
+         \item{\code{gene_symbol}}{character; official gene symbol.}
+         \item{\code{entrez_gene}}{integer; Entrez gene identifier.}
+      }
+    }
+    \item{\bold{phenoData}}{
+      Object of class \code{data.frame} with 48 rows and 13 variables
+      containing additional sample information:
 
-A \code{data.frame} with 30304 rows and 7 variables containing additional
-feature information:
-\describe{
-\item{feature_ID}{character; }
-\item{gene_symbol}{character list; the gene symbol associated with each
-protein.}
-\item{entrez_gene}{numeric list; the Entrez gene identifier associated
-with each protein.}
-\item{site}{character; }
-\item{human_feature_ID}{character; }
-\item{human_uniprot}{character; }
-\item{human_site}{character; }
-}
-
-Prior to collapsing the \code{entrez_id} and \code{gene_symbol} columns into lists,
-any rows where \code{gene_symbol} began with "LOC" were removed unless that
-would remove entire features. This reduces the impact of the one-to-many
-feature-to-gene mapping on FGSEA results.
-}
-
-\subsection{\code{phenoData}}{
-
-A \code{data.frame} with 48 rows and 9 variables containing sample information:
-\describe{
-\item{viallabel}{character; unique sample identifier.}
-\item{rin}{numeric; RNA integrity number (RIN).}
-\item{pct_globin}{numeric; percent of reads mapping to globin.}
-\item{pct_umi_dup}{numeric; percent of PCR duplicates as quantified with
-Unique Molecular Identifiers (UMIs).}
-\item{median_5_3_bias}{numeric; median 5'-3' bias.}
-\item{bid}{character; Unique 5 digit numeric identifier of all samples
-collected for an acute test/sample collection
-period. All samples collected during that period will have the same BID.
-Same as first 5 digits of \code{viallabel}.}
-\item{sex}{factor; the sex of the rat with 2 levels "Female" and "Male".}
-\item{timepoint}{factor; exercise training group. Either "SED"
-(sedentary) or the number of weeks of training ("1W", "2W", "4W", "8W").}
-\item{exp_group}{factor; unique combination of \code{sex} (first letter) and
-\code{timepoint}.}
-}
-}
+      \describe{
+        \item{\code{pid}}{integer; randomly generated 8-digit identifier used
+        in linkage to phenotypic data. All samples from the same animal have
+        the same PID.}
+        \item{\code{bid}}{integer; unique 5 digit identifier of all samples
+        collected for an acute test/sample collection period. All samples
+        collected during that period will have the same BID.}
+        \item{\code{labelid}}{integer; unique 11 digit specimen label
+        identifier, originating at the collection site, that provides a link
+        to specimen processing and is used for shipments to the
+        biorepository. Same as \code{viallabel} only in instances where
+        aliquots are not further processed at the biorepository.}
+        \item{\code{viallabel}}{character; unique 11 digit sample vial
+        identifier. Starts with the \code{bid}.}
+        \item{\code{sex}}{factor; the sex of the rat with levels "Female" and
+        "Male".}
+        \item{\code{timepoint}}{factor; exercise training group. Either "SED"
+        (sedentary) or the number of weeks of training ("1W", "2W", "4W",
+        "8W").}
+        \item{\code{exp_group}}{factor; experimental group. Unique
+        combination of \code{sex} (first letter) and \code{timepoint}.}
+        \item{\code{rin}}{numeric; RNA integrity number (RIN).}
+        \item{\code{pct_globin}}{numeric; percent of reads mapping to
+        globin.}
+        \item{\code{pct_umi_dup}}{numeric; percent of PCR duplicates as
+        quantified with Unique Molecular Identifiers (UMIs).}
+        \item{\code{median_5_3_bias}}{numeric; median 5'-3' bias.}
+        \item{\code{lib.size}}{integer; total count (sequencing depth) for
+        each library.}
+        \item{\code{norm.factors}}{numeric; TMM normalization factors that
+        modify the library sizes.}
+      }
+    }
+  }
 }
 \usage{
 TRNSCRPT_MSNSET
 }
 \description{
-An \code{\link[MSnbase]{MSnSet-class}} object containing
-transcriptomics data from rat WAT provided by MoTrPAC.
+An object of class
+  \code{\link[MSnbase:MSnSet-class]{MSnbase::MSnSet}} containing
+  transcriptomics data for differential analysis and (once transformed to
+  log\eqn{_2} counts per million reads) WGCNA.
 }
 \details{
-Two outlier samples ("90423", "90410") were removed (48 remain). Then,
-\code{pct_globin}, \code{rin}, \code{pct_umi_dup}, and \code{median_5_3_bias} were mean-imputed,
-centered, and scaled.
+The original 32883 transcripts were filtered with
+  \link[edgeR]{filterByExpr} using \code{group =
+  TRNSCRPT_MSNSET[["exp_group"]]}. Then, library sizes were TMM normalized
+  with \link[edgeR]{calcNormFactors}. Two outlier samples (90423017005 and
+  90410017005) were removed before variables \code{pct_globin}, \code{rin},
+  \code{pct_umi_dup}, and \code{median_5_3_bias} were mean-imputed, centered,
+  and scaled.
+
+  \link[MotrpacRatTraining6moData]{OUTLIERS} for sample outlier information.
+
+  \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE} for details of
+  feature-to-gene mapping.
 }
 \examples{
-TRNSCRPT_MSNSET # summary
 library(MSnbase)
-exprs(TRNSCRPT_MSNSET)[1:5, 1:5] # assayData
-head(fData(TRNSCRPT_MSNSET))     # featureData
-head(pData(TRNSCRPT_MSNSET))     # phenoData
+TRNSCRPT_MSNSET                   # summary
+exprs(TRNSCRPT_MSNSET)[1:10, 1:5] # assayData (first 10 rows and 5 columns)
+head(fData(TRNSCRPT_MSNSET))      # featureData
+head(pData(TRNSCRPT_MSNSET))      # phenoData
 
+}
+\seealso{
+\code{\link[MSnbase]{MSnSet-class}},
+  \link[MotrpacRatTraining6moData]{TRNSCRPT_WATSC_RAW_COUNTS},
+  \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}, \link[edgeR]{DGEList},
+  \link[edgeR]{filterByExpr}, \link[edgeR]{calcNormFactors}
 }
 \keyword{datasets}

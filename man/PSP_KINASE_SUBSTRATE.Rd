@@ -5,26 +5,26 @@
 \alias{PSP_KINASE_SUBSTRATE}
 \title{PhosphoSitePlus kinase-substrate relationships}
 \format{
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 12684 rows and 16 columns.
+An object of class \code{data.frame}.
 }
 \usage{
 PSP_KINASE_SUBSTRATE
 }
 \description{
 Kinase-substrate relationship data used to infer kinase activity
-from changes in phosphorylation sites.
+  from changes in phosphorylation sites.
 }
 \details{
-The "Kinase_Substrate_Dataset.xlsx" file, downloaded from
-v6.6.0.4 of PhosphoSitePlus on 2022-06-05
-(\url{https://www.phosphosite.org/staticDownloads}), was filtered to human
-kinases and substrates. Additionally, instances of auto-phosphorylation
-were removed.
+The "Kinase_Substrate_Dataset.xlsx" file, downloaded from v6.6.0.4
+  of PhosphoSitePlus on 2022-06-05
+  (\url{https://www.phosphosite.org/staticDownloads}), was filtered to human
+  kinases and substrates. Additionally, instances of auto-phosphorylation
+  were removed.
 }
 \references{
 Hornbeck, P. V., Zhang, B., Murray, B., Kornhauser, J. M.,
-Latham, V., & Skrzypek, E. (2015). PhosphoSitePlus, 2014: mutations, PTMs
-and recalibrations. \emph{Nucleic acids research, 43}(Database issue),
-D512--D520. \url{https://doi.org/10.1093/nar/gku1267}
+  Latham, V., & Skrzypek, E. (2015). PhosphoSitePlus, 2014: mutations, PTMs
+  and recalibrations. \emph{Nucleic acids research, 43}(Database issue),
+  D512--D520. \url{https://doi.org/10.1093/nar/gku1267}
 }
 \keyword{datasets}
