@@ -18,4 +18,8 @@ METAB_WGCNA    # metabolomics
 \description{
 WGCNA results
 }
+\details{
+See \code{\link[MotrpacRatTraining6moWAT]{run_WGCNA}} for a
+  description of the output.
+}
 \keyword{datasets}

@@ -55,10 +55,6 @@ Object of class \code{\link[MSnbase:MSnSet-class]{MSnbase::MSnSet}}
         \item{\code{pct_umi_dup}}{numeric; percent of PCR duplicates as
         quantified with Unique Molecular Identifiers (UMIs).}
         \item{\code{median_5_3_bias}}{numeric; median 5'-3' bias.}
-        \item{\code{lib.size}}{integer; total count (sequencing depth) for
-        each library.}
-        \item{\code{norm.factors}}{numeric; TMM normalization factors that
-        modify the library sizes.}
       }
     }
   }
@@ -74,12 +70,12 @@ An object of class
 }
 \details{
 The original 32883 transcripts were filtered with
-  \link[edgeR]{filterByExpr} using \code{group =
+  \code{\link[edgeR]{filterByExpr}} using \code{group =
   TRNSCRPT_MSNSET[["exp_group"]]}. Then, library sizes were TMM normalized
-  with \link[edgeR]{calcNormFactors}. Two outlier samples (90423017005 and
-  90410017005) were removed before variables \code{pct_globin}, \code{rin},
-  \code{pct_umi_dup}, and \code{median_5_3_bias} were mean-imputed, centered,
-  and scaled.
+  with \code{\link[edgeR]{calcNormFactors}}. Two outlier samples (90423017005
+  and 90410017005) were removed before variables \code{pct_globin},
+  \code{rin}, \code{pct_umi_dup}, and \code{median_5_3_bias} were
+  mean-imputed, centered, and scaled.
 
   \link[MotrpacRatTraining6moData]{OUTLIERS} for sample outlier information.
 
@@ -88,9 +84,13 @@ The original 32883 transcripts were filtered with
 }
 \examples{
 library(MSnbase)
+
 TRNSCRPT_MSNSET                   # summary
+
 exprs(TRNSCRPT_MSNSET)[1:10, 1:5] # assayData (first 10 rows and 5 columns)
+
 head(fData(TRNSCRPT_MSNSET))      # featureData
+
 head(pData(TRNSCRPT_MSNSET))      # phenoData
 
 }
