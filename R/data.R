@@ -220,10 +220,6 @@
 #'         \item{\code{pct_umi_dup}}{numeric; percent of PCR duplicates as
 #'         quantified with Unique Molecular Identifiers (UMIs).}
 #'         \item{\code{median_5_3_bias}}{numeric; median 5'-3' bias.}
-#'         \item{\code{lib.size}}{integer; total count (sequencing depth) for
-#'         each library.}
-#'         \item{\code{norm.factors}}{numeric; TMM normalization factors that
-#'         modify the library sizes.}
 #'       }
 #'     }
 #'   }
@@ -231,10 +227,10 @@
 #' @details The original 32883 transcripts were filtered with
 #'   \code{\link[edgeR]{filterByExpr}} using \code{group =
 #'   TRNSCRPT_MSNSET[["exp_group"]]}. Then, library sizes were TMM normalized
-#'   with \link[edgeR]{calcNormFactors}. Two outlier samples (90423017005 and
-#'   90410017005) were removed before variables \code{pct_globin}, \code{rin},
-#'   \code{pct_umi_dup}, and \code{median_5_3_bias} were mean-imputed, centered,
-#'   and scaled.
+#'   with \code{\link[edgeR]{calcNormFactors}}. Two outlier samples (90423017005
+#'   and 90410017005) were removed before variables \code{pct_globin},
+#'   \code{rin}, \code{pct_umi_dup}, and \code{median_5_3_bias} were
+#'   mean-imputed, centered, and scaled.
 #'
 #'   \link[MotrpacRatTraining6moData]{OUTLIERS} for sample outlier information.
 #'
@@ -248,9 +244,13 @@
 #'
 #' @examples
 #' library(MSnbase)
+#'
 #' TRNSCRPT_MSNSET                   # summary
+#'
 #' exprs(TRNSCRPT_MSNSET)[1:10, 1:5] # assayData (first 10 rows and 5 columns)
+#'
 #' head(fData(TRNSCRPT_MSNSET))      # featureData
+#'
 #' head(pData(TRNSCRPT_MSNSET))      # phenoData
 #'
 #' @keywords datasets
@@ -355,8 +355,8 @@
 
 #' @title Differential analysis results
 #'
-#' @description Differential analysis of proteins, transcripts,
-#'   phosphorylation sites, and metabolites measured in rat scWAT.
+#' @description Differential analysis of proteins, transcripts, phosphorylation
+#'   sites, and metabolites measured in rat scWAT.
 #'
 #' @usage
 #' PROT_DA     # proteomics
@@ -397,10 +397,11 @@
 #'   }
 #'
 #' @details Differential analysis was performed with
-#'   \code{\link[motrpacWAT:limma_full]{motrpacWAT::limma_full}} on the MSnSet
-#'   objects (See Also section).
+#'   \code{\link[MotrpacRatTraining6moWAT:limma_full]{MotrpacRatTraining6moWAT::limma_full}}
+#'   on the \code{MSnSet} objects.
 #'
-#' @seealso \code{\link[limma]{topTable}}, \code{\link[motrpacWAT]{limma_full}},
+#' @seealso \code{\link[limma]{topTable}},
+#'   \code{\link[MotrpacRatTraining6moWAT]{limma_full}},
 #'   \code{\link{PROT_MSNSET}}, \code{\link{PHOSPHO_MSNSET}},
 #'   \code{\link{TRNSCRPT_MSNSET}}, \code{\link{METAB_MSNSET}}
 #'
@@ -554,8 +555,8 @@
 #' TRNSCRPT_WGCNA # transcriptomics
 #' METAB_WGCNA    # metabolomics
 #'
-#' @details See \code{\link[motrpacWAT]{run_WGCNA}} for a description of the
-#'   output.
+#' @details See \code{\link[MotrpacRatTraining6moWAT]{run_WGCNA}} for a
+#'   description of the output.
 #'
 #' @keywords datasets
 #'
@@ -681,3 +682,64 @@
 #' @keywords datasets
 "PLASMA_ANALYTES"
 
+
+#' @title Plasma analyte statistical analyses
+#'
+#' @description Statistical analyses of most clinical analytes described in \code{\link[MotrpacRatTraining6moWATData]{PLASMA_ANALYTES}}
+#'
+#' @usage
+#' PLASMA_ANALYTE_STATS
+#'
+#' @keywords datasets
+"PLASMA_ANALYTE_STATS"
+
+
+#' @title Measures of adipocyte size
+#'
+#' @description Measures of adipocyte size.
+#'
+#' @usage
+#' ADIPOCYTE_SIZE
+#'
+#' @format A \code{data.frame} with 55825 rows and 8 variables.
+#'
+#' @keywords datasets
+"ADIPOCYTE_SIZE"
+
+
+#' @title Analysis of adipocyte size differences
+#'
+#' @usage
+#' ADIPOCYTE_SIZE_STATS
+#'
+#' @format A \code{data.frame} with 40 rows and 11 variables.
+#'
+#' @keywords datasets
+"ADIPOCYTE_SIZE_STATS"
+
+
+#' @title Over-representation analysis of WGCNA modules
+#'
+#' @description Results of performing Gene Ontology (GO) over-representation
+#'   analysis (Fisher Exact / Hypergeometric test) on the modules produced by
+#'   weighted gene co-expression network analysis (WGCNA).
+#'
+#' @keywords datasets
+#'
+#' @usage
+#' PROT_MODULE_ORA     # proteomics
+#' TRNSCRPT_MODULE_ORA # transcriptomics
+#' METAB_MODULE_ORA    # metabolomics
+#'
+#' @name module_ORA
+"PROT_MODULE_ORA"
+
+#' @rdname module_ORA
+#' @format NULL
+#' @usage NULL
+"TRNSCRPT_MODULE_ORA"
+
+#' @rdname module_ORA
+#' @format NULL
+#' @usage NULL
+"METAB_MODULE_ORA"

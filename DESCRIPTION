@@ -1,4 +1,4 @@
-Package: motrpacWATData
+Package: MotrpacRatTraining6moWATData
 Type: Package
 Title: Data and Analysis Results for the MoTrPAC PASS1B Rat White Adipose Tissue 
     Companion Paper
@@ -16,9 +16,12 @@ Authors@R:
     person(given = "Christopher B.", family = "Newgard",
            comment = c("Provided clinical analyte data."),
            role = "dtc"),
+    person(given = "Michael J.", family = "Muehlbauer",
+           comment = c("Provided clinical analyte data."),
+           role = "dtc"),
     person(given = "Pasquale", family = "Nigro",
            comment = c(ORCID = "0000-0002-2918-8356",
-                       "Provided WAT histology data."),
+                       "Provided histology data."),
            role = "dtc"),
     person(given = "Malene E.", family = "Lindholm",
            comment = c(ORCID = "0000-0002-5763-7833",
@@ -36,17 +39,18 @@ Depends:
     R (>= 3.5.0)
 Suggests:
     dplyr,
+    emmeans,
+    MASS,
     MotrpacRatTraining6moData (>= 1.7.0),
-    motrpacWAT,
+    MotrpacRatTraining6moWAT,
     MSnbase,
     purrr,
     tibble,
-    tidyr,
-    usethis
+    tidyr
 Remotes:
     github::MoTrPAC/MotrpacRatTraining6moData,
-    github::PNNL-Comp-Mass-Spec/motrpacWAT
+    github::PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWAT
 RoxygenNote: 7.2.3
 URL: 
-    https://pnnl-comp-mass-spec.github.io/motrpacWATData/, 
-    https://github.com/PNNL-Comp-Mass-Spec/motrpacWATData
+    https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/, 
+    https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/

@@ -1,12 +1,10 @@
-library(motrpacWATData)
-library(motrpacWAT)
+library(MotrpacRatTraining6moWATData)
+library(MotrpacRatTraining6moWAT)
 library(tidyverse)
 
-
 ## Transcriptomics ----------------------------------------------
-
 table(grepl(";", TRNSCRPT_DA$MvF_SED$entrez_gene))
-# 180 transcripts have multiple genes. Separate to multiple rows
+# 177 transcripts have multiple genes. Separate to multiple rows
 
 TRNSCRPT_DA_SEP <- TRNSCRPT_DA %>%
   map(.f = ~ separate_rows(.x, entrez_gene, gene_symbol, sep = ";") %>%
@@ -30,7 +28,7 @@ TRNSCRPT_MSIGDB <- MSIGDB_PATHWAYS %>%
 
 table(TRNSCRPT_MSIGDB$gs_subcat) # how many gene sets remain?
 # GO:BP GO:CC GO:MF
-#  2737   322   487
+#  2864   347   498
 
 # FGSEA
 TRNSCRPT_FGSEA <- map(TRNSCRPT_DA_SEP, function(res_i) {
@@ -49,13 +47,10 @@ TRNSCRPT_FGSEA <- map(TRNSCRPT_DA_SEP, function(res_i) {
 })
 
 # Save
-usethis::use_data(TRNSCRPT_FGSEA, internal = FALSE,
-                  overwrite = TRUE, version = 3,
-                  compress = "bzip2")
-
+usethis::use_data(TRNSCRPT_FGSEA, internal = FALSE, overwrite = TRUE,
+                  version = 3, compress = "bzip2")
 
 ## Proteomics --------------------------------------------------------
-
 # Entrez to gene symbol conversion vector for leading edge
 PROT_entrez_to_symbol <- fData(PROT_MSNSET) %>%
   select(entrez_gene, gene_symbol) %>%
@@ -74,7 +69,7 @@ PROT_MSIGDB <- MSIGDB_PATHWAYS %>%
 
 table(PROT_MSIGDB$gs_subcat) # how many gene sets remain?
 # GO:BP GO:CC GO:MF
-#   227    99    74
+#   234    99    78
 
 # FGSEA
 PROT_FGSEA <- map(PROT_DA, function(res_i) {
@@ -93,13 +88,10 @@ PROT_FGSEA <- map(PROT_DA, function(res_i) {
 })
 
 # Save
-usethis::use_data(PROT_FGSEA, internal = FALSE,
-                  overwrite = TRUE, version = 3,
-                  compress = "bzip2")
-
+usethis::use_data(PROT_FGSEA, internal = FALSE, overwrite = TRUE,
+                  version = 3, compress = "bzip2")
 
 ## Metabolomics -----------------------------------------------------
-
 # Unlike with proteomics and transcriptomics, we are not
 # limited to testing terms that are largely unchanged after
 # filtering. This is because the RefMet chemical subclasses
@@ -107,7 +99,7 @@ usethis::use_data(PROT_FGSEA, internal = FALSE,
 # will still result in a group of just acyl carnitines).
 
 # Reformat fData for use with fgsea2
-sub_classes <- fData(METAB_MSNSET) %>%
+REFMET_SUBCLASSES <- fData(METAB_MSNSET) %>%
   group_by(refmet_sub_class) %>%
   summarise(feature = list(feature_ID)) %>%
   mutate(gs_subcat = "refmet_sub_class",
@@ -116,11 +108,11 @@ sub_classes <- fData(METAB_MSNSET) %>%
          set_size = lengths(feature)) %>%
   filter(set_size >= 10)
 
-nrow(sub_classes) # 19
+nrow(REFMET_SUBCLASSES) # 19
 
 # FGSEA
 METAB_FGSEA <- map(METAB_DA, function(res_i) {
-  fgsea2(pathways = sub_classes,
+  fgsea2(pathways = REFMET_SUBCLASSES,
          gene_column = "feature",
          stats = get_ranking(res_i, genes = "feature"),
          seed = 0, nPermSimple = 10000,
@@ -132,24 +124,6 @@ METAB_FGSEA <- map(METAB_DA, function(res_i) {
 })
 
 # Save
-usethis::use_data(METAB_FGSEA, internal = FALSE,
-                  overwrite = TRUE, version = 3,
-                  compress = "bzip2")
-
-
-## Save xlsx worksheets to inst/supp-tables ----
-all_FGSEA <- list(TRNSCRPT_GO    = TRNSCRPT_FGSEA,
-                  PROT_GO        = PROT_FGSEA,
-                  PROT_MITOCARTA = PROT_MITOCARTA_FGSEA, # MitoCarta FGSEA
-                  PHOSPHO_KSEA   = PHOSPHO_KSEA,         # KSEA
-                  METAB_REFMET   = METAB_FGSEA) %>%
-  list_transpose() %>%
-  # Flatten leadingEdge columns to work with write_xlsx
-  map_depth(.depth = 2, mutate, across(contains("leadingEdge"),
-                                       .fns = map_chr, paste, collapse = ", "))
-
-paths <- file.path("inst", "supp-tables",
-                   sprintf("FGSEA_%s.xlsx", names(all_FGSEA)))
-
-map2(.x = all_FGSEA, .y = paths, .f = writexl::write_xlsx)
+usethis::use_data(METAB_FGSEA, internal = FALSE, overwrite = TRUE,
+                  version = 3, compress = "bzip2")
 

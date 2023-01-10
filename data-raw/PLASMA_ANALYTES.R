@@ -8,7 +8,7 @@ PLASMA_ANALYTES <-
   rename_with(tolower) %>%
   dplyr::rename(total_ketones = total.ketones) %>%
   mutate(plate = floor(platepos / 100),
-         omics_subset = !is.na(omics_subset),
+         omics_subset = omics_subset == "x",
          sex = factor(str_to_title(sex),
                       levels = c("Female", "Male")),
          timepoint = factor(timepoint,

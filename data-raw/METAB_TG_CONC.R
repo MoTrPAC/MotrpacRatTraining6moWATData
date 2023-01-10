@@ -1,4 +1,4 @@
-library(motrpacWATData)
+library(MotrpacRatTraining6moWATData)
 library(tidyverse)
 library(MSnbase)
 
@@ -12,19 +12,6 @@ conc_data <- file.path("data-raw", "WAT_TAG_concentration.csv") %>%
   column_to_rownames("bid") %>%
   t() %>%
   .[, as.character(METAB_MSNSET$bid)]
-
-# Compare to TAG values from METAB MSnSet
-tag <- fData(METAB_MSNSET)[["refmet_sub_class"]] == "TAG"
-tmp_conc <- 2 ^ exprs(METAB_MSNSET[tag, ])
-View(tmp_conc / conc_data) # values within the same column are identical
-
-# unlist preserves bid, as.numeric does not
-IS <- data.frame(
-  internal_standard = unlist((tmp_conc / conc_data)[1, ])
-) %>%
-  # rownames_to_column("viallabel") %>%
-  mutate(bid = METAB_MSNSET$bid)
-
 
 # Create MSnSet
 METAB_TG_CONC <- METAB_MSNSET[rownames(conc_data), colnames(conc_data)]

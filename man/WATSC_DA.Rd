@@ -48,13 +48,13 @@ TRNSCRPT_DA # transcriptomics
 METAB_DA    # metabolomics
 }
 \description{
-Differential analysis of proteins, transcripts,
-  phosphorylation sites, and metabolites measured in rat scWAT.
+Differential analysis of proteins, transcripts, phosphorylation
+  sites, and metabolites measured in rat scWAT.
 }
 \details{
 Differential analysis was performed with
-  \code{\link[motrpacWAT:limma_full]{motrpacWAT::limma_full}} on the MSnSet
-  objects (See Also section).
+  \code{\link[MotrpacRatTraining6moWAT:limma_full]{MotrpacRatTraining6moWAT::limma_full}}
+  on the \code{MSnSet} objects.
 }
 \examples{
 ## Number of differential features (-ome-wide FDR < 0.05)
@@ -70,7 +70,8 @@ f1(METAB_DA)    # Metabolites
 
 }
 \seealso{
-\code{\link[limma]{topTable}}, \code{\link[motrpacWAT]{limma_full}},
+\code{\link[limma]{topTable}},
+  \code{\link[MotrpacRatTraining6moWAT]{limma_full}},
   \code{\link{PROT_MSNSET}}, \code{\link{PHOSPHO_MSNSET}},
   \code{\link{TRNSCRPT_MSNSET}}, \code{\link{METAB_MSNSET}}
 }

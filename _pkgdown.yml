@@ -1,4 +1,4 @@
-url: https://pnnl-comp-mass-spec.github.io/motrpacWATData/
+url: https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/
 template:
   bootstrap: 5
 
@@ -37,11 +37,17 @@ reference:
   contents:
   - WATSC_WGCNA
 
+- subtitle: WGCNA Module ORA
+  desc: Over-representation analysis performed on WGCNA modules.
+  contents:
+  - module_ORA
+
 - title: Miscellaneous
   desc: Catch-all until I can move these elsewhere.
   contents:
   - METAB_TG_CONC
   - MITO_DNA
   - PLASMA_ANALYTES
-
-
+  - PLASMA_ANALYTE_STATS
+  - ADIPOCYTE_SIZE
+  - ADIPOCYTE_SIZE_STATS
