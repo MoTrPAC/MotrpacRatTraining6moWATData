@@ -29,7 +29,7 @@ An object of class \code{data.frame} with 146 rows and 21 columns.
   \item{\code{timepoint}}{factor; exercise training group. Either "SED"
   (sedentary) or the number of weeks of training ("1W", "2W", "4W", "8W").}
   \item{\code{total_ketones}}{numeric; total ketone bodies (\eqn{\mu}mol/L).}
-  \item{\code{nefa}}{numeric; non-esterified fatty acids (NEFA).}
+  \item{\code{nefa}}{numeric; non-esterified fatty acids (NEFA) (mmol/L).}
   \item{\code{lactate}}{numeric; lactate (mmol/L).}
   \item{\code{glucose}}{numeric; glucose (mg/dL).}
   \item{\code{glycerol}}{numeric; glycerol (mg/dL).}
@@ -42,8 +42,7 @@ An object of class \code{data.frame} with 146 rows and 21 columns.
   \item{\code{ins_gcg_ratio}}{numeric; molar insulin/glucagon ratio.
   Calculated as (insulin (pg/mL) / 5.804 (Da)) / glucagon (pmol).}
   \item{\code{homa_ir}}{numeric; Homeostatic Model Assessment for Insulin
-  Resistance (HOMA-IR). Insulin (\eqn{\mu}IU/mL) x glucose (mg/dL)
-  / 405.}
+  Resistance (HOMA-IR). Insulin (\eqn{\mu}IU/mL) x glucose (mg/dL) / 405.}
 }
 }
 \usage{
