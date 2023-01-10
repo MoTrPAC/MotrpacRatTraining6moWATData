@@ -21,14 +21,6 @@ p_data <- PHENO %>%
   inner_join(select(TRNSCRPT_META, viallabel, rin = RIN,
                     pct_globin, pct_umi_dup, median_5_3_bias),
              by = "viallabel") %>%
-  # Use code from MotrpacRatTraining6mo::fix_covariates to mean impute, center,
-  # and scale
-  mutate(across(
-    c(rin, pct_globin, pct_umi_dup, median_5_3_bias), function(cov) {
-      cov[is.na(cov)] <- mean(cov)
-      cov <- scale(cov)
-      return(cov)
-    })) %>%
   `rownames<-`(.[["viallabel"]])
 
 # Normalized transcriptomics data
@@ -62,7 +54,7 @@ f_data <- FEATURE_TO_GENE %>%
   .[rownames(count_mat), ] # reorder features
 
 
-## Following doi: 10.12688/f1000research.9005.3
+## Following 10.12688/f1000research.9005.3
 # Filter lowly expressed genes
 dge_raw <- DGEList(counts = count_mat,
                    samples = p_data,
@@ -89,13 +81,19 @@ plotMDS(CPM, top = 1000,
 # 90423 and 90410 are extreme outliers. We will discard these.
 
 # Remove 2 outlier samples and recalculate normalization factors
-dge_raw <- dge_raw[, !colnames(dge_raw) %in% OUTLIERS$viallabel] %>%
-  calcNormFactors.DGEList(method = "TMM")
+dge_raw <- dge_raw[, !colnames(dge_raw) %in% OUTLIERS$viallabel]
 
-# Reorder columns
+# Remove unnecessary columns; mean impute, center, and scale others
 dge_raw[["samples"]] <- dge_raw[["samples"]] %>%
-  select(-group) %>%
-  relocate(c(lib.size, norm.factors), .after = everything())
+  select(-c(group, lib.size, norm.factors)) %>%
+  # Use code from MotrpacRatTraining6mo::fix_covariates to
+  # mean impute, center, and scale
+  mutate(
+    across(c(rin, pct_globin, pct_umi_dup, median_5_3_bias), function(cov) {
+      cov[is.na(cov)] <- mean(cov)
+      cov <- scale(cov)[, 1]
+      return(cov)
+    }))
 
 # Create MSnset from DGEList
 TRNSCRPT_MSNSET <- with(dge_raw,

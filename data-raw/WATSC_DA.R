@@ -1,8 +1,6 @@
-library(motrpacWATData)
-library(motrpacWAT) # limma_full
+library(MotrpacRatTraining6moWATData)
+library(MotrpacRatTraining6moWAT) # limma_full
 library(tidyverse)
-library(MSnbase)
-
 
 ## Contrasts to test -----------------------------------------------------------
 # Sex-specific training differences
@@ -21,7 +19,6 @@ contr_list <- list("trained_vs_SED" = contr_train,
                    "MvF_SED" = "M_SED - F_SED",
                    "MvF_exercise_response" = contr_diff)
 
-
 ## Proteomics ------------------------------------------------------------------
 PROT_DA <- map(contr_list, function(contrasts) {
   limma_full(object = PROT_MSNSET,
@@ -33,11 +30,8 @@ PROT_DA <- map(contr_list, function(contrasts) {
     select(-B)
 }, .progress = TRUE)
 
-map(PROT_DA, ~ with(.x, table(contrast, adj.P.Val < 0.05)))
-
 usethis::use_data(PROT_DA, internal = FALSE, overwrite = TRUE,
                   version = 3, compress = "bzip2")
-
 
 ## Phosphoproteomics -----------------------------------------------------------
 PHOSPHO_DA <- map(contr_list, function(contrasts) {
@@ -50,11 +44,8 @@ PHOSPHO_DA <- map(contr_list, function(contrasts) {
     select(-B)
 }, .progress = TRUE)
 
-map(PHOSPHO_DA, ~ with(.x, table(contrast, adj.P.Val < 0.05)))
-
 usethis::use_data(PHOSPHO_DA, internal = FALSE, overwrite = TRUE,
                   version = 3, compress = "bzip2")
-
 
 ## Transcriptomics -------------------------------------------------------------
 covariates <- "rin + pct_globin + pct_umi_dup + median_5_3_bias"
@@ -71,11 +62,8 @@ TRNSCRPT_DA <- map(contr_list, function(contrasts) {
     # transcript to gene mapping. Keep this in mind.
 })
 
-map(TRNSCRPT_DA, ~ with(.x, table(contrast, adj.P.Val < 0.05)))
-
 usethis::use_data(TRNSCRPT_DA, internal = FALSE, overwrite = TRUE,
                   version = 3, compress = "bzip2")
-
 
 ## Metabolomics ----------------------------------------------------------------
 
@@ -105,17 +93,4 @@ METAB_DA <- map(contr_list, function(contrasts) {
 
 usethis::use_data(METAB_DA, internal = FALSE, overwrite = TRUE,
                   version = 3, compress = "bzip2")
-
-
-## Save xlsx worksheets to inst/supp-tables ----
-all_DA <- list(TRNSCRPT = TRNSCRPT_DA,
-               PROT     = PROT_DA,
-               PHOSPHO  = PHOSPHO_DA,
-               METAB    = METAB_DA) %>%
-  list_transpose() # nice function
-
-paths <- file.path("inst", "supp-tables",
-                   sprintf("DA_%s.xlsx", names(all_DA)))
-
-map2(.x = all_DA, .y = paths, .f = writexl::write_xlsx, .progress = TRUE)
 
