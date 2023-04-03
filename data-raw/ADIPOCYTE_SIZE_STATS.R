@@ -5,7 +5,7 @@ library(tidyverse)
 
 # Bin adipocytes in 5 micron intervals by diameter
 ADIPOCYTE_SIZE <- ADIPOCYTE_SIZE %>%
-  mutate(diameter_bin = cut(diameter,
+  mutate(diameter_bin = cut(diameter, dig.lab = 4,
                             breaks = c(14.16, seq(20, 60, 5), 62.32),
                             include.lowest = TRUE, right = FALSE,
                             ordered_result = TRUE))
