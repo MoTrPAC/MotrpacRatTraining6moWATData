@@ -80,7 +80,7 @@ plotMDS(CPM, top = 1000,
         label = dge_raw$samples$bid, dim.plot = c(1, 3))
 # 90423 and 90410 are extreme outliers. We will discard these.
 
-# Remove 2 outlier samples and recalculate normalization factors
+# Remove 2 outlier samples
 dge_raw <- dge_raw[, !colnames(dge_raw) %in% OUTLIERS$viallabel]
 
 # Remove unnecessary columns; mean impute, center, and scale others
@@ -95,11 +95,23 @@ dge_raw[["samples"]] <- dge_raw[["samples"]] %>%
       return(cov)
     }))
 
-# Create MSnset from DGEList
-TRNSCRPT_MSNSET <- with(dge_raw,
-                        MSnSet(exprs = counts, fData = genes, pData = samples))
+## Create ExpressionSet object
+data_dict <- read.delim(file.path("data-raw", "data_dictionary.txt")) %>%
+  tibble::deframe()
+
+phenoData <- AnnotatedDataFrame(data = dge_raw[["samples"]])
+varMetadata(phenoData)[["labelDescription"]] <- data_dict[colnames(p_data)]
+
+featureData <- AnnotatedDataFrame(data = dge_raw[["genes"]])
+varMetadata(featureData)[["labelDescription"]] <-
+  c("character; Ensemble gene ID.",
+    data_dict[colnames(f_data)][-1])
+
+TRNSCRPT_EXP <- ExpressionSet(assayData = dge_raw[["counts"]],
+                              phenoData = phenoData,
+                              featureData = featureData)
 
 # Save
-usethis::use_data(TRNSCRPT_MSNSET, internal = FALSE, overwrite = TRUE,
+usethis::use_data(TRNSCRPT_EXP, internal = FALSE, overwrite = TRUE,
                   version = 3, compress = "bzip2")
 

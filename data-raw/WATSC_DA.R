@@ -21,7 +21,7 @@ contr_list <- list("trained_vs_SED" = contr_train,
 
 ## Proteomics ------------------------------------------------------------------
 PROT_DA <- map(contr_list, function(contrasts) {
-  limma_full(object = PROT_MSNSET,
+  limma_full(object = PROT_EXP,
              model.str = "~ 0 + exp_group",
              coef.str = "exp_group",
              contrasts = contrasts,
@@ -35,7 +35,7 @@ usethis::use_data(PROT_DA, internal = FALSE, overwrite = TRUE,
 
 ## Phosphoproteomics -----------------------------------------------------------
 PHOSPHO_DA <- map(contr_list, function(contrasts) {
-  limma_full(object = PHOSPHO_MSNSET,
+  limma_full(object = PHOSPHO_EXP,
              model.str = "~ 0 + exp_group",
              coef.str = "exp_group",
              contrasts = contrasts,
@@ -51,7 +51,7 @@ usethis::use_data(PHOSPHO_DA, internal = FALSE, overwrite = TRUE,
 covariates <- "rin + pct_globin + pct_umi_dup + median_5_3_bias"
 
 TRNSCRPT_DA <- map(contr_list, function(contrasts) {
-  limma_full(object = TRNSCRPT_MSNSET,
+  limma_full(object = TRNSCRPT_EXP,
              model.str = sprintf("~ 0 + exp_group + %s", covariates),
              coef.str = "exp_group",
              contrasts = contrasts,
@@ -70,14 +70,14 @@ usethis::use_data(TRNSCRPT_DA, internal = FALSE, overwrite = TRUE,
 ## Platforms for DEA
 # Does not make sense to run eBayes on everything, so
 # we subset to a specific platform and then stack results.
-assays <- unique(fData(METAB_MSNSET)[["dataset"]])
+assays <- unique(fData(METAB_EXP)[["dataset"]])
 
 ## Differential analysis results list
 METAB_DA <- map(contr_list, function(contrasts) {
   map(assays, function(assay) {
     message(assay)
     # subset to features in group to model separate mean-variance trends
-    METAB_MSNSET[fData(METAB_MSNSET)[["dataset"]] == assay, ] %>%
+    METAB_EXP[fData(METAB_EXP)[["dataset"]] == assay, ] %>%
       limma_full(model.str = "~ 0 + exp_group",
                  coef.str = "exp_group",
                  contrasts = contrasts,

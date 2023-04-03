@@ -1,6 +1,6 @@
 library(MotrpacRatTraining6moData)
 library(tidyverse)
-library(MSnbase)
+library(Biobase)
 library(ggplot2)
 
 ## Remove redundant metabolites ----
@@ -122,10 +122,24 @@ expr_mat <- METAB_NORM_DATA_NESTED %>%
 #   as.matrix() %>%
 #   .[f_data$feature_ID, rownames(p_data)]
 
-# Create MSnSet
-METAB_MSNSET <- MSnSet(exprs = expr_mat, fData = f_data, pData = p_data)
+## Create ExpressionSet object
+data_dict <- read.delim(file.path("data-raw", "data_dictionary.txt"),
+                        row.names = 1) %>%
+  tibble::deframe()
+
+phenoData <- AnnotatedDataFrame(data = p_data)
+varMetadata(phenoData)[["labelDescription"]] <- data_dict[colnames(p_data)]
+
+featureData <- AnnotatedDataFrame(data = f_data)
+varMetadata(featureData)[["labelDescription"]] <-
+  c("character; metabolite RefMet identifier.",
+    data_dict[colnames(f_data)][-1])
+
+METAB_EXP <- ExpressionSet(assayData = expr_mat,
+                           phenoData = phenoData,
+                           featureData = featureData)
 
 # Save
-usethis::use_data(METAB_MSNSET, internal = FALSE, overwrite = TRUE,
+usethis::use_data(METAB_EXP, internal = FALSE, overwrite = TRUE,
                   version = 3, compress = "bzip2")
 

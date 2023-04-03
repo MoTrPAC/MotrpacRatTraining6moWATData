@@ -3,7 +3,7 @@ library(MotrpacRatTraining6moWAT)
 library(edgeR)
 
 ## Metabolomics (quick) --------------------------------------------------------
-METAB_WGCNA <- run_WGCNA(object = METAB_MSNSET,
+METAB_WGCNA <- run_WGCNA(object = METAB_EXP,
                          power = 12,
                          module_prefix = "M",
                          merge_modules = FALSE)
@@ -17,9 +17,9 @@ usethis::use_data(METAB_WGCNA, internal = FALSE, overwrite = TRUE,
 
 ## Proteomics (slow) -----------------------------------------------------------
 # Proportion of missing values?
-prop.table(table(is.na(exprs(PROT_MSNSET)))) # ~5.7%
+prop.table(table(is.na(exprs(PROT_EXP)))) # ~5.7%
 
-PROT_WGCNA <- run_WGCNA(object = PROT_MSNSET,
+PROT_WGCNA <- run_WGCNA(object = PROT_EXP,
                         power = 12,
                         module_prefix = "P",
                         merge_modules = TRUE)
@@ -33,13 +33,13 @@ usethis::use_data(PROT_WGCNA, internal = FALSE, overwrite = TRUE,
 
 ## Transcriptomics (incredibly slow ~1 hr) -------------------------------------
 # Convert filtered counts to normalized log2 counts-per-million reads
-dge <- DGEList(counts = exprs(TRNSCRPT_MSNSET),
-               samples = pData(TRNSCRPT_MSNSET),
-               group = TRNSCRPT_MSNSET$exp_group)
+dge <- DGEList(counts = exprs(TRNSCRPT_EXP),
+               samples = pData(TRNSCRPT_EXP),
+               group = TRNSCRPT_EXP$exp_group)
 dge <- calcNormFactors(dge, method = "TMM")
-exprs(TRNSCRPT_MSNSET) <- cpm(dge, log = TRUE)
+exprs(TRNSCRPT_EXP) <- cpm(dge, log = TRUE)
 
-TRNSCRPT_WGCNA <- run_WGCNA(object = TRNSCRPT_MSNSET,
+TRNSCRPT_WGCNA <- run_WGCNA(object = TRNSCRPT_EXP,
                             power = 25, # use power = 20:30 to see plots
                             module_prefix = "T",
                             merge_modules = TRUE)

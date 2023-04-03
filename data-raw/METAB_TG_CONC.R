@@ -8,13 +8,13 @@ library(MSnbase)
 conc_data <- file.path("data-raw", "WAT_TAG_concentration.csv") %>%
   read.csv(check.names = FALSE) %>%
   dplyr::rename(bid = vialLabel) %>%
-  dplyr::select(bid, any_of(featureNames(METAB_MSNSET))) %>%
+  dplyr::select(bid, any_of(featureNames(METAB_EXP))) %>%
   column_to_rownames("bid") %>%
   t() %>%
-  .[, as.character(METAB_MSNSET$bid)]
+  .[, as.character(METAB_EXP$bid)]
 
 # Create MSnSet
-METAB_TG_CONC <- METAB_MSNSET[rownames(conc_data), colnames(conc_data)]
+METAB_TG_CONC <- METAB_EXP[rownames(conc_data), colnames(conc_data)]
 
 exprs(METAB_TG_CONC) <- conc_data
 
@@ -41,7 +41,7 @@ METAB_TG_CONC <- METAB_TG_CONC %>%
                   cv = FALSE) %>%
   scale() %>%
   t() %>%
-  .[, levels(METAB_MSNSET$exp_group)]
+  .[, levels(METAB_EXP$exp_group)]
 
 # Convert characters back to factors
 pData(METAB_TG_CONC) <- pData(METAB_TG_CONC) %>%

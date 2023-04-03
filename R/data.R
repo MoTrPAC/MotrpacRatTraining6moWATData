@@ -1,146 +1,45 @@
-## MSnSet Objects ------------------------------------------------------------
+## ExpressionSet Objects -------------------------------------------------------
 
-#' @title Proteomics MSnSet
+#' @title Proteomics ExpressionSet
 #'
 #' @description An object of class
-#'   \code{\link[MSnbase:MSnSet-class]{MSnbase::MSnSet}} containing
-#'   median-MAD-normalized log\eqn{_2}-transformed protein expression data for
-#'   differential analysis and WGCNA.
+#'   \code{\link[Biobase:ExpressionSet-class]{Biobase::ExpressionSet}}
+#'   containing median-MAD-normalized log\eqn{_2}-transformed protein expression
+#'   data for differential analysis and WGCNA.
 #'
-#' @format Object of class \code{\link[MSnbase:MSnSet-class]{MSnbase::MSnSet}}
-#'   with 9964 features and 60 samples.
-#'
-#'   \describe{
-#'     \item{\bold{assayData}}{
-#'       Object of class \code{matrix} with 9964 rows and 60 columns. See
-#'       \link[MotrpacRatTraining6moData]{PROT_WATSC_NORM_DATA} for more
-#'       details.
-#'     }
-#'     \item{\bold{featureData}}{
-#'       Object of class \code{data.frame} with 9964 rows and 3 variables
-#'       containing additional feature information:
-#'
-#'       \describe{
-#'          \item{\code{feature_ID}}{character; Reference Sequence (RefSeq)
-#'          protein identifier.}
-#'          \item{\code{gene_symbol}}{character; official gene symbol.}
-#'          \item{\code{entrez_gene}}{integer; Entrez gene identifier.}
-#'       }
-#'     }
-#'     \item{\bold{phenoData}}{
-#'       Object of class \code{data.frame} with 60 rows and 7 variables
-#'       containing additional sample information:
-#'
-#'       \describe{
-#'         \item{\code{pid}}{integer; randomly generated 8-digit identifier used
-#'         in linkage to phenotypic data. All samples from the same animal have
-#'         the same PID.}
-#'         \item{\code{bid}}{integer; unique 5 digit identifier of all
-#'         samples collected for an acute test/sample collection period. All
-#'         samples collected during that period will have the same BID.}
-#'         \item{\code{labelid}}{integer; unique 11 digit specimen label
-#'         identifier, originating at the collection site, that provides
-#'         a link to specimen processing and is used for shipments to the
-#'         biorepository. Same as \code{viallabel} only in instances
-#'         where aliquots are not further processed at the biorepository.}
-#'         \item{\code{viallabel}}{character; unique 11 digit sample vial
-#'         identifier. Starts with the \code{bid}.}
-#'         \item{\code{sex}}{factor; the sex of the rat with levels "Female" and
-#'         "Male".}
-#'         \item{\code{timepoint}}{factor; exercise training group. Either "SED"
-#'         (sedentary) or the number of weeks of training ("1W", "2W", "4W",
-#'         "8W").}
-#'         \item{\code{exp_group}}{factor; experimental group. Unique
-#'         combination of \code{sex} (first letter) and \code{timepoint}.}
-#'       }
-#'     }
-#'   }
+#' @format Object of class
+#'   \code{\link[Biobase:ExpressionSet-class]{Biobase::ExpressionSet}} with 9964
+#'   features and 60 samples.
 #'
 #' @details \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE} for details of
 #'   feature-to-gene mapping.
 #'
-#' @seealso \code{\link[MSnbase]{MSnSet-class}},
+#' @seealso \code{\link[Biobase]{ExpressionSet-class}},
 #'   \link[MotrpacRatTraining6moData]{PROT_WATSC_NORM_DATA},
 #'   \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}
 #'
 #' @examples
-#' library(MSnbase)
-#' PROT_MSNSET                   # display summary
-#' exprs(PROT_MSNSET)[1:10, 1:5] # assayData (first 10 rows and 5 columns)
-#' head(fData(PROT_MSNSET))      # featureData
-#' head(pData(PROT_MSNSET))      # phenoData
+#' library(Biobase)
+#'
+#' PROT_EXP                   # display summary
+#' exprs(PROT_EXP)[1:10, 1:5] # assayData (first 10 rows and 5 columns)
+#' head(fData(PROT_EXP))      # featureData
+#' head(pData(PROT_EXP))      # phenoData
 #'
 #' @keywords datasets
-"PROT_MSNSET"
+"PROT_EXP"
 
 
-#' @title Phosphoproteomics MSnSet
+#' @title Phosphoproteomics ExpressionSet
 #'
 #' @description An object of class
-#'   \code{\link[MSnbase:MSnSet-class]{MSnbase::MSnSet}} containing
-#'   median-MAD-normalized log\eqn{_2}-transformed protein phosphorylation data
-#'   for differential analysis.
+#'   \code{\link[Biobase:ExpressionSet-class]{Biobase::ExpressionSet}}
+#'   containing median-MAD-normalized log\eqn{_2}-transformed protein
+#'   phosphorylation data.
 #'
-#' @format Object of class \code{\link[MSnbase:MSnSet-class]{MSnbase::MSnSet}}
-#'   with 30304 features and 60 samples.
-#'
-#'   \describe{
-#'     \item{\bold{assayData}}{
-#'       Object of class \code{matrix} with 30304 rows and 60 columns. See
-#'       \link[MotrpacRatTraining6moData]{PHOSPHO_WATSC_NORM_DATA} for
-#'       more details.
-#'     }
-#'     \item{\bold{featureData}}{
-#'       Object of class \code{data.frame} with 30304 rows and 7 variables
-#'       containing additional feature information:
-#'
-#'       \describe{
-#'          \item{\code{feature_ID}}{character; Reference Sequence (RefSeq)
-#'          protein identifier followed by an underscore and position(s) of
-#'          phosphorylation.}
-#'          \item{\code{gene_symbol}}{character; official gene symbol.}
-#'          \item{\code{entrez_gene}}{integer; Entrez gene identifier.}
-#'          \item{\code{site}}{character; phosphorylation site(s) extracted from
-#'          \code{feature_ID} column and stripped of trailing lowercase amino
-#'          acid letters (s, t, y). Multiple sites are separated by semicolons.}
-#'          \item{\code{human_feature_ID}}{character; human UniProt accession
-#'          followed by an underscore and positions of phosphorylation.}
-#'          \item{\code{human_uniprot}}{character; human UniProt accession
-#'          extracted from \code{human_feature_ID} column.}
-#'          \item{\code{human_site}}{character; human phosphorylation site(s)
-#'          extracted from \code{human_feature_ID} column and stripped of
-#'          trailing lowercase amino acid letters (s, t, y). Multiple sites are
-#'          separated by semicolons.}
-#'       }
-#'     }
-#'     \item{\bold{phenoData}}{
-#'       Object of class \code{data.frame} with 60 rows and 7 variables
-#'       containing additional sample information:
-#'
-#'       \describe{
-#'         \item{\code{pid}}{integer; randomly generated 8-digit identifier used
-#'         in linkage to phenotypic data. All samples from the same animal have
-#'         the same PID.}
-#'         \item{\code{bid}}{integer; unique 5 digit identifier of all
-#'         samples collected for an acute test/sample collection period. All
-#'         samples collected during that period will have the same BID.}
-#'         \item{\code{labelid}}{integer; unique 11 digit specimen label
-#'         identifier, originating at the collection site, that provides
-#'         a link to specimen processing and is used for shipments to the
-#'         biorepository. Same as \code{viallabel} only in instances
-#'         where aliquots are not further processed at the biorepository.}
-#'         \item{\code{viallabel}}{character; unique 11 digit sample vial
-#'         identifier. Starts with the \code{bid}.}
-#'         \item{\code{sex}}{factor; the sex of the rat with levels "Female" and
-#'         "Male".}
-#'         \item{\code{timepoint}}{factor; exercise training group. Either "SED"
-#'         (sedentary) or the number of weeks of training ("1W", "2W", "4W",
-#'         "8W").}
-#'         \item{\code{exp_group}}{factor; experimental group. Unique
-#'         combination of \code{sex} (first letter) and \code{timepoint}.}
-#'       }
-#'     }
-#'   }
+#' @format Object of class
+#'   \code{\link[Biobase:ExpressionSet-class]{Biobase::ExpressionSet}} with
+#'   30304 features and 60 samples.
 #'
 #' @details \link[MotrpacRatTraining6moData]{RAT_TO_HUMAN_PHOSPHO} for details
 #'   of mapping between rat and human phosphorylation sites.
@@ -148,85 +47,36 @@
 #'   \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE} for details of
 #'   feature-to-gene mapping.
 #'
-#' @seealso \code{\link[MSnbase]{MSnSet-class}},
+#' @seealso \code{\link[Biobase]{ExpressionSet-class}},
 #'   \link[MotrpacRatTraining6moData]{RAT_TO_HUMAN_PHOSPHO},
 #'   \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}
 #'
 #' @examples
-#' library(MSnbase)
-#' PHOSPHO_MSNSET                   # summary
-#' exprs(PHOSPHO_MSNSET)[1:10, 1:5] # assayData (first 10 rows and 5 columns)
-#' head(fData(PHOSPHO_MSNSET))      # featureData
-#' head(pData(PHOSPHO_MSNSET))      # phenoData
+#' library(Biobase)
+#'
+#' PHOSPHO_EXP                   # summary
+#' exprs(PHOSPHO_EXP)[1:10, 1:5] # assayData (first 10 rows and 5 columns)
+#' head(fData(PHOSPHO_EXP))      # featureData
+#' head(pData(PHOSPHO_EXP))      # phenoData
 #'
 #' @keywords datasets
-"PHOSPHO_MSNSET"
+"PHOSPHO_EXP"
 
 
-#' @title Transcriptomics MSnSet
+#' @title Transcriptomics ExpressionSet
 #'
 #' @description An object of class
-#'   \code{\link[MSnbase:MSnSet-class]{MSnbase::MSnSet}} containing
-#'   transcriptomics data for differential analysis and (once transformed to
-#'   log\eqn{_2} counts per million reads) WGCNA.
+#'   \code{\link[Biobase:ExpressionSet-class]{Biobase::ExpressionSet}}
+#'   containing transcriptomics data for differential analysis and (once
+#'   transformed to log\eqn{_2} counts per million reads) WGCNA.
 #'
-#' @format Object of class \code{\link[MSnbase:MSnSet-class]{MSnbase::MSnSet}}
-#'   with 16404 features and 48 samples.
-#'
-#'   \describe{
-#'     \item{\bold{assayData}}{
-#'       Object of class \code{matrix} with 16404 rows and 48 columns containing
-#'       RSEM gene counts.
-#'     }
-#'     \item{\bold{featureData}}{
-#'       Object of class \code{data.frame} with 16404 rows and 3 variables
-#'       containing additional feature information:
-#'
-#'       \describe{
-#'          \item{\code{feature_ID}}{character; Reference Sequence (RefSeq)
-#'          protein identifier.}
-#'          \item{\code{gene_symbol}}{character; official gene symbol.}
-#'          \item{\code{entrez_gene}}{integer; Entrez gene identifier.}
-#'       }
-#'     }
-#'     \item{\bold{phenoData}}{
-#'       Object of class \code{data.frame} with 48 rows and 13 variables
-#'       containing additional sample information:
-#'
-#'       \describe{
-#'         \item{\code{pid}}{integer; randomly generated 8-digit identifier used
-#'         in linkage to phenotypic data. All samples from the same animal have
-#'         the same PID.}
-#'         \item{\code{bid}}{integer; unique 5 digit identifier of all samples
-#'         collected for an acute test/sample collection period. All samples
-#'         collected during that period will have the same BID.}
-#'         \item{\code{labelid}}{integer; unique 11 digit specimen label
-#'         identifier, originating at the collection site, that provides a link
-#'         to specimen processing and is used for shipments to the
-#'         biorepository. Same as \code{viallabel} only in instances where
-#'         aliquots are not further processed at the biorepository.}
-#'         \item{\code{viallabel}}{character; unique 11 digit sample vial
-#'         identifier. Starts with the \code{bid}.}
-#'         \item{\code{sex}}{factor; the sex of the rat with levels "Female" and
-#'         "Male".}
-#'         \item{\code{timepoint}}{factor; exercise training group. Either "SED"
-#'         (sedentary) or the number of weeks of training ("1W", "2W", "4W",
-#'         "8W").}
-#'         \item{\code{exp_group}}{factor; experimental group. Unique
-#'         combination of \code{sex} (first letter) and \code{timepoint}.}
-#'         \item{\code{rin}}{numeric; RNA integrity number (RIN).}
-#'         \item{\code{pct_globin}}{numeric; percent of reads mapping to
-#'         globin.}
-#'         \item{\code{pct_umi_dup}}{numeric; percent of PCR duplicates as
-#'         quantified with Unique Molecular Identifiers (UMIs).}
-#'         \item{\code{median_5_3_bias}}{numeric; median 5'-3' bias.}
-#'       }
-#'     }
-#'   }
+#' @format Object of class
+#'   \code{\link[Biobase:ExpressionSet-class]{Biobase::ExpressionSet}} with
+#'   16404 features and 48 samples.
 #'
 #' @details The original 32883 transcripts were filtered with
 #'   \code{\link[edgeR]{filterByExpr}} using \code{group =
-#'   TRNSCRPT_MSNSET[["exp_group"]]}. Then, library sizes were TMM normalized
+#'   TRNSCRPT_EXP[["exp_group"]]}. Then, library sizes were TMM normalized
 #'   with \code{\link[edgeR]{calcNormFactors}}. Two outlier samples (90423017005
 #'   and 90410017005) were removed before variables \code{pct_globin},
 #'   \code{rin}, \code{pct_umi_dup}, and \code{median_5_3_bias} were
@@ -237,99 +87,35 @@
 #'   \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE} for details of
 #'   feature-to-gene mapping.
 #'
-#' @seealso \code{\link[MSnbase]{MSnSet-class}},
+#' @seealso \code{\link[Biobase]{ExpressionSet-class}},
 #'   \link[MotrpacRatTraining6moData]{TRNSCRPT_WATSC_RAW_COUNTS},
 #'   \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}, \link[edgeR]{DGEList},
 #'   \link[edgeR]{filterByExpr}, \link[edgeR]{calcNormFactors}
 #'
 #' @examples
-#' library(MSnbase)
+#' library(Biobase)
 #'
-#' TRNSCRPT_MSNSET                   # summary
-#'
-#' exprs(TRNSCRPT_MSNSET)[1:10, 1:5] # assayData (first 10 rows and 5 columns)
-#'
-#' head(fData(TRNSCRPT_MSNSET))      # featureData
-#'
-#' head(pData(TRNSCRPT_MSNSET))      # phenoData
+#' TRNSCRPT_EXP                   # summary
+#' exprs(TRNSCRPT_EXP)[1:10, 1:5] # assayData (first 10 rows and 5 columns)
+#' head(fData(TRNSCRPT_EXP))      # featureData
+#' head(pData(TRNSCRPT_EXP))      # phenoData
 #'
 #' @keywords datasets
-"TRNSCRPT_MSNSET"
+"TRNSCRPT_EXP"
 
 
-#' @title Metabolomics MSnSet
+#' @title Metabolomics ExpressionSet
 #'
 #' @description An object of class
-#'   \code{\link[MSnbase:MSnSet-class]{MSnbase::MSnSet}} containing
-#'   log\eqn{_2}-transformed metabolite data for differential analysis and
-#'   WGCNA.
+#'   \code{\link[Biobase:ExpressionSet-class]{Biobase::ExpressionSet}}
+#'   containing log\eqn{_2}-transformed metabolite data for differential
+#'   analysis and WGCNA.
 #'
-#' @format Object of class \code{\link[MSnbase:MSnSet-class]{MSnbase::MSnSet}}
-#'   with 1063 features and 50 samples.
+#' @format Object of class
+#'   \code{\link[Biobase:ExpressionSet-class]{Biobase::ExpressionSet}} with 1063
+#'   features and 50 samples.
 #'
-#'   \describe{
-#'     \item{\bold{assayData}}{
-#'       Object of class \code{matrix} with 1063 rows and 50 columns. See
-#'       \link[MotrpacRatTraining6moData]{METAB_NORM_DATA_NESTED} for
-#'       more details.
-#'     }
-#'     \item{\bold{featureData}}{
-#'       Object of class \code{data.frame} with 1063 rows and 13 variables
-#'       containing additional feature information:
-#'
-#'       \describe{
-#'          \item{\code{feature_ID}}{character; metabolite RefMet identifier.}
-#'          \item{\code{dataset}}{character; metabolomics platform in which the
-#'          feature was measured.}
-#'          \item{\code{name_in_figures}}{character; alternative feature
-#'          identifier primarily used in visualizations.}
-#'          \item{\code{refmet_super_class}}{character; RefMet chemical super
-#'          class.}
-#'          \item{\code{refmet_main_class}}{character; RefMet chemical main
-#'          class.}
-#'          \item{\code{refmet_sub_class}}{character; RefMet chemical sub
-#'          class.}
-#'          \item{\code{lipid_class}}{character; (lipids only) the class of the
-#'          lipid. There are 43 unique classes.}
-#'          \item{\code{chain_length}}{integer; (lipids only) total number of
-#'          carbons that comprise the fatty acid chains.}
-#'          \item{\code{double_bond}}{integer; total number of C=C double bonds
-#'          in the fatty acid chains.}
-#'          \item{\code{rt}}{numeric; retention time. Used to assign
-#'          \code{lipid_class}.}
-#'          \item{\code{mz}}{numeric; mass-to-charge ratio (m/z).}
-#'          \item{\code{neutral_mass}}{numeric; neutral mass (g/mol).}
-#'          \item{\code{formula}}{character; chemical formula.}
-#'       }
-#'     }
-#'     \item{\bold{phenoData}}{
-#'       Object of class \code{data.frame} with 50 rows and 6 variables
-#'       containing additional sample information:
-#'
-#'       \describe{
-#'         \item{\code{pid}}{integer; randomly generated 8-digit identifier used
-#'         in linkage to phenotypic data. All samples from the same animal have
-#'         the same PID.}
-#'         \item{\code{bid}}{integer; unique 5 digit identifier of all
-#'         samples collected for an acute test/sample collection period. All
-#'         samples collected during that period will have the same BID.}
-#'         \item{\code{labelid}}{integer; unique 11 digit specimen label
-#'         identifier, originating at the collection site, that provides
-#'         a link to specimen processing and is used for shipments to the
-#'         biorepository. Same as \code{viallabel} only in instances
-#'         where aliquots are not further processed at the biorepository.}
-#'         \item{\code{sex}}{factor; the sex of the rat with levels "Female" and
-#'         "Male".}
-#'         \item{\code{timepoint}}{factor; exercise training group. Either "SED"
-#'         (sedentary) or the number of weeks of training ("1W", "2W", "4W",
-#'         "8W").}
-#'         \item{\code{exp_group}}{factor; experimental group. Unique
-#'         combination of \code{sex} (first letter) and \code{timepoint}.}
-#'       }
-#'     }
-#'   }
-#'
-#' @seealso \link[MSnbase]{MSnSet-class},
+#' @seealso \code{\link[Biobase]{ExpressionSet-class}},
 #'   \link[MotrpacRatTraining6moData]{METAB_FEATURE_ID_MAP},
 #'   \link[MotrpacRatTraining6moData]{METAB_NORM_DATA_NESTED},
 #'   \href{https://www.metabolomicsworkbench.org/databases/refmet/index.php}{Metabolomics
@@ -338,17 +124,17 @@
 #' @references Fahy, E., & Subramaniam, S. (2020). RefMet: A reference
 #'   nomenclature for metabolomics. \emph{Nature Methods, 17}(12), 1173--1174.
 #'   \url{https://doi.org/10.1038/s41592-020-01009-y}
-
 #'
 #' @examples
-#' library(MSnbase)
-#' METAB_MSNSET                   # summary
-#' exprs(METAB_MSNSET)[1:10, 1:5] # assayData (first 10 rows and 5 columns)
-#' head(fData(METAB_MSNSET))      # featureData
-#' head(pData(METAB_MSNSET))      # phenoData
+#' library(Biobase)
+#'
+#' METAB_EXP                   # summary
+#' exprs(METAB_EXP)[1:10, 1:5] # assayData (first 10 rows and 5 columns)
+#' head(fData(METAB_EXP))      # featureData
+#' head(pData(METAB_EXP))      # phenoData
 #'
 #' @keywords datasets
-"METAB_MSNSET"
+"METAB_EXP"
 
 
 ## Differential Analysis -------------------------------------------------------
@@ -377,7 +163,7 @@
 #'     contrasts.}
 #'   }
 #'
-#'   In addition to all columns present in the \code{MSnbase::fData} tables,
+#'   In addition to all columns present in the \code{Biobase::fData} tables,
 #'   each \code{data.frame} contains the following 8 variables:
 #'
 #'   \describe{
@@ -398,12 +184,12 @@
 #'
 #' @details Differential analysis was performed with
 #'   \code{\link[MotrpacRatTraining6moWAT:limma_full]{MotrpacRatTraining6moWAT::limma_full}}
-#'   on the \code{MSnSet} objects.
+#'   on the \code{ExpressionSet} objects.
 #'
 #' @seealso \code{\link[limma]{topTable}},
 #'   \code{\link[MotrpacRatTraining6moWAT]{limma_full}},
-#'   \code{\link{PROT_MSNSET}}, \code{\link{PHOSPHO_MSNSET}},
-#'   \code{\link{TRNSCRPT_MSNSET}}, \code{\link{METAB_MSNSET}}
+#'   \code{\link{PROT_EXP}}, \code{\link{PHOSPHO_EXP}},
+#'   \code{\link{TRNSCRPT_EXP}}, \code{\link{METAB_EXP}}
 #'
 #' @examples
 #' ## Number of differential features (-ome-wide FDR < 0.05)
@@ -589,7 +375,9 @@
 #' @format \code{data.frame} with 30 rows and 8 columns:
 #'
 #' \describe{
-#'   \item{bid}{numeric; }
+#'   \item{bid}{integer; unique 5 digit identifier of all samples collected for
+#'   an acute test/sample collection period. All samples collected during that
+#'   period will have the same BID.}
 #'   \item{sex}{factor; the sex of the rat with 2 levels "Female" and "Male".}
 #'   \item{timepoint}{factor; exercise training group. Either "SED"
 #'   (sedentary) or the number of weeks of training ("1W", "2W", "4W", "8W").}
@@ -679,16 +467,18 @@
 #'   \item Corticosterone: \emph{55-CORMS-E01}
 #' }
 #'
+#' @md
+#'
 #' @keywords datasets
 "PLASMA_ANALYTES"
 
 
 #' @title Plasma analyte statistical analyses
 #'
-#' @description Statistical analyses of most clinical analytes described in \code{\link[MotrpacRatTraining6moWATData]{PLASMA_ANALYTES}}
+#' @description Statistical analyses of most clinical analytes described in
+#'   \code{\link[MotrpacRatTraining6moWATData]{PLASMA_ANALYTES}}.
 #'
-#' @usage
-#' PLASMA_ANALYTE_STATS
+#' @usage PLASMA_ANALYTE_STATS
 #'
 #' @keywords datasets
 "PLASMA_ANALYTE_STATS"

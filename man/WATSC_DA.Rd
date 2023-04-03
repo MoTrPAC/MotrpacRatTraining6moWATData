@@ -22,7 +22,7 @@ A named list of 3 \code{data.frame} objects:
     contrasts.}
   }
 
-  In addition to all columns present in the \code{MSnbase::fData} tables,
+  In addition to all columns present in the \code{Biobase::fData} tables,
   each \code{data.frame} contains the following 8 variables:
 
   \describe{
@@ -54,7 +54,7 @@ Differential analysis of proteins, transcripts, phosphorylation
 \details{
 Differential analysis was performed with
   \code{\link[MotrpacRatTraining6moWAT:limma_full]{MotrpacRatTraining6moWAT::limma_full}}
-  on the \code{MSnSet} objects.
+  on the \code{ExpressionSet} objects.
 }
 \examples{
 ## Number of differential features (-ome-wide FDR < 0.05)
@@ -72,7 +72,7 @@ f1(METAB_DA)    # Metabolites
 \seealso{
 \code{\link[limma]{topTable}},
   \code{\link[MotrpacRatTraining6moWAT]{limma_full}},
-  \code{\link{PROT_MSNSET}}, \code{\link{PHOSPHO_MSNSET}},
-  \code{\link{TRNSCRPT_MSNSET}}, \code{\link{METAB_MSNSET}}
+  \code{\link{PROT_EXP}}, \code{\link{PHOSPHO_EXP}},
+  \code{\link{TRNSCRPT_EXP}}, \code{\link{METAB_EXP}}
 }
 \keyword{datasets}

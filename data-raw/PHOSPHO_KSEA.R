@@ -50,7 +50,7 @@ human_uniprot_to_symbol <- PSP_KINASE_SUBSTRATE %>%
   deframe()
 
 # Map human to rat sites (single-site level)
-human_to_rat <- fData(PHOSPHO_MSNSET) %>%
+human_to_rat <- fData(PHOSPHO_EXP) %>%
   filter(!is.na(human_uniprot)) %>%
   separate_rows(site, human_site, sep = ";") %>%
   transmute(human = paste0(human_uniprot, "_", human_site),

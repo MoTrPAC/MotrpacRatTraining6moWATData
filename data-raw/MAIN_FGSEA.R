@@ -52,7 +52,7 @@ usethis::use_data(TRNSCRPT_FGSEA, internal = FALSE, overwrite = TRUE,
 
 ## Proteomics --------------------------------------------------------
 # Entrez to gene symbol conversion vector for leading edge
-PROT_entrez_to_symbol <- fData(PROT_MSNSET) %>%
+PROT_entrez_to_symbol <- fData(PROT_EXP) %>%
   select(entrez_gene, gene_symbol) %>%
   distinct() %>%
   deframe()
@@ -99,7 +99,7 @@ usethis::use_data(PROT_FGSEA, internal = FALSE, overwrite = TRUE,
 # will still result in a group of just acyl carnitines).
 
 # Reformat fData for use with fgsea2
-REFMET_SUBCLASSES <- fData(METAB_MSNSET) %>%
+REFMET_SUBCLASSES <- fData(METAB_EXP) %>%
   group_by(refmet_sub_class) %>%
   summarise(feature = list(feature_ID)) %>%
   mutate(gs_subcat = "refmet_sub_class",
