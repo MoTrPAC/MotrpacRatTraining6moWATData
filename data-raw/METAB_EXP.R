@@ -1,7 +1,6 @@
 library(MotrpacRatTraining6moData)
 library(tidyverse)
 library(Biobase)
-library(ggplot2)
 
 ## Remove redundant metabolites ----
 

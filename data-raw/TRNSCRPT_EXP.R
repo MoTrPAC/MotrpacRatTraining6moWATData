@@ -1,7 +1,7 @@
 library(MotrpacRatTraining6moData)
 library(dplyr)
 library(edgeR)
-library(MSnbase)
+library(Biobase)
 
 
 # Phenodata
