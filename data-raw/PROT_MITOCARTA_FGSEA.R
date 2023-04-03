@@ -43,7 +43,7 @@ MITOCARTA_PATHWAYS <- PROT_MITOCARTA %>%
 
 ## FGSEA
 PROT_MITOCARTA_FGSEA <- map(PROT_DA, function(res_i) {
-  stats <- get_ranking(res_i, genes = "entrez_gene")
+  stats <- rank_genes(res_i, genes = "entrez_gene")
 
   map(names(stats), function(contrast_i) {
     message(contrast_i)

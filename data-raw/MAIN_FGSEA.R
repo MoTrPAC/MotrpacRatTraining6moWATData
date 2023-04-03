@@ -33,7 +33,7 @@ table(TRNSCRPT_MSIGDB$gs_subcat) # how many gene sets remain?
 # FGSEA
 TRNSCRPT_FGSEA <- map(TRNSCRPT_DA_SEP, function(res_i) {
   fgsea2(pathways = TRNSCRPT_MSIGDB,
-         stats = get_ranking(res_i, genes = "entrez_gene"),
+         stats = rank_genes(res_i, genes = "entrez_gene"),
          seed = 0, nPermSimple = 10000,
          adjust.globally = TRUE, nproc = 1) %>%
     # Map Entrez IDs in leading edge subset to gene symbols
@@ -74,7 +74,7 @@ table(PROT_MSIGDB$gs_subcat) # how many gene sets remain?
 # FGSEA
 PROT_FGSEA <- map(PROT_DA, function(res_i) {
   fgsea2(pathways = PROT_MSIGDB,
-         stats = get_ranking(res_i, genes = "entrez_gene"),
+         stats = rank_genes(res_i, genes = "entrez_gene"),
          seed = 0, nPermSimple = 10000,
          adjust.globally = TRUE, nproc = 1) %>%
     # Map Entrez IDs in leading edge subset to gene symbols
@@ -114,7 +114,7 @@ nrow(REFMET_SUBCLASSES) # 19
 METAB_FGSEA <- map(METAB_DA, function(res_i) {
   fgsea2(pathways = REFMET_SUBCLASSES,
          gene_column = "feature",
-         stats = get_ranking(res_i, genes = "feature"),
+         stats = rank_genes(res_i, genes = "feature"),
          seed = 0, nPermSimple = 10000,
          adjust.globally = TRUE, nproc = 1) %>%
     # Reorder columns

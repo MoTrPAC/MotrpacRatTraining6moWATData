@@ -62,11 +62,11 @@ human_to_rat <- fData(PHOSPHO_EXP) %>%
 PHOSPHO_KSEA <- map(human_res, function(res_i)
 {
   # Ranking metric is weighted more heavily by singly-phosphorylated peptides
-  # rank_list <- get_ranking(res_i, genes = "human_feature",
+  # rank_list <- rank_genes(res_i, genes = "human_feature",
   #                          metric = "-log10(P.Value)*sign(logFC)/num_sites")
 
   # Ranking metric is weighted equally (default metric)
-  rank_list <- get_ranking(res_i, genes = "human_feature")
+  rank_list <- rank_genes(res_i, genes = "human_feature")
 
   map(names(rank_list), function(contr_i) {
     set.seed(0)
