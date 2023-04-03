@@ -1,17 +1,17 @@
 var	labelDescription
 pid	integer; randomly generated 8-digit identifier used in linkage to phenotypic data. All samples from the same animal have the same PID.
 bid	integer; unique 5 digit identifier of all samples collected for an acute test/sample collection period. All samples collected during that period will have the same BID.
-labelid	"integer; unique 11 digit specimen label identifier, originating at the collection site, that provides a link to specimen processing and is used for shipments to the biorepository. Same as viallabel only in instances where aliquots are not further processed at the biorepository."
+labelid	integer; unique 11 digit specimen label identifier, originating at the collection site, that provides a link to specimen processing and is used for shipments to the biorepository. Same as viallabel only in instances where aliquots are not further processed at the biorepository.
 viallabel	character; unique 11 digit sample vial identifier. Starts with the bid.
-sex	"factor; the sex of the rat with levels ""Female"" and ""Male""."
-timepoint	"factor; exercise training group. Either ""SED"" (sedentary) or the number of weeks of training (""1W"", ""2W"", ""4W"", ""8W"")."
-exp_group	factor; experimental group. Unique combination of sex (first letter) and timepoint.
+sex	factor; the sex of the rat with levels "Female" and "Male".
+timepoint	factor; exercise training group. Either "SED" (sedentary) or the number of weeks of training ("1W", "2W", "4W", "8W").
+exp_group	factor; experimental group. Unique combination of sex (first letter) and timepoint.
 gene_symbol	character; official gene symbol.
 entrez_gene	integer; Entrez gene identifier.
-site	"character; phosphorylation site(s) extracted from feature_ID column and stripped of trailing lowercase amino acid letters (s, t, y). Multiple sites are separated by semicolons."
+site	character; phosphorylation site(s) extracted from feature_ID column and stripped of trailing lowercase amino acid letters (s, t, y). Multiple sites are separated by semicolons.
 human_feature_ID	character; human UniProt accession followed by an underscore and positions of phosphorylation.
-human_uniprot	character; human UniProt accession extracted from human_feature_ID column.
-human_site	"character; human phosphorylation site(s) extracted from human_feature_ID column and stripped of trailing lowercase amino acid letters (s, t, y). Multiple sites are separated by semicolons."
+human_uniprot	character; human UniProt accession extracted from human_feature_ID column.
+human_site	character; human phosphorylation site(s) extracted from human_feature_ID column and stripped of trailing lowercase amino acid letters (s, t, y). Multiple sites are separated by semicolons.
 rin	numeric; RNA integrity number (RIN).
 pct_globin	numeric; percent of reads mapping to globin.
 pct_umi_dup	numeric; percent of PCR duplicates as quantified with Unique Molecular Identifiers (UMIs).
