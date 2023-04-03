@@ -362,6 +362,11 @@
 
 ## Miscellaneous ---------------------------------------------------------------
 
+#' @title Phenotype Measures
+#'
+#' @keywords datasets
+"WATSC_PHENO"
+
 #' @title Metabolomics triacylglyceride concentration
 #'
 #' @keywords datasets
