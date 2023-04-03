@@ -43,7 +43,7 @@ Suggests:
     emmeans,
     MASS,
     MotrpacRatTraining6moData (>= 1.7.0),
-    MotrpacRatTraining6moWAT,
+    MotrpacRatTraining6moWAT (>= 0.1.0),
     purrr,
     tibble,
     tidyr
