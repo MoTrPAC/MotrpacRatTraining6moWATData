@@ -63,21 +63,21 @@ f_data[f_data == ""] <- NA
 p_data <- PHENO %>%
   filter(tissue == "WAT-SC",
          grepl("georgia tech", biclabeldata.shiptositeid)) %>%
-  select(pid, bid, labelid, sex, timepoint = group) %>%
+  dplyr::select(pid, bid, viallabel, sex, timepoint = group) %>%
   mutate(sex = factor(sex,
                       levels = c("female", "male"),
                       labels = c("Female", "Male")),
          timepoint = ifelse(timepoint == "control", "SED",
                             toupper(timepoint)),
          timepoint = factor(timepoint,
-                            levels = c("SED", paste0(2^(0:3), "W"))),
+                            levels = c("SED", paste0(2 ^ (0:3), "W"))),
          exp_group = paste(substr(sex, 1, 1), timepoint, sep = "_")) %>%
   arrange(sex, timepoint) %>%
   mutate(exp_group = factor(exp_group, levels = unique(exp_group))) %>%
-  `rownames<-`(.[["labelid"]])
+  `rownames<-`(.[["pid"]])
 
 # Viallabel to labelid conversion table for expression data (next step)
-vial_to_label <- select(PHENO, viallabel, labelid) %>%
+vial_to_pid <- select(PHENO, viallabel, pid) %>%
   mutate(across(.fns = as.character))
 
 # Normalized expression data
@@ -92,11 +92,12 @@ expr_mat <- METAB_NORM_DATA_NESTED %>%
              by = c("feature_ID", "dataset")) %>%
   pivot_longer(cols = -c(feature_ID, dataset),
                names_to = "viallabel") %>%
-  left_join(vial_to_label, by = "viallabel") %>%
-  select(-c(viallabel, dataset)) %>%
+  left_join(vial_to_pid, by = "viallabel") %>%
+  dplyr::select(-c(viallabel, dataset)) %>%
   filter(!is.na(value)) %>%
   pivot_wider(id_cols = feature_ID,
-              values_from = value, names_from = labelid) %>%
+              values_from = value,
+              names_from = pid) %>%
   column_to_rownames("feature_ID") %>%
   as.matrix() %>%
   .[rownames(f_data), rownames(p_data)]
@@ -122,8 +123,7 @@ expr_mat <- METAB_NORM_DATA_NESTED %>%
 #   .[f_data$feature_ID, rownames(p_data)]
 
 ## Create ExpressionSet object
-data_dict <- read.delim(file.path("data-raw", "data_dictionary.txt"),
-                        row.names = 1) %>%
+data_dict <- read.delim(file.path("data-raw", "data_dictionary.txt")) %>%
   tibble::deframe()
 
 phenoData <- AnnotatedDataFrame(data = p_data)
