@@ -5,7 +5,7 @@
 \alias{METAB_TG_CONC}
 \title{Metabolomics triacylglyceride concentration}
 \format{
-An object of class \code{MSnSet} with 190 rows and 10 columns.
+An object of class \code{ExpressionSet} with 190 rows and 10 columns.
 }
 \usage{
 METAB_TG_CONC
