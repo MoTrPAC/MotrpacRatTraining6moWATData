@@ -27,7 +27,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           dependencies: '"soft"'
-          extra-packages: any::XML, any::rcmdcheck, local::.
+          extra-packages: any::XML, any::rcmdcheck, any::pkgdown, local::.
           needs: check, website
           pak-version: devel
 
