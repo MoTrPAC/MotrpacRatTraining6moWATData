@@ -2,7 +2,7 @@ Package: MotrpacRatTraining6moWATData
 Type: Package
 Title: Data and Analysis Results for the MoTrPAC PASS1B Rat White Adipose Tissue 
     Companion Paper
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: 
   c(
     person(given = "Tyler J.", family = "Sagendorf",
@@ -38,12 +38,12 @@ LazyDataCompression: bzip2
 Depends: 
     R (>= 3.5.0)
 Suggests:
+    Biobase,
     dplyr,
     emmeans,
     MASS,
     MotrpacRatTraining6moData (>= 1.7.0),
-    MotrpacRatTraining6moWAT,
-    MSnbase,
+    MotrpacRatTraining6moWAT (>= 0.1.0),
     purrr,
     tibble,
     tidyr

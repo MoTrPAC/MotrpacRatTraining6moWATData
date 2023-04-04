@@ -8,7 +8,9 @@
 \code{data.frame} with 30 rows and 8 columns:
 
 \describe{
-  \item{bid}{numeric; }
+  \item{bid}{integer; unique 5 digit identifier of all samples collected for
+  an acute test/sample collection period. All samples collected during that
+  period will have the same BID.}
   \item{sex}{factor; the sex of the rat with 2 levels "Female" and "Male".}
   \item{timepoint}{factor; exercise training group. Either "SED"
   (sedentary) or the number of weeks of training ("1W", "2W", "4W", "8W").}

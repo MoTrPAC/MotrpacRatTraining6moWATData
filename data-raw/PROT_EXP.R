@@ -1,7 +1,6 @@
 library(MotrpacRatTraining6moData)
 library(dplyr)
-library(MSnbase)
-
+library(Biobase)
 
 # Phenodata
 p_data <- PHENO %>%
@@ -49,10 +48,24 @@ table(is.na(f_data$entrez_gene))
 # FALSE
 #  9964
 
-# Create MSnset
-PROT_MSNSET <- MSnSet(exprs = expr_mat, fData = f_data, pData = p_data)
+## Create ExpressionSet object
+data_dict <- read.delim(file.path("data-raw", "data_dictionary.txt"),
+                        row.names = 1) %>%
+  tibble::deframe()
+
+phenoData <- AnnotatedDataFrame(data = p_data)
+varMetadata(phenoData)[["labelDescription"]] <- data_dict[colnames(p_data)]
+
+featureData <- AnnotatedDataFrame(data = f_data)
+varMetadata(featureData)[["labelDescription"]] <-
+  c("character; Reference Sequence (RefSeq) protein identifier.",
+    data_dict[colnames(f_data)][-1])
+
+PROT_EXP <- ExpressionSet(assayData = expr_mat,
+                          phenoData = phenoData,
+                          featureData = featureData)
 
 # Save
-usethis::use_data(PROT_MSNSET, internal = FALSE, overwrite = TRUE,
+usethis::use_data(PROT_EXP, internal = FALSE, overwrite = TRUE,
                   version = 3, compress = "bzip2")
 

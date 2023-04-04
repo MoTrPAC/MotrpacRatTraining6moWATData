@@ -50,7 +50,7 @@ human_uniprot_to_symbol <- PSP_KINASE_SUBSTRATE %>%
   deframe()
 
 # Map human to rat sites (single-site level)
-human_to_rat <- fData(PHOSPHO_MSNSET) %>%
+human_to_rat <- fData(PHOSPHO_EXP) %>%
   filter(!is.na(human_uniprot)) %>%
   separate_rows(site, human_site, sep = ";") %>%
   transmute(human = paste0(human_uniprot, "_", human_site),
@@ -62,11 +62,11 @@ human_to_rat <- fData(PHOSPHO_MSNSET) %>%
 PHOSPHO_KSEA <- map(human_res, function(res_i)
 {
   # Ranking metric is weighted more heavily by singly-phosphorylated peptides
-  # rank_list <- get_ranking(res_i, genes = "human_feature",
+  # rank_list <- rank_genes(res_i, genes = "human_feature",
   #                          metric = "-log10(P.Value)*sign(logFC)/num_sites")
 
   # Ranking metric is weighted equally (default metric)
-  rank_list <- get_ranking(res_i, genes = "human_feature")
+  rank_list <- rank_genes(res_i, genes = "human_feature")
 
   map(names(rank_list), function(contr_i) {
     set.seed(0)

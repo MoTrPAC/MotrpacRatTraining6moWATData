@@ -15,11 +15,20 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/actions/workflows/R-CMD-check.yaml)
+![R package version](https://img.shields.io/github/r-package/v/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData?label=R%20package)
+[![R-CMD-check](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/actions/workflows/check-and-pkgdown.yaml)
+![Last commit](https://img.shields.io/github/last-commit/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/master)
 
 <!-- badges: end -->
 
-Contains data and code necessary to reproduce analyses.
+Contains data and code necessary to reproduce analyses that appear in "Sexual dimorphism and the multi-omic response to exercise training in rat subcutaneous white adipose tissue" (<https://doi.org/10.1101/2023.02.03.527012>).
+
+* Differential analysis of transcriptomics, proteomics, phosphoproteomics, and metabolomics subcutaneous white adipose tissue -omics datasets.
+* Enrichment analyses (FGSEA or KSEA) for each -ome.
+* Weighted Gene Co-expression Network Analysis for all -omes excluding proteomics.
+* Over-representation analysis (ORA) performed on WGCNA modules/clusters.
+
+The [data-raw/](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/tree/master/data-raw) folder contains code to reproduce all analyses. Most R script names match the objects they create, though some scripts create multiple objects (such as WATSC_DA.R), and so are given more general names. Code to reproduce figures will likely be added as vignettes at a later date.
 
 ## Installation
 
@@ -31,30 +40,27 @@ devtools::install_github("PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData")
 
 The [MotrpacRatTraining6moWAT](https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWAT/){target="_blank"} R package contains helper functions for analysis and visualization of the data contained in MotrpacRatTraining6moWATData.
 
-## References
+## Getting Help
 
-1.  MoTrPAC Study Group *et al.* Temporal dynamics of the multi-omic response to endurance exercise training across tissues. *bioRxiv* 2022.09.21.508770 (2022) <https://doi.org/10.1101/2022.09.21.508770>.
+For questions, bug reporting, and data requests for this package, please 
+[submit a new issue](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/issues){target="_blank"} 
+and include as many details as possible. 
 
-2.  Gay N, Jean Beltran P, Amar D, Jimenez-Morales D, MoTrPAC Study Group (2023). *MotrpacRatTraining6moData: Data for analysis of the MoTrPAC endurance exercise training study in 6-month-old rats.* <https://motrpac.github.io/MotrpacRatTraining6moData/>, <https://github.com/MoTrPAC/MotrpacRatTraining6moData>.
+If the concern is related to functions provided in the 
+[MotrpacRatTraining6moWAT](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWAT){target="_blank"}
+package, please submit an issue 
+[here](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWAT/issues){target="_blank"} instead.
 
-3.  Dolgalev, I. (2022). msigdbr: MSigDB Gene Sets for Multiple Organisms in a Tidy Data Format. R package version 7.5.1, <https:://igordot.github.io/msigdbr>
+## Acknowledgements 
 
-4.  Horvath, S. (2011). Weighted Network Analysis. *Springer New York*. <https://doi.org/10.1007/978-1-4419-8819-5>
+MoTrPAC is supported by the National Institutes of Health (NIH) Common
+Fund through cooperative agreements managed by the National Institute of Diabetes and Digestive and Kidney Diseases (NIDDK), National Institute of Arthritis and Musculoskeletal Diseases (NIAMS), and National Institute on Aging (NIA). 
 
-5.  Langfelder P and Horvath S, WGCNA: an R package for weighted correlation network analysis. *BMC Bioinformatics 2008*, 9:559 <https://doi.org/10.1186/1471-2105-9-559>
+Specifically, the MoTrPAC Study is supported by NIH grants U24OD026629 (Bioinformatics Center), U24DK112349, U24DK112342, U24DK112340, U24DK112341, U24DK112326, U24DK112331, U24DK112348 (Chemical Analysis Sites), U01AR071133, U01AR071130, U01AR071124, U01AR071128, U01AR071150, U01AR071160, U01AR071158 (Clinical Centers), U24AR071113 (Consortium Coordinating Center), U01AG055133, U01AG055137 and U01AG055135 (PASS/Animal Sites).
 
-6.  Law, C. W., Alhamdoosh, M., Su, S., Dong, X., Tian, L., Smyth, G. K., & Ritchie, M. E. (2016). RNA-seq analysis is easy as 1-2-3 with limma, Glimma and edgeR. *F1000Research, 5*, ISCB Comm J-1408. <https://doi.org/10.12688/f1000research.9005.3>
+## Data Use Agreement 
 
-7.  Liberzon, A., Birger, C., Thorvaldsdóttir, H., Ghandi, M., Mesirov, J. P., & Tamayo, P. (2015). The Molecular Signatures Database (MSigDB) hallmark gene set collection. *Cell systems*, *1*(6), 417--425. <https://doi.org/10.1016/j.cels.2015.12.004>
+Recipients and their Agents agree that in publications using **any** data from MoTrPAC public-use data sets they will acknowledge MoTrPAC as the source of data, including the version number of the data sets used, e.g.:
 
-8.  Liu, R., Holik, A. Z., Su, S., Jansz, N., Chen, K., Leong, H. S., Blewitt, M. E., Asselin-Labat, M. L., Smyth, G. K., & Ritchie, M. E. (2015). Why weight? Modelling sample and observational level variability improves power in RNA-seq analyses. *Nucleic acids research*, *43*(15), e97. <https://doi.org/10.1093/nar/gkv412>
-
-9.  Peter Langfelder, Steve Horvath (2012). Fast R Functions for Robust Correlations and Hierarchical Clustering. *Journal of Statistical Software*, *46*(11), 1--17. <http://www.jstatsoft.org/v46/i11/>
-
-10. Phipson, B., Lee, S., Majewski, I. J., Alexander, W. S., & Smyth, G. K. (2016). ROBUST HYPERPARAMETER ESTIMATION PROTECTS AGAINST HYPERVARIABLE GENES AND IMPROVES POWER TO DETECT DIFFERENTIAL EXPRESSION. *The annals of applied statistics*, *10*(2), 946--963. <https://doi.org/10.1214/16-AOAS920>
-
-11. Smyth G. K. (2004). Linear models and empirical bayes methods for assessing differential expression in microarray experiments. *Statistical applications in genetics and molecular biology*, *3*, Article3. <https://doi.org/10.2202/1544-6115.1027>
-
-12. Smyth, G. K., Michaud, J., and Scott, H. (2005). The use of within-array replicate spots for assessing differential expression in microarray experiments. *Bioinformatics 21*(9), 2067--2075. <http://bioinformatics.oxfordjournals.org/content/21/9/2067> Preprint with corrections: <http://www.statsci.org/smyth/pubs/dupcor.pdf>
-
-13. Zhang, B., & Horvath, S. (2005). A general framework for weighted gene co-expression network analysis. *Statistical applications in genetics and molecular biology*, *4*, Article17. <https://doi.org/10.2202/1544-6115.1128>
+* Data used in the preparation of this article were obtained from the Molecular Transducers of Physical Activity Consortium (MoTrPAC) database, which is available for public access at [motrpac-data.org](motrpac-data.org). Specific datasets used are [version numbers].
+* Data used in the preparation of this article were obtained from the Molecular Transducers of Physical Activity Consortium (MoTrPAC) MotrpacRatTraining6moWATData R package [version number]. 

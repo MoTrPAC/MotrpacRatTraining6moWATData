@@ -1,6 +1,6 @@
 library(MotrpacRatTraining6moWATData)
 library(tidyverse)
-library(MSnbase)
+library(Biobase)
 
 ## See landscape paper methods "Non-targeted LC-MS/MS lipidomics"
 
@@ -8,13 +8,14 @@ library(MSnbase)
 conc_data <- file.path("data-raw", "WAT_TAG_concentration.csv") %>%
   read.csv(check.names = FALSE) %>%
   dplyr::rename(bid = vialLabel) %>%
-  dplyr::select(bid, any_of(featureNames(METAB_MSNSET))) %>%
+  dplyr::select(bid, any_of(featureNames(METAB_EXP))) %>%
   column_to_rownames("bid") %>%
   t() %>%
-  .[, as.character(METAB_MSNSET$bid)]
+  .[, as.character(METAB_EXP$bid)] %>%
+  `colnames<-`(sampleNames(METAB_EXP))
 
-# Create MSnSet
-METAB_TG_CONC <- METAB_MSNSET[rownames(conc_data), colnames(conc_data)]
+# Create ExpressionSet
+METAB_TG_CONC <- METAB_EXP[rownames(conc_data), ]
 
 exprs(METAB_TG_CONC) <- conc_data
 
@@ -24,7 +25,7 @@ pData(METAB_TG_CONC) <- pData(METAB_TG_CONC) %>%
   transmute(median_total_TG = median(total_TG)) %>%
   ungroup() %>%
   as.data.frame() %>%
-  `rownames<-`(sampleNames(METAB_TG_CONC))
+  `rownames<-`(sampleNames(METAB_EXP))
 
 METAB_TG_CONC <- METAB_TG_CONC[, order(METAB_TG_CONC$exp_group)]
 
@@ -35,17 +36,20 @@ fData(METAB_TG_CONC) <- fData(METAB_TG_CONC) %>%
 
 # Extract median values and standardize for heatmap
 METAB_TG_CONC <- METAB_TG_CONC %>%
+  as.MSnSet.ExpressionSet() %>%
   t() %>%
   combineFeatures(groupBy = METAB_TG_CONC$exp_group,
                   method = median,
                   cv = FALSE) %>%
   scale() %>%
   t() %>%
-  .[, levels(METAB_MSNSET$exp_group)]
+  .[, levels(METAB_EXP$exp_group)] %>%
+  as.ExpressionSet.MSnSet()
 
 # Convert characters back to factors
 pData(METAB_TG_CONC) <- pData(METAB_TG_CONC) %>%
-  mutate(across(where(is.character), ~ factor(.x, levels = unique(.x))))
+  mutate(across(.cols = where(is.character),
+                .fns = ~ factor(.x, levels = unique(.x))))
 
 # Save
 usethis::use_data(METAB_TG_CONC, internal = FALSE, overwrite = TRUE,

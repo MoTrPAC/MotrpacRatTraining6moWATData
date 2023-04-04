@@ -5,12 +5,12 @@ template:
 reference:
 - title: Input Data
 
-- subtitle: MSnSet Objects
+- subtitle: ExpressionSet Objects
   contents:
-  - TRNSCRPT_MSNSET
-  - PROT_MSNSET
-  - PHOSPHO_MSNSET
-  - METAB_MSNSET
+  - TRNSCRPT_EXP
+  - PROT_EXP
+  - PHOSPHO_EXP
+  - METAB_EXP
 
 - subtitle: FGSEA Feature Sets
   desc: Gene Ontology terms and kinase sets for FGSEA.
@@ -29,8 +29,8 @@ reference:
   contents:
   - GO_FGSEA
   - PROT_MITOCARTA_FGSEA
-  - PHOSPHO_KSEA
   - METAB_FGSEA
+  - PHOSPHO_KSEA
 
 - subtitle: WGCNA
   desc: Weighted Gene Co-Expression Network Analysis (WGCNA).
@@ -51,3 +51,4 @@ reference:
   - PLASMA_ANALYTE_STATS
   - ADIPOCYTE_SIZE
   - ADIPOCYTE_SIZE_STATS
+  - WATSC_PHENO

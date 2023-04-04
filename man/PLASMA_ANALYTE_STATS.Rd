@@ -11,6 +11,7 @@ An object of class \code{data.table} (inherits from \code{data.frame}) with 66 r
 PLASMA_ANALYTE_STATS
 }
 \description{
-Statistical analyses of most clinical analytes described in \code{\link[MotrpacRatTraining6moWATData]{PLASMA_ANALYTES}}
+Statistical analyses of most clinical analytes described in
+  \code{\link[MotrpacRatTraining6moWATData]{PLASMA_ANALYTES}}.
 }
 \keyword{datasets}

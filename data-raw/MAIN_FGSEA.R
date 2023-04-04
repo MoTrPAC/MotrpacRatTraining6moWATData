@@ -33,7 +33,7 @@ table(TRNSCRPT_MSIGDB$gs_subcat) # how many gene sets remain?
 # FGSEA
 TRNSCRPT_FGSEA <- map(TRNSCRPT_DA_SEP, function(res_i) {
   fgsea2(pathways = TRNSCRPT_MSIGDB,
-         stats = get_ranking(res_i, genes = "entrez_gene"),
+         stats = rank_genes(res_i, genes = "entrez_gene"),
          seed = 0, nPermSimple = 10000,
          adjust.globally = TRUE, nproc = 1) %>%
     # Map Entrez IDs in leading edge subset to gene symbols
@@ -52,7 +52,7 @@ usethis::use_data(TRNSCRPT_FGSEA, internal = FALSE, overwrite = TRUE,
 
 ## Proteomics --------------------------------------------------------
 # Entrez to gene symbol conversion vector for leading edge
-PROT_entrez_to_symbol <- fData(PROT_MSNSET) %>%
+PROT_entrez_to_symbol <- fData(PROT_EXP) %>%
   select(entrez_gene, gene_symbol) %>%
   distinct() %>%
   deframe()
@@ -74,7 +74,7 @@ table(PROT_MSIGDB$gs_subcat) # how many gene sets remain?
 # FGSEA
 PROT_FGSEA <- map(PROT_DA, function(res_i) {
   fgsea2(pathways = PROT_MSIGDB,
-         stats = get_ranking(res_i, genes = "entrez_gene"),
+         stats = rank_genes(res_i, genes = "entrez_gene"),
          seed = 0, nPermSimple = 10000,
          adjust.globally = TRUE, nproc = 1) %>%
     # Map Entrez IDs in leading edge subset to gene symbols
@@ -99,7 +99,7 @@ usethis::use_data(PROT_FGSEA, internal = FALSE, overwrite = TRUE,
 # will still result in a group of just acyl carnitines).
 
 # Reformat fData for use with fgsea2
-REFMET_SUBCLASSES <- fData(METAB_MSNSET) %>%
+REFMET_SUBCLASSES <- fData(METAB_EXP) %>%
   group_by(refmet_sub_class) %>%
   summarise(feature = list(feature_ID)) %>%
   mutate(gs_subcat = "refmet_sub_class",
@@ -114,7 +114,7 @@ nrow(REFMET_SUBCLASSES) # 19
 METAB_FGSEA <- map(METAB_DA, function(res_i) {
   fgsea2(pathways = REFMET_SUBCLASSES,
          gene_column = "feature",
-         stats = get_ranking(res_i, genes = "feature"),
+         stats = rank_genes(res_i, genes = "feature"),
          seed = 0, nPermSimple = 10000,
          adjust.globally = TRUE, nproc = 1) %>%
     # Reorder columns
