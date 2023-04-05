@@ -5,7 +5,7 @@
 
 ![R package
 version](https://img.shields.io/github/r-package/v/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData?label=R%20package)
-[![R-CMD-check](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/actions/workflows/check-and-pkgdown.yaml)
+[![R-CMD-check](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/actions/workflows/check-and-pkgdown.yaml/badge.svg)](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/actions/workflows/check-and-pkgdown.yaml)
 ![Last
 commit](https://img.shields.io/github/last-commit/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/master)
 
