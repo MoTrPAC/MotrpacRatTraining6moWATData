@@ -32,7 +32,7 @@
     
     <a class="navbar-brand me-2" href="index.html">MotrpacRatTraining6moWATData</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,14 @@
 <!-- badges: start -->
 
 <!-- badges: end -->
-<p>Contains data and code necessary to reproduce analyses.</p>
+<p>Contains data and code necessary to reproduce analyses that appear in “Sexual dimorphism and the multi-omic response to exercise training in rat subcutaneous white adipose tissue” (<a href="https://doi.org/10.1101/2023.02.03.527012" class="external-link uri">https://doi.org/10.1101/2023.02.03.527012</a>).</p>
+<ul>
+<li>Differential analysis of transcriptomics, proteomics, phosphoproteomics, and metabolomics subcutaneous white adipose tissue -omics datasets.</li>
+<li>Enrichment analyses (FGSEA or KSEA) for each -ome.</li>
+<li>Weighted Gene Co-expression Network Analysis for all -omes excluding proteomics.</li>
+<li>Over-representation analysis (ORA) performed on WGCNA modules/clusters.</li>
+</ul>
+<p>The <a href="https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/tree/master/data-raw" class="external-link">data-raw/</a> folder contains code to reproduce all analyses. Most R script names match the objects they create, though some scripts create multiple objects (such as WATSC_DA.R), and so are given more general names. Code to reproduce figures will likely be added as vignettes at a later date.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -82,23 +89,25 @@
 <p>The <a href="https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWAT/" target="_blank" class="external-link">MotrpacRatTraining6moWAT</a> R package contains helper functions for analysis and visualization of the data contained in MotrpacRatTraining6moWATData.</p>
 </div>
 <div class="section level2">
-<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+<h2 id="getting-help">Getting Help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
 </h2>
-<ol style="list-style-type: decimal">
-<li><p>MoTrPAC Study Group <em>et al.</em> Temporal dynamics of the multi-omic response to endurance exercise training across tissues. <em>bioRxiv</em> 2022.09.21.508770 (2022) <a href="https://doi.org/10.1101/2022.09.21.508770" class="external-link uri">https://doi.org/10.1101/2022.09.21.508770</a>.</p></li>
-<li><p>Gay N, Jean Beltran P, Amar D, Jimenez-Morales D, MoTrPAC Study Group (2023). <em>MotrpacRatTraining6moData: Data for analysis of the MoTrPAC endurance exercise training study in 6-month-old rats.</em> <a href="https://motrpac.github.io/MotrpacRatTraining6moData/" class="external-link uri">https://motrpac.github.io/MotrpacRatTraining6moData/</a>, <a href="https://github.com/MoTrPAC/MotrpacRatTraining6moData" class="external-link uri">https://github.com/MoTrPAC/MotrpacRatTraining6moData</a>.</p></li>
-<li><p>Dolgalev, I. (2022). msigdbr: MSigDB Gene Sets for Multiple Organisms in a Tidy Data Format. R package version 7.5.1, <a href="https:://igordot.github.io/msigdbr" class="uri">https:://igordot.github.io/msigdbr</a></p></li>
-<li><p>Horvath, S. (2011). Weighted Network Analysis. <em>Springer New York</em>. <a href="https://doi.org/10.1007/978-1-4419-8819-5" class="external-link uri">https://doi.org/10.1007/978-1-4419-8819-5</a></p></li>
-<li><p>Langfelder P and Horvath S, WGCNA: an R package for weighted correlation network analysis. <em>BMC Bioinformatics 2008</em>, 9:559 <a href="https://doi.org/10.1186/1471-2105-9-559" class="external-link uri">https://doi.org/10.1186/1471-2105-9-559</a></p></li>
-<li><p>Law, C. W., Alhamdoosh, M., Su, S., Dong, X., Tian, L., Smyth, G. K., &amp; Ritchie, M. E. (2016). RNA-seq analysis is easy as 1-2-3 with limma, Glimma and edgeR. <em>F1000Research, 5</em>, ISCB Comm J-1408. <a href="https://doi.org/10.12688/f1000research.9005.3" class="external-link uri">https://doi.org/10.12688/f1000research.9005.3</a></p></li>
-<li><p>Liberzon, A., Birger, C., Thorvaldsdóttir, H., Ghandi, M., Mesirov, J. P., &amp; Tamayo, P. (2015). The Molecular Signatures Database (MSigDB) hallmark gene set collection. <em>Cell systems</em>, <em>1</em>(6), 417–425. <a href="https://doi.org/10.1016/j.cels.2015.12.004" class="external-link uri">https://doi.org/10.1016/j.cels.2015.12.004</a></p></li>
-<li><p>Liu, R., Holik, A. Z., Su, S., Jansz, N., Chen, K., Leong, H. S., Blewitt, M. E., Asselin-Labat, M. L., Smyth, G. K., &amp; Ritchie, M. E. (2015). Why weight? Modelling sample and observational level variability improves power in RNA-seq analyses. <em>Nucleic acids research</em>, <em>43</em>(15), e97. <a href="https://doi.org/10.1093/nar/gkv412" class="external-link uri">https://doi.org/10.1093/nar/gkv412</a></p></li>
-<li><p>Peter Langfelder, Steve Horvath (2012). Fast R Functions for Robust Correlations and Hierarchical Clustering. <em>Journal of Statistical Software</em>, <em>46</em>(11), 1–17. <a href="http://www.jstatsoft.org/v46/i11/" class="external-link uri">http://www.jstatsoft.org/v46/i11/</a></p></li>
-<li><p>Phipson, B., Lee, S., Majewski, I. J., Alexander, W. S., &amp; Smyth, G. K. (2016). ROBUST HYPERPARAMETER ESTIMATION PROTECTS AGAINST HYPERVARIABLE GENES AND IMPROVES POWER TO DETECT DIFFERENTIAL EXPRESSION. <em>The annals of applied statistics</em>, <em>10</em>(2), 946–963. <a href="https://doi.org/10.1214/16-AOAS920" class="external-link uri">https://doi.org/10.1214/16-AOAS920</a></p></li>
-<li><p>Smyth G. K. (2004). Linear models and empirical bayes methods for assessing differential expression in microarray experiments. <em>Statistical applications in genetics and molecular biology</em>, <em>3</em>, Article3. <a href="https://doi.org/10.2202/1544-6115.1027" class="external-link uri">https://doi.org/10.2202/1544-6115.1027</a></p></li>
-<li><p>Smyth, G. K., Michaud, J., and Scott, H. (2005). The use of within-array replicate spots for assessing differential expression in microarray experiments. <em>Bioinformatics 21</em>(9), 2067–2075. <a href="http://bioinformatics.oxfordjournals.org/content/21/9/2067" class="external-link uri">http://bioinformatics.oxfordjournals.org/content/21/9/2067</a> Preprint with corrections: <a href="http://www.statsci.org/smyth/pubs/dupcor.pdf" class="external-link uri">http://www.statsci.org/smyth/pubs/dupcor.pdf</a></p></li>
-<li><p>Zhang, B., &amp; Horvath, S. (2005). A general framework for weighted gene co-expression network analysis. <em>Statistical applications in genetics and molecular biology</em>, <em>4</em>, Article17. <a href="https://doi.org/10.2202/1544-6115.1128" class="external-link uri">https://doi.org/10.2202/1544-6115.1128</a></p></li>
-</ol>
+<p>For questions, bug reporting, and data requests for this package, please <a href="https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/issues" target="_blank" class="external-link">submit a new issue</a> and include as many details as possible.</p>
+<p>If the concern is related to functions provided in the <a href="https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWAT" target="_blank" class="external-link">MotrpacRatTraining6moWAT</a> package, please submit an issue <a href="https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWAT/issues" target="_blank" class="external-link">here</a> instead.</p>
+</div>
+<div class="section level2">
+<h2 id="acknowledgements">Acknowledgements<a class="anchor" aria-label="anchor" href="#acknowledgements"></a>
+</h2>
+<p>MoTrPAC is supported by the National Institutes of Health (NIH) Common Fund through cooperative agreements managed by the National Institute of Diabetes and Digestive and Kidney Diseases (NIDDK), National Institute of Arthritis and Musculoskeletal Diseases (NIAMS), and National Institute on Aging (NIA).</p>
+<p>Specifically, the MoTrPAC Study is supported by NIH grants U24OD026629 (Bioinformatics Center), U24DK112349, U24DK112342, U24DK112340, U24DK112341, U24DK112326, U24DK112331, U24DK112348 (Chemical Analysis Sites), U01AR071133, U01AR071130, U01AR071124, U01AR071128, U01AR071150, U01AR071160, U01AR071158 (Clinical Centers), U24AR071113 (Consortium Coordinating Center), U01AG055133, U01AG055137 and U01AG055135 (PASS/Animal Sites).</p>
+</div>
+<div class="section level2">
+<h2 id="data-use-agreement">Data Use Agreement<a class="anchor" aria-label="anchor" href="#data-use-agreement"></a>
+</h2>
+<p>Recipients and their Agents agree that in publications using <strong>any</strong> data from MoTrPAC public-use data sets they will acknowledge MoTrPAC as the source of data, including the version number of the data sets used, e.g.:</p>
+<ul>
+<li>Data used in the preparation of this article were obtained from the Molecular Transducers of Physical Activity Consortium (MoTrPAC) database, which is available for public access at <a href="motrpac-data.org">motrpac-data.org</a>. Specific datasets used are [version numbers].</li>
+<li>Data used in the preparation of this article were obtained from the Molecular Transducers of Physical Activity Consortium (MoTrPAC) MotrpacRatTraining6moWATData R package [version number].</li>
+</ul>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -136,7 +145,7 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/actions/workflows/check-and-pkgdown.yaml" class="external-link"><img src="https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
 

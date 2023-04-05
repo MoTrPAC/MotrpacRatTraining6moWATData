@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">MotrpacRatTraining6moWATData</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +55,9 @@
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
     <p><code>data.frame</code> with 30 rows and 8 columns:</p>
 <dl><dt>bid</dt>
-<dd><p>numeric;</p></dd>
+<dd><p>integer; unique 5 digit identifier of all samples collected for
+  an acute test/sample collection period. All samples collected during that
+  period will have the same BID.</p></dd>
 
   <dt>sex</dt>
 <dd><p>factor; the sex of the rat with 2 levels "Female" and "Male".</p></dd>
@@ -89,19 +91,19 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">MITO_DNA</span>, <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      bid sex    timepoint exp_group mean_delta_CT SE_delta_CT delta_de…¹ relat…²</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> <span style="text-decoration: underline;">90</span>245 Female SED       F_SED             -<span style="color: #BB0000;">6.10</span>     0.127      0.181     0.882</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> <span style="text-decoration: underline;">90</span>248 Female SED       F_SED             -<span style="color: #BB0000;">6.48</span>     0.081<span style="text-decoration: underline;">9</span>    -<span style="color: #BB0000;">0.207</span>     1.15 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> <span style="text-decoration: underline;">90</span>252 Female SED       F_SED             -<span style="color: #BB0000;">6.28</span>     0.133     -<span style="color: #BB0000;">0.007</span><span style="color: #BB0000; text-decoration: underline;">69</span>   1.01 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> <span style="text-decoration: underline;">90</span>265 Female SED       F_SED             -<span style="color: #BB0000;">6.82</span>     0.103     -<span style="color: #BB0000;">0.540</span>     1.45 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> <span style="text-decoration: underline;">90</span>266 Female SED       F_SED             -<span style="color: #BB0000;">5.70</span>     0.002<span style="text-decoration: underline;">73</span>    0.574     0.672</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> <span style="text-decoration: underline;">90</span>559 Female 1W        F_1W              -<span style="color: #BB0000;">5.96</span>     0.039<span style="text-decoration: underline;">2</span>     0.320     0.801</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> <span style="text-decoration: underline;">90</span>560 Female 1W        F_1W              -<span style="color: #BB0000;">6.03</span>     0.145      0.251     0.840</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> <span style="text-decoration: underline;">90</span>564 Female 1W        F_1W              -<span style="color: #BB0000;">5.72</span>     0.017<span style="text-decoration: underline;">9</span>     0.561     0.678</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> <span style="text-decoration: underline;">90</span>567 Female 1W        F_1W              -<span style="color: #BB0000;">6.36</span>     0.070<span style="text-decoration: underline;">5</span>    -<span style="color: #BB0000;">0.086</span><span style="color: #BB0000; text-decoration: underline;">4</span>    1.06 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> <span style="text-decoration: underline;">90</span>571 Female 1W        F_1W              -<span style="color: #BB0000;">6.99</span>     0.103     -<span style="color: #BB0000;">0.710</span>     1.64 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with abbreviated variable names ¹​delta_delta_CT, ²​relative_expr</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      bid sex    timepoint exp_group mean_delta_CT SE_delta_CT delta_delta_CT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> <span style="text-decoration: underline;">90</span>245 Female SED       F_SED             -<span style="color: #BB0000;">6.10</span>     0.127          0.181  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> <span style="text-decoration: underline;">90</span>248 Female SED       F_SED             -<span style="color: #BB0000;">6.48</span>     0.081<span style="text-decoration: underline;">9</span>        -<span style="color: #BB0000;">0.207</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> <span style="text-decoration: underline;">90</span>252 Female SED       F_SED             -<span style="color: #BB0000;">6.28</span>     0.133         -<span style="color: #BB0000;">0.007</span><span style="color: #BB0000; text-decoration: underline;">69</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> <span style="text-decoration: underline;">90</span>265 Female SED       F_SED             -<span style="color: #BB0000;">6.82</span>     0.103         -<span style="color: #BB0000;">0.540</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> <span style="text-decoration: underline;">90</span>266 Female SED       F_SED             -<span style="color: #BB0000;">5.70</span>     0.002<span style="text-decoration: underline;">73</span>        0.574  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> <span style="text-decoration: underline;">90</span>559 Female 1W        F_1W              -<span style="color: #BB0000;">5.96</span>     0.039<span style="text-decoration: underline;">2</span>         0.320  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> <span style="text-decoration: underline;">90</span>560 Female 1W        F_1W              -<span style="color: #BB0000;">6.03</span>     0.145          0.251  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> <span style="text-decoration: underline;">90</span>564 Female 1W        F_1W              -<span style="color: #BB0000;">5.72</span>     0.017<span style="text-decoration: underline;">9</span>         0.561  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> <span style="text-decoration: underline;">90</span>567 Female 1W        F_1W              -<span style="color: #BB0000;">6.36</span>     0.070<span style="text-decoration: underline;">5</span>        -<span style="color: #BB0000;">0.086</span><span style="color: #BB0000; text-decoration: underline;">4</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> <span style="text-decoration: underline;">90</span>571 Female 1W        F_1W              -<span style="color: #BB0000;">6.99</span>     0.103         -<span style="color: #BB0000;">0.710</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: relative_expr &lt;dbl&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

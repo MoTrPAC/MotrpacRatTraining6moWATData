@@ -25,10 +25,10 @@
     <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/GO_FGSEA.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/METAB_FGSEA.html</loc>
+    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/METAB_EXP.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/METAB_MSNSET.html</loc>
+    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/METAB_FGSEA.html</loc>
   </url>
   <url>
     <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/METAB_TG_CONC.html</loc>
@@ -40,10 +40,10 @@
     <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/MotrpacRatTraining6moWATData-package.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/PHOSPHO_KSEA.html</loc>
+    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/PHOSPHO_EXP.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/PHOSPHO_MSNSET.html</loc>
+    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/PHOSPHO_KSEA.html</loc>
   </url>
   <url>
     <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/PLASMA_ANALYTES.html</loc>
@@ -52,19 +52,22 @@
     <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/PLASMA_ANALYTE_STATS.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/PROT_MITOCARTA_FGSEA.html</loc>
+    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/PROT_EXP.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/PROT_MSNSET.html</loc>
+    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/PROT_MITOCARTA_FGSEA.html</loc>
   </url>
   <url>
     <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/PSP_KINASE_SUBSTRATE.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/TRNSCRPT_MSNSET.html</loc>
+    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/TRNSCRPT_EXP.html</loc>
   </url>
   <url>
     <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/WATSC_DA.html</loc>
+  </url>
+  <url>
+    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/WATSC_PHENO.html</loc>
   </url>
   <url>
     <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/WATSC_WGCNA.html</loc>

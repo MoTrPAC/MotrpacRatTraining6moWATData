@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">MotrpacRatTraining6moWATData</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,79 +57,79 @@
 <dl><dt><code>plate</code></dt>
 <dd><p>integer; 96-well plate identifier (1--4).</p></dd>
 
-  <dt><code>runseq</code></dt>
+<dt><code>runseq</code></dt>
 <dd><p>integer; run order (1--146).</p></dd>
 
-  <dt><code>platepos</code></dt>
+<dt><code>platepos</code></dt>
 <dd><p>integer; position in each 96-well plate.</p></dd>
 
-  <dt><code>pid</code></dt>
+<dt><code>pid</code></dt>
 <dd><p>integer; randomly generated 8-digit identifier used in
-  linkage to phenotypic data. All samples from the same animal have the same
-  PID.</p></dd>
+linkage to phenotypic data. All samples from the same animal have the same
+PID.</p></dd>
 
-  <dt><code>bid</code></dt>
+<dt><code>bid</code></dt>
 <dd><p>integer; unique 5 digit identifier of all samples
-  collected for an acute test/sample collection period. All samples collected
-  during that period will have the same BID.</p></dd>
+collected for an acute test/sample collection period. All samples collected
+during that period will have the same BID.</p></dd>
 
-  <dt><code>labelid</code></dt>
+<dt><code>labelid</code></dt>
 <dd><p>integer; unique 11 digit specimen label identifier,
-  originating at the collection site, that provides a link to specimen
-  processing and is used for shipments to the biorepository. Same as
-  <code>viallabel</code> only in instances where aliquots are not further processed
-  at the biorepository.</p></dd>
+originating at the collection site, that provides a link to specimen
+processing and is used for shipments to the biorepository. Same as
+<code>viallabel</code> only in instances where aliquots are not further processed
+at the biorepository.</p></dd>
 
-  <dt><code>omics_subset</code></dt>
+<dt><code>omics_subset</code></dt>
 <dd><p>logical; whether the sample was selected for
-  -omics analysis.</p></dd>
+-omics analysis.</p></dd>
 
-  <dt><code>sex</code></dt>
+<dt><code>sex</code></dt>
 <dd><p>factor; the sex of the rat with levels "Female" and
-  "Male".</p></dd>
+"Male".</p></dd>
 
-  <dt><code>timepoint</code></dt>
+<dt><code>timepoint</code></dt>
 <dd><p>factor; exercise training group. Either "SED"
-  (sedentary) or the number of weeks of training ("1W", "2W", "4W", "8W").</p></dd>
+(sedentary) or the number of weeks of training ("1W", "2W", "4W", "8W").</p></dd>
 
-  <dt><code>total_ketones</code></dt>
+<dt><code>total_ketones</code></dt>
 <dd><p>numeric; total ketone bodies (\(\mu\)mol/L).</p></dd>
 
-  <dt><code>nefa</code></dt>
+<dt><code>nefa</code></dt>
 <dd><p>numeric; non-esterified fatty acids (NEFA) (mmol/L).</p></dd>
 
-  <dt><code>lactate</code></dt>
+<dt><code>lactate</code></dt>
 <dd><p>numeric; lactate (mmol/L).</p></dd>
 
-  <dt><code>glucose</code></dt>
+<dt><code>glucose</code></dt>
 <dd><p>numeric; glucose (mg/dL).</p></dd>
 
-  <dt><code>glycerol</code></dt>
+<dt><code>glycerol</code></dt>
 <dd><p>numeric; glycerol (mg/dL).</p></dd>
 
-  <dt><code>glucagon</code></dt>
+<dt><code>glucagon</code></dt>
 <dd><p>numeric; glucagon (pmol).</p></dd>
 
-  <dt><code>insulin</code></dt>
+<dt><code>insulin</code></dt>
 <dd><p>numeric; insulin (pg/mL).</p></dd>
 
-  <dt><code>insulin_iu</code></dt>
+<dt><code>insulin_iu</code></dt>
 <dd><p>numeric; insulin (\(\mu\)IU/mL) using the
-  conversion 1 pg/mL = 0.023 \(\mu\)IU/mL provided in the package insert.</p></dd>
+conversion 1 pg/mL = 0.023 \(\mu\)IU/mL provided in the package insert.</p></dd>
 
-  <dt><code>leptin</code></dt>
+<dt><code>leptin</code></dt>
 <dd><p>numeric; leptin (pg/mL).</p></dd>
 
-  <dt><code>corticosterone</code></dt>
+<dt><code>corticosterone</code></dt>
 <dd><p>numeric; corticosterone (ng/mL).</p></dd>
 
-  <dt><code>ins_gcg_ratio</code></dt>
+<dt><code>ins_gcg_ratio</code></dt>
 <dd><p>numeric; molar insulin/glucagon ratio.
-  Calculated as (insulin (pg/mL) / 5.804 (Da)) / glucagon (pmol).</p></dd>
+Calculated as (insulin (pg/mL) / 5.804 (Da)) / glucagon (pmol).</p></dd>
 
-  <dt><code>homa_ir</code></dt>
+<dt><code>homa_ir</code></dt>
 <dd><p>numeric; Homeostatic Model Assessment for Insulin
-  Resistance (HOMA-IR). Insulin (\(\mu\)IU/mL) x glucose (mg/dL) / 405.</p></dd>
+Resistance (HOMA-IR). Insulin (\(\mu\)IU/mL) x glucose (mg/dL) / 405.</p></dd>
 
 
 </dl></div>
