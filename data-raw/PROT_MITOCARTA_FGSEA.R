@@ -1,5 +1,6 @@
 library(MotrpacRatTraining6moData)
 library(MotrpacRatTraining6moWATData)
+library(MotrpacRatTraining6moWAT)
 library(tidyverse)
 library(fgsea)
 
@@ -10,35 +11,33 @@ entrez_to_symbol <- pluck(PROT_DA, "MvF_SED") %>%
   deframe()
 
 # Human to rat gene conversion
-rat2human <- RAT_TO_HUMAN_GENE %>%
-  dplyr::select(human_ortholog = HUMAN_ORTHOLOG_SYMBOL,
-                entrez_gene = RAT_NCBI_GENE_ID) %>%
-  distinct()
+human_to_rat <- RAT_TO_HUMAN_GENE %>%
+  dplyr::select(HUMAN_ORTHOLOG_SYMBOL, RAT_NCBI_GENE_ID) %>%
+  distinct() %>%
+  deframe()
+# two genes map to two entrez genes each - leave as-is
 
-# Use human data from MitoCarta3.0
-PROT_MITOCARTA <- file.path("data-raw", "Human.MitoCarta3.0.xls") %>%
-  readxl::read_xls(sheet = "C MitoPathways") %>%
-  .[, 2:4] %>%
-  setNames(c("pathway", "hierarchy", "human_ortholog")) %>%
-  separate_rows(human_ortholog, sep = ", ") %>%
-  left_join(rat2human, by = "human_ortholog") %>%
-  group_by(pathway) %>%
-  mutate(num_genes = n()) %>%
-  filter(entrez_gene %in% as.numeric(names(entrez_to_symbol)),
-         num_genes <= 300) %>% # Same as MSIGDB_PATHWAYS size filter
-  group_by(pathway) %>%
-  mutate(num_genes_post = n(),
-         ratio = num_genes_post / num_genes) %>%
+# Convert human gene symbols to rat Entrez IDs
+PROT_MITOCARTA <- MITOCARTA_HS %>%
+  mutate(rat_entrez = map(human_genes,
+                          ~ as.character(na.omit(human_to_rat[.x]))),
+         set_size = lengths(rat_entrez),
+         rat_entrez = map(rat_entrez, intersect, names(entrez_to_symbol)),
+         set_size_post = lengths(rat_entrez),
+         ratio = set_size_post / set_size) %>%
   filter(ratio >= 0.85,
-         num_genes_post >= 5) %>%
-  group_by(pathway, hierarchy, num_genes,
-           num_genes_post, ratio) %>%
-  summarise(entrez_gene = list(entrez_gene)) %>%
-  ungroup()
+         set_size <= 300, # Same as MSIGDB_PATHWAYS filter
+         set_size_post >= 5)
+# 4 more pathways than before:
+# [1] "Amino acid metabolism"   "CI assembly factors"
+# [3] "OXPHOS assembly factors" "mt-rRNA modifications"
 
-# List of 65 pathways to test
+# These pathways previously had ratios just below 0.85 because set_size
+# was incorrectly based on human genes
+
+# List of 68 pathways to test
 MITOCARTA_PATHWAYS <- PROT_MITOCARTA %>%
-  select(pathway, entrez_gene) %>%
+  select(pathway, rat_entrez) %>%
   tibble::deframe()
 
 ## FGSEA

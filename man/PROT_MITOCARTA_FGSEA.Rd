@@ -5,12 +5,38 @@
 \alias{PROT_MITOCARTA_FGSEA}
 \title{Proteomics MitoCarta FGSEA}
 \format{
-An object of class \code{list} of length 3.
+A named list of 3 \code{data.frame} objects. See
+  \code{\link{GO_FGSEA}} for details.
 }
 \usage{
 PROT_MITOCARTA_FGSEA
 }
 \description{
-Proteomics MitoCarta FGSEA
+FGSEA of the proteomics differential analysis using terms from
+  the MitoCarta3.0 database.
+}
+\references{
+Korotkevich, G., Sukhov, V., Budin, N., Shpak, B., Artyomov, M.
+  N., & Sergushichev, A. (2021). Fast gene set enrichment analysis.
+  \emph{BioRxiv}. \url{https://doi.org/10.1101/060012}
+
+  Rath, S., Sharma, R., Gupta, R., Ast, T., Chan, C., Durham, T. J., Goodman,
+  R. P., Grabarek, Z., Haas, M. E., Hung, W. H. W., Joshi, P. R., Jourdain,
+  A. A., Kim, S. H., Kotrys, A. V., Lam, S. S., McCoy, J. G., Meisel, J. D.,
+  Miranda, M., Panda, A., … Mootha, V. K. (2020). MitoCarta3.0: An updated
+  mitochondrial proteome now with sub-organelle localization and pathway
+  annotations. \emph{Nucleic Acids Research, 49}(D1), D1541–D1547.
+  \url{https://doi.org/10.1093/nar/gkaa1011}
+
+  Subramanian, A., Tamayo, P., Mootha, V. K., Mukherjee, S., Ebert, B. L.,
+  Gillette, M. A., Paulovich, A., Pomeroy, S. L., Golub, T. R., Lander, E.
+  S., & Mesirov, J. P. (2005). Gene set enrichment analysis: A
+  knowledge-based approach for interpreting genome-wide expression profiles.
+  \emph{Proceedings of the National Academy of Sciences of the United States
+  of America, 102}(43), 15545–15550.
+  \url{https://doi.org/10.1073/pnas.0506580102}
+}
+\seealso{
+\code{\link{MITOCARTA_HS}}
 }
 \keyword{datasets}
