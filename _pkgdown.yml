@@ -13,10 +13,11 @@ reference:
   - METAB_EXP
 
 - subtitle: FGSEA Feature Sets
-  desc: Gene Ontology terms and kinase sets for FGSEA.
+  desc: Gene Ontology terms, kinase sets, and MitoCarta pathways for FGSEA.
   contents:
   - MSIGDB_PATHWAYS
   - PSP_KINASE_SUBSTRATE
+  - MITOCARTA_HS
 
 - title: Analysis Results
 
