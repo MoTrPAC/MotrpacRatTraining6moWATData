@@ -3,14 +3,52 @@
 \docType{data}
 \name{ADIPOCYTE_SIZE_STATS}
 \alias{ADIPOCYTE_SIZE_STATS}
-\title{Analysis of adipocyte size differences}
+\title{Analysis of differences in adipocyte diameter}
 \format{
-A \code{data.frame} with 40 rows and 11 variables.
+A \code{data.frame} with 40 rows and 11 variables:
+
+\describe{
+  \item{contrast}{factor; the comparison being made ("4W / SED" or
+  "8W / SED").}
+  \item{diameter_bin}{ordered factor; adipocyte diameter binned in
+  approximately 5 micron intervals.}
+  \item{sex}{factor; the sex of the rat with 2 levels "Female" and "Male".}
+  \item{ratio}{numeric; ratio of the trained adipocyte rate to the sedentary
+  adipocyte rate. See details.}
+  \item{SE}{numeric; standard error for the ratio.}
+  \item{df}{integer; degrees of freedom for the test.}
+  \item{asymp.LCL}{numeric; lower bounds of the 95{\%} confidence interval.}
+  \item{asymp.UCL}{numeric; upper bounds of the 95{\%} confidence interval.}
+  \item{null}{integer; value for the null hypothesis: the \code{ratio}
+  specified by \code{contrast} is 1.}
+  \item{z.ratio}{numeric; Z-statistic.}
+  \item{p.value}{numeric; Dunnett p-value.}
+}
 }
 \usage{
 ADIPOCYTE_SIZE_STATS
 }
 \description{
-Analysis of adipocyte size differences
+Comparisons of adipocyte diameter between timepoints using a
+  negative binomial regression model.
+}
+\details{
+Adipocytes are binned in approximately 5 micron intervals according
+  to their diameter (\code{diameter_bin}). The number of adipocytes in each
+  bin per BID is tallied, as well as the total number of adipocytes per BID.
+  The log of the total adipocytes per BID is included as an offset term in a
+  negative binomial regression model that contains all main effects and
+  interactions between sex, timepoint, and \code{diameter_bin} as predictors
+  of the number of binned adipocytes. The offset term allows for modeling of
+  the number of binned adipocytes per total number of adipocytes by BID
+  (modeled as a rate).
+
+  Within each combination of sex and diameter bin, the Dunnett procedure is
+  applied to test for differences between the trained timepoints (4W, 8W) and
+  the sedentary group (SED).
+}
+\seealso{
+\code{\link{ADIPOCYTE_SIZE}}, \code{\link[MASS]{glm.nb}},
+  \code{\link[emmeans]{emmeans}}
 }
 \keyword{datasets}

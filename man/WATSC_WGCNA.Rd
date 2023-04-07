@@ -16,10 +16,24 @@ TRNSCRPT_WGCNA # transcriptomics
 METAB_WGCNA    # metabolomics
 }
 \description{
-WGCNA results
+Weighted Gene Co-expression Network Analysis (WGCNA) applied to
+  subcutaneous white adipose tissue proteomics, transcriptomics, and
+  metabolomics datasets to derive clusters of similarly-behaving features for
+  further examination.
 }
 \details{
 See \code{\link[MotrpacRatTraining6moWAT]{run_WGCNA}} for a
   description of the output.
+}
+\references{
+Horvath, S. (2011). \emph{Weighted Network Analysis}. Springer New
+  York. \url{https://doi.org/10.1007/978-1-4419-8819-5}
+
+  Langfelder, P., & Horvath, S. (2008). WGCNA: an R package for weighted
+  correlation network analysis. \emph{BMC Bioinformatics, 9}(1), 1–13.
+  \url{https://doi.org/10.1186/1471-2105-9-559}
+}
+\seealso{
+\code{\link[MotrpacRatTraining6moWAT]{run_WGCNA}}
 }
 \keyword{datasets}

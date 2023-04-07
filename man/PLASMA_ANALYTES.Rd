@@ -8,8 +8,8 @@
 An object of class \code{data.frame} with 146 rows and 21 columns.
 
 \describe{
-\item{\code{plate}}{integer; 96-well plate identifier (1--4).}
-\item{\code{runseq}}{integer; run order (1--146).}
+\item{\code{plate}}{integer; 96-well plate identifier (1–4).}
+\item{\code{runseq}}{integer; run order (1–146).}
 \item{\code{platepos}}{integer; position in each 96-well plate.}
 \item{\code{pid}}{integer; randomly generated 8-digit identifier used in
 linkage to phenotypic data. All samples from the same animal have the same

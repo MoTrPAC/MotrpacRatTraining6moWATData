@@ -3,14 +3,17 @@
 \docType{data}
 \name{METAB_TG_CONC}
 \alias{METAB_TG_CONC}
-\title{Metabolomics triacylglyceride concentration}
+\title{Metabolomics triglyceride concentration}
 \format{
-An object of class \code{ExpressionSet} with 190 rows and 10 columns.
+An object of class \code{ExpressionSet} with 190 features
+  (triglyceride) and 10 samples (each combination of sex and training
+  timepoint).
 }
 \usage{
 METAB_TG_CONC
 }
 \description{
-Metabolomics triacylglyceride concentration
+Standardized median concentrations of triglyceride (normalized
+  to internal standard) detected in subcutaneous white adipose tissue.
 }
 \keyword{datasets}

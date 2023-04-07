@@ -11,13 +11,43 @@
 An object of class \code{data.table} (inherits from \code{data.frame}) with 2615 rows and 12 columns.
 }
 \usage{
-PROT_MODULE_ORA     # proteomics
 TRNSCRPT_MODULE_ORA # transcriptomics
+PROT_MODULE_ORA     # proteomics
 METAB_MODULE_ORA    # metabolomics
 }
 \description{
-Results of performing Gene Ontology (GO) over-representation
-  analysis (Fisher Exact / Hypergeometric test) on the modules produced by
-  weighted gene co-expression network analysis (WGCNA).
+Results of performing Gene Ontology over-representation analysis
+  (Fisher Exact / Hypergeometric test) on each of the modules produced by
+  Weighted Gene Co-expression Network Analysis (WGCNA).
+}
+\details{
+The same gene sets and RefMet subclasses that were used to generate
+  the FGSEA results were also used here.
+}
+\references{
+Ashburner, M., Ball, C. A., Blake, J. A., Botstein, D., Butler,
+  H., Cherry, J. M., Davis, A. P., Dolinski, K., Dwight, S. S., Eppig, J. T.,
+  Harris, M. A., Hill, D. P., Issel-Tarver, L., Kasarskis, A., Lewis, S.,
+  Matese, J. C., Richardson, J. E., Ringwald, M., Rubin, G. M., & Sherlock,
+  G. (2000). Gene ontology: tool for the unification of biology. The Gene
+  Ontology Consortium. \emph{Nature genetics, 25}(1), 25–29.
+  \url{https://doi.org/10.1038/75556}
+
+  Dolgalev, I. msigdbr: MSigDB Gene Sets for Multiple Organisms in a Tidy
+  Data Format. R package version 7.5.1,
+  \url{https:://igordot.github.io/msigdbr}
+
+  Gene Ontology Consortium (2021). The Gene Ontology resource: enriching a
+  GOld mine. \emph{Nucleic acids research, 49}(D1), D325–D334.
+  \url{https://doi.org/10.1093/nar/gkaa1113}
+
+  Liberzon, A., Birger, C., Thorvaldsdóttir, H., Ghandi, M., Mesirov, J. P.,
+  & Tamayo, P. (2015). The Molecular Signatures Database (MSigDB) hallmark
+  gene set collection. \emph{Cell systems, 1}(6), 417–425.
+  \url{https://doi.org/10.1016/j.cels.2015.12.004}
+}
+\seealso{
+\code{\link[MotrpacRatTraining6moWAT]{fora2}},
+  \code{\link{WATSC_WGCNA}}, \code{\link{MSIGDB_PATHWAYS}}
 }
 \keyword{datasets}

@@ -29,7 +29,7 @@ head(pData(METAB_EXP))      # phenoData
 }
 \references{
 Fahy, E., & Subramaniam, S. (2020). RefMet: A reference
-  nomenclature for metabolomics. \emph{Nature Methods, 17}(12), 1173--1174.
+  nomenclature for metabolomics. \emph{Nature Methods, 17}(12), 1173–1174.
   \url{https://doi.org/10.1038/s41592-020-01009-y}
 }
 \seealso{

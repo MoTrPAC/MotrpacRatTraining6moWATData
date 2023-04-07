@@ -3,14 +3,29 @@
 \docType{data}
 \name{WATSC_PHENO}
 \alias{WATSC_PHENO}
-\title{Phenotype Measures}
+\title{scWAT Phenotype Data}
 \format{
-An object of class \code{list} of length 7.
+A list of 7 \code{data.frame} objects, each containing various
+  phenotype measures in a longer table format.
 }
 \usage{
 WATSC_PHENO
 }
 \description{
-Phenotype Measures
+Phenotype data for scWAT samples from the MoTrPAC endurance
+  exercise training study in 6-month-old-rats: animal registration and
+  familiarization data, NMR body composition, VO\eqn{_2}max testing, training
+  dates and duration, terminal muscle weights, and additional calculated
+  variables.
+}
+\details{
+See \code{\link[MotrpacRatTraining6moData]{PHENO}} for descriptions
+  of each of the columns. Note that some columns may have been modified
+  slightly in order to convert the data into a longer format.
+}
+\examples{
+# NMR data
+head(WATSC_PHENO[["NMR"]])
+
 }
 \keyword{datasets}

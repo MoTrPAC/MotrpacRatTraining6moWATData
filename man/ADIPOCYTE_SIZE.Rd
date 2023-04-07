@@ -5,12 +5,31 @@
 \alias{ADIPOCYTE_SIZE}
 \title{Measures of adipocyte size}
 \format{
-A \code{data.frame} with 55825 rows and 8 variables.
+A \code{data.frame} with 55825 rows and 7 variables:
+
+\describe{
+  \item{bid}{integer; unique 5 digit identifier of all samples collected for
+  an acute test/sample collection period. All samples collected during that
+  period will have the same BID.}
+  \item{sex}{factor; the sex of the rat with 2 levels "Female" and "Male".}
+  \item{timepoint}{factor; exercise training group. Either "SED"
+  (sedentary) or the number of weeks of training ("1W", "2W", "4W", "8W").}
+  \item{diameter}{numeric; adipocyte diameter.}
+  \item{area}{numeric; adipocyte area.}
+  \item{volume}{volume; adipocyte volume.}
+  \item{count}{integer; total number of adipocytes across all images for a
+  particular BID.}
+}
 }
 \usage{
 ADIPOCYTE_SIZE
 }
 \description{
-Measures of adipocyte size.
+Measures of adipocyte size: diameter, area, volume.
+}
+\details{
+Adipocyte area was calculated using CellProfiler. Diameter and
+  volume were derived from area, under the assumption that each adipocyte was
+  a perfect sphere.
 }
 \keyword{datasets}

@@ -3,15 +3,15 @@
 \docType{data}
 \name{PLASMA_ANALYTE_STATS}
 \alias{PLASMA_ANALYTE_STATS}
-\title{Plasma analyte statistical analyses}
+\title{Statistical analyses of clinical analytes in plasma}
 \format{
-An object of class \code{data.table} (inherits from \code{data.frame}) with 66 rows and 13 columns.
+An object of class \code{data.table} (inherits from \code{data.frame}) with 44 rows and 17 columns.
 }
 \usage{
 PLASMA_ANALYTE_STATS
 }
 \description{
 Statistical analyses of most clinical analytes described in
-  \code{\link[MotrpacRatTraining6moWATData]{PLASMA_ANALYTES}}.
+  \code{\link{PLASMA_ANALYTES}}.
 }
 \keyword{datasets}
