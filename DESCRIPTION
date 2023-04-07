@@ -41,10 +41,12 @@ Suggests:
     Biobase,
     dplyr,
     emmeans,
+    gamlss,
     MASS,
     MotrpacRatTraining6moData (>= 1.7.0),
     MotrpacRatTraining6moWAT (>= 0.1.0),
     purrr,
+    readxl,
     tibble,
     tidyr
 Remotes:

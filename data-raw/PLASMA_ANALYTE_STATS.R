@@ -1,6 +1,7 @@
 library(MotrpacRatTraining6moWATData)
 library(tidyverse)
 library(emmeans)
+library(gamlss)
 
 theme_set(theme_minimal())
 
@@ -8,205 +9,136 @@ theme_set(theme_minimal())
 PLASMA_ANALYTES <- filter(PLASMA_ANALYTES, omics_subset)
 
 ## Glycerol --------------------------------------------------------------------
-ggplot(PLASMA_ANALYTES, aes(x = timepoint, y = log(glycerol))) +
+ggplot(PLASMA_ANALYTES, aes(x = timepoint, y = glycerol)) +
   geom_point(na.rm = TRUE) +
   facet_grid(~ sex)
-# There appears to be a sex*timepoint interaction effect
+# There appears to be a sex * timepoint interaction effect
 
-# WLS
-gly.wt <- group_by(PLASMA_ANALYTES, sex, timepoint) %>%
-  mutate(wt = 1 / var(log(glycerol), na.rm = T)) %>%
-  pull(wt)
-
-gly.m1 <- lm(log(glycerol) ~ sex*timepoint,
-             weights = gly.wt,
-             data = PLASMA_ANALYTES)
-plot(gly.m1, which = 1)
-plot(gly.m1, which = 2)
-plot(gly.m1, which = 3)
-plot(gly.m1, which = 4)
-plot(gly.m1, which = 5)
+gly.m1 <- gamlss(glycerol ~ sex * timepoint + 0,
+                 family = GG(mu.link = "log"),
+                 data = PLASMA_ANALYTES)
+plot(gly.m1)
 
 summary(gly.m1)
 
 gly.res <- emmeans(gly.m1, specs = dunnett ~ timepoint,
-                   weights = "cells", by = "sex") %>%
-  summary(which = 2, infer = TRUE) %>%
+                   by = "sex", infer = TRUE, type = "response") %>%
+  summary(which = 2) %>%
   as.data.frame() %>%
   mutate(analyte = "glycerol",
-         formula = "log(glycerol) ~ sex*timepoint")
+         formula = "glycerol ~ sex * timepoint + 0",
+         family = "GG()")
 
 ## Glucagon --------------------------------------------------------------------
-ggplot(PLASMA_ANALYTES, aes(x = timepoint, y = log(glucagon))) +
+ggplot(PLASMA_ANALYTES, aes(x = timepoint, y = glucagon)) +
   geom_point(na.rm = TRUE) +
   facet_grid(~ sex)
 # Small outlier in F2W group
 
-# WLS
-gcg.wt <- group_by(PLASMA_ANALYTES, sex, timepoint) %>%
-  mutate(wt = 1 / var(log(glucagon), na.rm = T)) %>%
-  pull(wt)
+gcg.m1 <- gamlss(glucagon ~ sex * timepoint + 0,
+                 family = GG(mu.link = "log"),
+                 method = RS(100),
+                 data = PLASMA_ANALYTES)
+plot(gcg.m1)
 
-gcg.m1 <- lm(log(glucagon) ~ sex*timepoint,
-             weights = gcg.wt,
-             data = PLASMA_ANALYTES)
-plot(gcg.m1, which = 1) # obs. 6 may be outlier
-plot(gcg.m1, which = 5)
-
-PLASMA_ANALYTES[6, c("viallabel", "sex", "timepoint", "glucagon")]
-#     viallabel    sex timepoint glucagon
-# 6 90578013111 Female        2W      4.3
-# This is the minimum glucagon value
-
-# Remove obs. 6 and refit
-
-gcg.wt2 <- filter(PLASMA_ANALYTES, glucagon != 4.3) %>%
-  group_by(sex, timepoint) %>%
-  mutate(wt = 1 / var(log(glucagon), na.rm = T)) %>%
-  pull(wt)
-
-gcg.m2 <- lm(log(glucagon) ~ sex*timepoint,
-             weights = gcg.wt2,
-             data = PLASMA_ANALYTES[-6, ])
-plot(gcg.m2, which = 1)
-plot(gcg.m2, which = 2)
-# looks good
-
-# Compare coefficients (% change)
-(coef(summary(gcg.m1))[, 1] - coef(summary(gcg.m2))[, 1]) /
-  coef(summary(gcg.m2))[, 1] * 100
-# 2W coefficients change quite a bit. Report both results
-
-# Hypothesis tests
-gcg.res1 <- emmeans(gcg.m1, specs = dunnett ~ timepoint,
-                    weights = "cells", by = "sex") %>%
-  summary(which = 2, infer = TRUE) %>%
+gcg.res <- emmeans(gcg.m1, specs = dunnett ~ timepoint,
+                   by = "sex", infer = TRUE, type = "response") %>%
+  summary(which = 2) %>%
   as.data.frame() %>%
   mutate(analyte = "glucagon",
-         formula = "log(glucagon) ~ sex*timepoint")
-
-gcg.res2 <- emmeans(gcg.m2, specs = dunnett ~ timepoint,
-                    weights = "cells", by = "sex") %>%
-  summary(which = 2, infer = TRUE) %>%
-  as.data.frame() %>%
-  mutate(analyte = "glucagon",
-         obs_removed = PLASMA_ANALYTES$viallabel[6],
-         formula = "log(glucagon) ~ sex*timepoint")
+         formula = "glucagon ~ sex * timepoint + 0",
+         family = "GG()")
 
 ## Glucose ---------------------------------------------------------------------
-ggplot(PLASMA_ANALYTES, aes(x = timepoint, y = log(glucose))) +
+ggplot(PLASMA_ANALYTES, aes(x = timepoint, y = glucose)) +
   geom_point(na.rm = TRUE) +
   facet_grid(~ sex)
 
-# WLS
-glu.wt <- group_by(PLASMA_ANALYTES, sex, timepoint) %>%
-  mutate(wt = 1 / var(log(glucose), na.rm = T)) %>%
-  pull(wt)
-
-glu.m1 <- lm(log(glucose) ~ sex*timepoint,
-             weights = glu.wt,
-             data = PLASMA_ANALYTES)
-plot(glu.m1, which = 1)
-plot(glu.m1, which = 2)
-plot(glu.m1, which = 3)
+glu.m1 <- gamlss(glucose ~ sex * timepoint + 0,
+                 family = GA(),
+                 data = PLASMA_ANALYTES)
+plot(glu.m1)
 
 # Hypothesis tests
 glu.res <- emmeans(glu.m1, specs = dunnett ~ timepoint,
-                   by = "sex") %>%
-  summary(which = 2, infer = TRUE) %>%
+                   by = "sex", infer = TRUE, type = "response") %>%
+  summary(which = 2) %>%
   as.data.frame() %>%
   mutate(analyte = "glucose",
-         formula = "log(glucose) ~ sex*timepoint")
+         formula = "glucose ~ sex * timepoint + 0",
+         family = "GA()")
+
 
 ## NEFA ------------------------------------------------------------------------
-ggplot(PLASMA_ANALYTES, aes(x = timepoint, y = log(nefa))) +
+ggplot(PLASMA_ANALYTES, aes(x = timepoint, y = nefa)) +
   geom_point(na.rm = TRUE) +
   facet_grid(~ sex)
 
-# WLS
-nefa.wt <- group_by(PLASMA_ANALYTES, sex, timepoint) %>%
-  mutate(wt = 1 / var(log(nefa), na.rm = T)) %>%
-  pull(wt)
-
-NEFA.m1 <- lm(log(nefa) ~ sex*timepoint,
-              weights = nefa.wt,
-              data = PLASMA_ANALYTES)
-plot(NEFA.m1, which = 1)
-plot(NEFA.m1, which = 2)
-plot(NEFA.m1, which = 3)
+NEFA.m1 <- gamlss(nefa ~ sex * timepoint + 0,
+                  family = GA(),
+                  data = PLASMA_ANALYTES)
+plot(NEFA.m1)
 
 # Hypothesis testing
 NEFA.res <- emmeans(NEFA.m1, specs = dunnett ~ timepoint,
-                    by = "sex") %>%
-  summary(which = 2, infer = TRUE) %>%
+                    by = "sex", infer = TRUE, type = "response") %>%
+  summary(which = 2) %>%
   as.data.frame() %>%
   mutate(analyte = "NEFA",
-         formula = "log(NEFA) ~ sex*timepoint")
+         formula = "nefa ~ sex * timepoint + 0",
+         family = "GA()")
+
+# Confidence intervals for group means
+emmeans(NEFA.m1, specs = ~ timepoint | sex, type = "response") %>%
+  summary(which = 1)
+
 
 ## Leptin ----------------------------------------------------------------------
-ggplot(PLASMA_ANALYTES, aes(x = timepoint, y = log(leptin))) +
+ggplot(PLASMA_ANALYTES, aes(x = timepoint, y = leptin)) +
   geom_point(na.rm = TRUE) +
   facet_grid(~ sex)
 
-# WLS
-lep.wt <- group_by(PLASMA_ANALYTES, sex, timepoint) %>%
-  mutate(wt = 1 / var(log(leptin), na.rm = T)) %>%
-  pull(wt)
-
-lep.m1 <- lm(log(leptin) ~ sex*timepoint,
-             weights = lep.wt,
-             data = PLASMA_ANALYTES)
+lep.m1 <- gamlss(leptin ~ sex * timepoint + 0,
+                 family = GG(),
+                 method = RS(100),
+                 data = PLASMA_ANALYTES)
+plot(lep.m1)
 summary(lep.m1)
 
-plot(lep.m1, which = 1)
-plot(lep.m1, which = 2)
-plot(lep.m1, which = 3)
-plot(lep.m1, which = 4)
-plot(lep.m1, which = 5)
-plot(lep.m1, which = 6)
-# looks fine
-
-# Hypothesis tests
 lep.res <- emmeans(lep.m1, specs = dunnett ~ timepoint,
-                   by = "sex") %>%
-  summary(which = 2, infer = TRUE) %>%
+                   by = "sex", infer = TRUE, type = "response") %>%
+  summary(which = 2) %>%
   as.data.frame() %>%
   mutate(analyte = "leptin",
-         formula = "log(leptin) ~ sex*timepoint")
+         formula = "leptin ~ sex * timepoint + 0",
+         family = "GG()")
 
 ## HOMA-IR ---------------------------------------------------------------------
-ggplot(PLASMA_ANALYTES, aes(x = timepoint, y = log(homa_ir))) +
+ggplot(PLASMA_ANALYTES, aes(x = timepoint, y = homa_ir)) +
   geom_point(na.rm = TRUE) +
   facet_grid(~ sex)
-# Likely a sex effect, but no interaction
+# Likely a sex effect, but no timepoint effect
 
-# WLS
-homa.wt <- group_by(PLASMA_ANALYTES, sex, timepoint) %>%
-  mutate(wt = 1 / var(log(homa_ir), na.rm = T)) %>%
-  pull(wt)
+homa.m0 <- gamlss(homa_ir ~ sex + 0,
+                  family = GG(),
+                  data = PLASMA_ANALYTES)
 
-homa.m1 <- lm(log(homa_ir) ~ sex,
-              weights = homa.wt,
-              data = PLASMA_ANALYTES)
-plot(homa.m1, which = 1)
-plot(homa.m1, which = 2)
-plot(homa.m1, which = 3)
-plot(homa.m1, which = 4)
-plot(homa.m1, which = 5)
-plot(homa.m1, which = 6)
+homa.m1 <- update(homa.m0, formula = . ~ sex + timepoint + 0)
+gamlss::LR.test(null = homa.m0, alternative = homa.m1) # not better
 
-summary(homa.m1)
+plot(homa.m0)
+summary(homa.m0)
 
-homa.res <- emmeans(homa.m1, specs = pairwise ~ sex) %>%
-  summary(which = 2, infer = TRUE) %>%
+homa.res <- emmeans(homa.m0, specs = pairwise ~ sex,
+                    infer = TRUE, type = "response") %>%
+  summary(which = 2) %>%
   as.data.frame() %>%
   mutate(analyte = "HOMA-IR",
-         formula = "log(HOMA-IR) ~ sex")
-
-
+         formula = "homa_ir ~ sex + 0",
+         family = "GG()")
 
 ## Insulin ---------------------------------------------------------------------
-ggplot(PLASMA_ANALYTES, aes(x = timepoint, y = log(insulin))) +
+ggplot(PLASMA_ANALYTES, aes(x = timepoint, y = insulin)) +
   geom_point(
     na.rm = TRUE,
     position = ggbeeswarm::position_beeswarm(cex = 3)
@@ -214,83 +146,64 @@ ggplot(PLASMA_ANALYTES, aes(x = timepoint, y = log(insulin))) +
   facet_grid(~ sex)
 # likely a sex effect, but no timepoint effect
 
-# WLS
-ins.wt <- group_by(PLASMA_ANALYTES, sex, timepoint) %>%
-  mutate(wt = 1 / var(log(insulin), na.rm = T)) %>%
-  pull(wt)
+# Likely a sex effect, but no timepoint effect
+ins.m0 <- gamlss(insulin ~ sex + 0,
+                 family = GG(),
+                 data = PLASMA_ANALYTES)
 
-ins.m1 <- lm(log(insulin) ~ sex,
-             weights = ins.wt,
-             data = PLASMA_ANALYTES)
-plot(ins.m1, which = 1)
-plot(ins.m1, which = 2)
-plot(ins.m1, which = 3)
-plot(ins.m1, which = 4)
-plot(ins.m1, which = 5)
-plot(ins.m1, which = 6)
+ins.m1 <- update(ins.m0, formula = . ~ sex + timepoint + 0)
+gamlss::LR.test(null = ins.m0, alternative = ins.m1) # not better
 
-summary(ins.m1)
+plot(ins.m0)
+summary(ins.m0)
 
-ins.res <- emmeans(ins.m1, specs = pairwise ~ sex) %>%
-  summary(which = 2, infer = TRUE) %>%
+ins.res <- emmeans(ins.m0, specs = pairwise ~ sex,
+                   infer = TRUE, type = "response") %>%
+  summary(which = 2) %>%
   as.data.frame() %>%
   mutate(analyte = "insulin",
-         formula = "log(insulin) ~ sex")
+         formula = "insulin ~ sex + 0",
+         family = "GG()")
 
 
 ## Insulin/glucagon ratio ------------------------------------------------------
-ggplot(PLASMA_ANALYTES, aes(x = timepoint, y = log(ins_gcg_ratio))) +
+ggplot(PLASMA_ANALYTES, aes(x = timepoint, y = ins_gcg_ratio)) +
   geom_point(na.rm = TRUE) +
   facet_grid(~ sex)
+# sex effect, but likely no timepoint effect
 
-# WLS
-ig.wt <- PLASMA_ANALYTES %>%
-  group_by(sex, timepoint) %>%
-  mutate(wt = 1 / var(log(ins_gcg_ratio), na.rm = T)) %>%
-  pull(wt)
+ig.m0 <- gamlss(insulin / 5.804 ~ glucagon + 0,
+                weights = 1 / glucagon,
+                family = GA("log"),
+                data = PLASMA_ANALYTES)
+ig.m1 <- update(ig.m0, formula = . ~ sex * glucagon + 0)
+gamlss::LR.test(null = ig.m0, alternative = ig.m1) # model with sex is better
 
-ig.m0 <- lm(log(ins_gcg_ratio) ~ sex + timepoint,
-            weights = ig.wt,
-            data = PLASMA_ANALYTES)
-ig.m1 <- update(ig.m0, formula = . ~ sex*timepoint)
-anova(ig.m0, ig.m1)
-AIC(ig.m0, ig.m1)
-# include interaction
+ig.m2 <- update(ig.m0, formula = . ~ sex * glucagon * timepoint + 0)
+gamlss::LR.test(null = ig.m1, alternative = ig.m2) # not better
 
-plot(ig.m1, which = 1)
-plot(ig.m1, which = 2)
-plot(ig.m1, which = 3)
-plot(ig.m1, which = 4)
-plot(ig.m1, which = 5)
-plot(ig.m1, which = 6)
-# obs. 6 looks like an outlier. This one was an outlier in glucagon.
-# We will remove and report both results
+plot(ig.m1)
+summary(ig.m1)
 
-ig.wt2 <- PLASMA_ANALYTES %>%
-  slice(-6) %>% # remove outlier
-  group_by(sex, timepoint) %>%
-  mutate(wt = 1 / var(log(ins_gcg_ratio), na.rm = T)) %>%
-  pull(wt)
-
-ig.m2 <- lm(log(ins_gcg_ratio) ~ sex*timepoint,
-            weights = ig.wt2,
-            data = PLASMA_ANALYTES[-6, ])
-
-
-ig.res1 <- emmeans(ig.m1, specs = dunnett ~ timepoint,
-                   by = "sex") %>%
-  summary(which = 2, infer = TRUE) %>%
+# How to interpret results? 60.281 is the mean of glucagon (default)
+# Use min and max of glucagon instead
+ig.res <- emmeans(ig.m1, specs = pairwise ~ sex,
+                  by = "glucagon", cov.reduce = range,
+                  infer = TRUE, type = "response") %>%
+  summary(which = 2) %>%
   as.data.frame() %>%
   mutate(analyte = "insulin/glucagon",
-         formula = "log(insulin/glucagon) ~ sex*timepoint")
+         formula = "insulin / 5.804 ~ sex * glucagon + 0",
+         family = "GA()",
+         weights = "1 / glucagon")
 
-ig.res2 <- emmeans(ig.m2, specs = dunnett ~ timepoint,
-                   by = "sex") %>%
-  summary(which = 2, infer = TRUE) %>%
-  as.data.frame() %>%
-  mutate(analyte = "insulin/glucagon",
-         obs_removed = PLASMA_ANALYTES$viallabel[6],
-         formula = "log(insulin/glucagon) ~ sex*timepoint")
+# Change in the range of glucagon by sex
+emmip(ig.m1, sex ~ glucagon, cov.reduce = range)
+
+# Confidence intervals for group means
+emmeans(ig.m1, specs = pairwise ~ sex * glucagon,
+        type = "response") %>%
+  summary(which = 1)
 
 
 ## Combined results ------------------------------------------------------------
@@ -298,19 +211,26 @@ PLASMA_ANALYTE_STATS <- list(
   ins.res,  # insulin
   homa.res, # HOMA-IR
   gly.res,  # glycerol
-  gcg.res1, # glucagon
-  gcg.res2, # glucagon (1 outlier removed)
+  gcg.res,  # glucagon
   glu.res,  # glucose
   lep.res,  # leptin
   NEFA.res, # NEFA
-  ig.res1,  # insulin/glucagon
-  ig.res2   # insulin/glucagon molar ratio (1 outlier removed)
+  ig.res   # insulin/glucagon
 ) %>%
+  map(function(x) {
+    x %>%
+      dplyr::rename_with(.fn = ~ sub("asymp\\.L", "lower\\.", .x)) %>%
+      dplyr::rename_with(.fn = ~ sub("asymp\\.U", "upper\\.", .x))
+  }) %>%
   data.table::rbindlist(fill = TRUE) %>%
-  mutate(signif = cut(p.value, include.lowest = TRUE, right = FALSE,
+  mutate(glucagon = round(as.numeric(as.character(glucagon)), 2),
+         stat_type = ifelse(is.infinite(df), "z", "t"),
+         stat = ifelse(stat_type == "z", z.ratio, t.ratio),
+         signif = cut(p.value, include.lowest = TRUE, right = FALSE,
                       breaks = c(0, 1e-3, 1e-2, 0.05, 1),
                       labels = c("***", "**", "*", ""))) %>%
-  select(analyte, obs_removed, formula, sex, contrast, everything())
+  dplyr::select(-c(z.ratio, t.ratio)) %>%
+  dplyr::select(analyte, sex, everything())
 
 # Save
 usethis::use_data(PLASMA_ANALYTE_STATS, internal = FALSE,
