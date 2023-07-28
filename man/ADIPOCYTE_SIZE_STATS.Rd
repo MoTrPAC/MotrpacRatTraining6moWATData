@@ -10,9 +10,9 @@ A \code{data.frame} with 40 rows and 11 variables:
 \describe{
   \item{contrast}{factor; the comparison being made ("4W / SED" or
   "8W / SED").}
-  \item{diameter_bin}{ordered factor; adipocyte diameter binned in
-  approximately 5 micron intervals.}
-  \item{sex}{factor; the sex of the rat with 2 levels "Female" and "Male".}
+  \item{diameter_bin}{factor; adipocyte diameter binned in approximately 5
+  micron intervals.}
+  \item{sex}{factor; the sex of the rat with levels "Female" and "Male".}
   \item{ratio}{numeric; ratio of the trained adipocyte rate to the sedentary
   adipocyte rate. See details.}
   \item{SE}{numeric; standard error for the ratio.}
@@ -35,17 +35,19 @@ Comparisons of adipocyte diameter between timepoints using a
 \details{
 Adipocytes are binned in approximately 5 micron intervals according
   to their diameter (\code{diameter_bin}). The number of adipocytes in each
-  bin per BID is tallied, as well as the total number of adipocytes per BID.
-  The log of the total adipocytes per BID is included as an offset term in a
-  negative binomial regression model that contains all main effects and
-  interactions between sex, timepoint, and \code{diameter_bin} as predictors
-  of the number of binned adipocytes. The offset term allows for modeling of
-  the number of binned adipocytes per total number of adipocytes by BID
-  (modeled as a rate).
+  bin per animal, as well as the total number of adipocytes are tallied per
+  animal. The log of the total adipocytes per animal is included as an offset
+  term in a negative binomial regression model that contains all main effects
+  and interactions between \code{sex}, \code{timepoint}, and
+  \code{diameter_bin} as predictors of the number of binned adipocytes. The
+  offset term allows for modeling of the number of binned adipocytes per
+  total number of adipocytes by animal (modeled as a rate).
 
   Within each combination of sex and diameter bin, the Dunnett procedure is
   applied to test for differences between the trained timepoints (4W, 8W) and
   the sedentary group (SED).
+
+  See \code{vignette("ANALYTES_STATS")} for details.
 }
 \seealso{
 \code{\link{ADIPOCYTE_SIZE}}, \code{\link[MASS]{glm.nb}},
