@@ -1,13 +1,43 @@
+---
+title: "WGCNA Module ORA"
+author: Tyler Sagendorf
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_document:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{WGCNA Module ORA}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r setup}
 library(MotrpacRatTraining6moWATData)
 library(MotrpacRatTraining6moWAT)
-library(tidyverse)
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(purrr)
+```
 
-## Proteomics ----------------------------------------------------------------
+## Proteomics
+
+```{r}
 # Map Entrez IDs to gene symbols
 PROT_entrez_to_symbol <- pluck(PROT_WGCNA, "modules") %>%
-  select(entrez_gene, gene_symbol) %>%
+  dplyr::select(entrez_gene, gene_symbol) %>%
   distinct() %>%
   deframe()
+head(PROT_entrez_to_symbol)
 
 # Genes by module
 PROT_MOD_LIST <- pluck(PROT_WGCNA, "modules") %>%
@@ -15,6 +45,7 @@ PROT_MOD_LIST <- pluck(PROT_WGCNA, "modules") %>%
   group_by(moduleID) %>%
   summarise(feature = list(unique(entrez_gene))) %>%
   deframe()
+map(PROT_MOD_LIST, head)
 
 # Number of unique genes in each module
 lengths(PROT_MOD_LIST)
@@ -23,21 +54,26 @@ lengths(PROT_MOD_LIST)
 
 # all genes
 PROT_UNIVERSE <- unique(unlist(PROT_MOD_LIST))
+head(PROT_UNIVERSE)
 
-## Select gene sets that are largely unchanged when filtering
-## to only those Entrez IDs present in the results.
+# Select gene sets that are largely unchanged when filtering
+# to only those Entrez IDs present in the results.
 PROT_MSIGDB <- MSIGDB_PATHWAYS %>%
   mutate(entrez_gene = map(entrez_gene, intersect, y = PROT_UNIVERSE),
          set_size_post = lengths(entrez_gene),
          ratio = set_size_post / set_size) %>%
   filter(ratio >= 0.85, # at least 85% of the original set remains
          set_size_post >= 15)
+head(PROT_MSIGDB)
 
+# How many sets in each category remain?
 table(PROT_MSIGDB$gs_subcat)
 # GO:BP GO:CC GO:MF
 #   230    97    77
+```
 
-## ORA ----
+```{r}
+# ORA
 PROT_MODULE_ORA <- fora2(pathways = PROT_MSIGDB,
                          genes = PROT_MOD_LIST,
                          universe = PROT_UNIVERSE,
@@ -50,27 +86,32 @@ PROT_MODULE_ORA <- fora2(pathways = PROT_MSIGDB,
   relocate(module, gs_subcat, pathway, gs_description) %>%
   relocate(overlap, maxOverlap, overlapRatio, .after = size)
 
-# Save
-usethis::use_data(PROT_MODULE_ORA, internal = FALSE, overwrite = TRUE,
-                  version = 3, compress = "bzip2")
+head(PROT_MODULE_ORA)
+```
 
-## Transcriptomics -----------------------------------------------------------
+
+## Transcriptomics
+
+```{r}
 TRNSCRPT_MODULES <- pluck(TRNSCRPT_WGCNA, "modules") %>%
   separate_rows(entrez_gene, gene_symbol, sep = ";") %>%
   filter(entrez_gene != "NA",
          moduleColor != "grey")
+head(TRNSCRPT_MODULES)
 
 # Entrez to gene symbol conversion vector
 TRNSCRPT_entrez_to_symbol <- TRNSCRPT_MODULES %>%
-  select(entrez_gene, gene_symbol) %>%
+  dplyr::select(entrez_gene, gene_symbol) %>%
   distinct() %>%
   deframe()
+head(TRNSCRPT_entrez_to_symbol)
 
 # Genes by module
 TRNSCRPT_MOD_LIST <- TRNSCRPT_MODULES %>%
   group_by(moduleID) %>%
   summarise(feature = list(unique(entrez_gene))) %>%
   deframe()
+map(TRNSCRPT_MOD_LIST, head)
 
 # Number of unique genes in each module
 lengths(TRNSCRPT_MOD_LIST)
@@ -79,9 +120,10 @@ lengths(TRNSCRPT_MOD_LIST)
 
 # all genes
 TRNSCRPT_UNIVERSE <- unique(unlist(TRNSCRPT_MOD_LIST))
+head(TRNSCRPT_UNIVERSE)
 
-## Select gene sets that are largely unchanged when filtering
-## to only those Entrez IDs present in the results.
+# Select gene sets that are largely unchanged when filtering
+# to only those Entrez IDs present in the results.
 TRNSCRPT_MSIGDB <- MSIGDB_PATHWAYS %>%
   mutate(entrez_gene = map(entrez_gene, intersect, y = TRNSCRPT_UNIVERSE),
          set_size_post = lengths(entrez_gene),
@@ -89,11 +131,14 @@ TRNSCRPT_MSIGDB <- MSIGDB_PATHWAYS %>%
   filter(ratio >= 0.85, # at least 85% of the original set remains
          set_size_post >= 15)
 
+# How many sets in each category remain?
 table(TRNSCRPT_MSIGDB$gs_subcat)
 # GO:BP GO:CC GO:MF
 #   927   110   158
+```
 
-## ORA ----
+```{r}
+# ORA
 TRNSCRPT_MODULE_ORA <- fora2(pathways = TRNSCRPT_MSIGDB,
                              genes = TRNSCRPT_MOD_LIST,
                              universe = TRNSCRPT_UNIVERSE,
@@ -106,17 +151,20 @@ TRNSCRPT_MODULE_ORA <- fora2(pathways = TRNSCRPT_MSIGDB,
   relocate(module, gs_subcat, pathway, gs_description) %>%
   relocate(overlap, maxOverlap, overlapRatio, .after = size)
 
-# Save
-usethis::use_data(TRNSCRPT_MODULE_ORA, internal = FALSE, overwrite = TRUE,
-                  version = 3, compress = "bzip2")
+head(TRNSCRPT_MODULE_ORA)
+```
 
-## Metabolomics ----------------------------------------------
+
+## Metabolomics
+
+```{r}
 # List of features by module
 METAB_MOD_LIST <- pluck(METAB_WGCNA, "modules") %>%
   filter(moduleColor != "grey") %>%
   group_by(moduleID) %>%
   summarise(feature = list(unique(feature_ID))) %>%
   deframe()
+head(METAB_MOD_LIST)
 
 lengths(METAB_MOD_LIST)
 #  M1  M2  M3  M4  M5  M6  M7
@@ -124,12 +172,7 @@ lengths(METAB_MOD_LIST)
 
 # all features (excluding those 6 from M0)
 METAB_UNIVERSE <- unique(unlist(METAB_MOD_LIST))
-
-# Unlike with proteomics and transcriptomics, we are not
-# limited to testing terms that are largely unchanged after
-# filtering. This is because the RefMet chemical subclasses
-# are homogenous groups (e.g., subsetting the acyl carnitines
-# will still result in a group of just acyl carnitines).
+head(METAB_UNIVERSE)
 
 # Reformat fData for use with fora2
 REFMET_SUBCLASSES <- pluck(METAB_WGCNA, "modules") %>%
@@ -142,9 +185,12 @@ REFMET_SUBCLASSES <- pluck(METAB_WGCNA, "modules") %>%
          set_size = lengths(feature)) %>%
   filter(set_size >= 10)
 
-length(REFMET_SUBCLASSES) # 6
+# How many sets to test?
+length(REFMET_SUBCLASSES) # Only 6
+```
 
-## ORA ----
+```{r}
+# ORA
 METAB_MODULE_ORA <- fora2(pathways = REFMET_SUBCLASSES,
                           genes = METAB_MOD_LIST,
                           gene_column = "feature",
@@ -155,9 +201,26 @@ METAB_MODULE_ORA <- fora2(pathways = REFMET_SUBCLASSES,
   relocate(overlap, maxOverlap, overlapRatio, .after = size) %>%
   dplyr::rename(refmet_sub_class = pathway,
                 overlapMetabolites = overlapGenes) %>%
-  select(-starts_with("gs_"))
+  dplyr::select(-starts_with("gs_"))
 
+head(METAB_MODULE_ORA)
+```
+
+```{r save-results, eval=FALSE}
 # Save
+usethis::use_data(PROT_MODULE_ORA, internal = FALSE, overwrite = TRUE,
+                  version = 3, compress = "bzip2")
+
+usethis::use_data(TRNSCRPT_MODULE_ORA, internal = FALSE, overwrite = TRUE,
+                  version = 3, compress = "bzip2")
+
 usethis::use_data(METAB_MODULE_ORA, internal = FALSE, overwrite = TRUE,
                   version = 3, compress = "bzip2")
+```
+
+# Session Info
+
+```{r}
+sessionInfo()
+```
 

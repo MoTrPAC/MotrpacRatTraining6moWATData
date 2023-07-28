@@ -205,20 +205,20 @@
 #'
 #' @keywords datasets
 #'
-#' @name WATSC_DA
+#' @name WAT_DA
 "PROT_DA"
 
-#' @rdname WATSC_DA
+#' @rdname WAT_DA
 #' @format NULL
 #' @usage NULL
 "PHOSPHO_DA"
 
-#' @rdname WATSC_DA
+#' @rdname WAT_DA
 #' @format NULL
 #' @usage NULL
 "TRNSCRPT_DA"
 
-#' @rdname WATSC_DA
+#' @rdname WAT_DA
 #' @format NULL
 #' @usage NULL
 "METAB_DA"
@@ -350,7 +350,6 @@
 #'   49}(D1), D1541–D1547. \url{https://doi.org/10.1093/nar/gkaa1011}
 #'
 #' @keywords datasets
-#'
 "MITOCARTA_HS"
 
 
@@ -588,15 +587,15 @@
 #'
 #' @keywords datasets
 #'
-#' @name WATSC_WGCNA
+#' @name WAT_WGCNA
 "PROT_WGCNA"
 
-#' @rdname WATSC_WGCNA
+#' @rdname WAT_WGCNA
 #' @format NULL
 #' @usage NULL
 "TRNSCRPT_WGCNA"
 
-#' @rdname WATSC_WGCNA
+#' @rdname WAT_WGCNA
 #' @format NULL
 #' @usage NULL
 "METAB_WGCNA"
@@ -661,26 +660,30 @@
 #' @title scWAT Phenotype Data
 #'
 #' @description Phenotype data for scWAT samples from the MoTrPAC endurance
-#'   exercise training study in 6-month-old-rats: animal registration and
-#'   familiarization data, NMR body composition, VO\eqn{_2}max testing, training
-#'   dates and duration, terminal muscle weights, and additional calculated
-#'   variables.
+#'   exercise training study in 6-month-old-rats: NMR body composition and
+#'   VO\eqn{_2}max testing results.
 #'
-#' @usage WATSC_PHENO
-#'
-#' @format A list of 7 \code{data.frame} objects, each containing various
-#'   phenotype measures in a longer table format.
-#'
-#' @details See \code{\link[MotrpacRatTraining6moData]{PHENO}} for descriptions
-#'   of each of the columns. Note that some columns may have been modified
-#'   slightly in order to convert the data into a longer format.
+#' @usage PHENO_WAT
 #'
 #' @examples
-#' # NMR data
-#' head(WATSC_PHENO[["NMR"]])
+#' head(PHENO_WAT)
 #'
 #' @keywords datasets
-"WATSC_PHENO"
+"PHENO_WAT"
+
+
+#' @title Statistical analyses of scWAT phenotype data
+#'
+#' @description Analyses of phenotypic data from \code{\link[PHENO_WAT]}. See
+#'   \code{vignette("PHENO_WAT_STATS")} for details.
+#'
+#' @usage PHENO_WAT_STATS
+#'
+#' @examples
+#' head(PHENO_WAT_STATS)
+#'
+#' @keywords datasets
+"PHENO_WAT_STATS"
 
 
 #' @title Metabolomics triglyceride concentration
@@ -760,7 +763,7 @@
 #'
 #' @description A set of 9 common clinical analytes measured in plasma.
 #'
-#' @format An object of class \code{data.frame} with 146 rows and 21 columns.
+#' @format An object of class \code{data.frame} with 146 rows and 20 columns.
 #'
 #' \describe{
 #'   \item{\code{plate}}{integer; 96-well plate identifier (1–4).}
@@ -772,102 +775,130 @@
 #'   \item{\code{bid}}{integer; unique 5 digit identifier of all samples
 #'   collected for an acute test/sample collection period. All samples collected
 #'   during that period will have the same BID.}
-#'   \item{\code{labelid}}{integer; unique 11 digit specimen label identifier,
-#'   originating at the collection site, that provides a link to specimen
-#'   processing and is used for shipments to the biorepository. Same as
-#'   \code{viallabel} only in instances where aliquots are not further processed
-#'   at the biorepository.}
+#'   \item{\code{viallabel}}{integer; character, unique 11 digit numeric
+#'   identifier of a sample vial.}
 #'   \item{\code{omics_subset}}{logical; whether the sample was selected for
 #'   -omics analysis.}
 #'   \item{\code{sex}}{factor; the sex of the rat with levels "Female" and
 #'   "Male".}
 #'   \item{\code{timepoint}}{factor; exercise training group. Either "SED"
 #'   (sedentary) or the number of weeks of training ("1W", "2W", "4W", "8W").}
-#'   \item{\code{total_ketones}}{numeric; total ketone bodies (\eqn{\mu}mol/L).}
-#'   \item{\code{nefa}}{numeric; non-esterified fatty acids (NEFA) (mmol/L).}
-#'   \item{\code{lactate}}{numeric; lactate (mmol/L).}
+#'   \item{\code{corticosterone}}{numeric; corticosterone (ng/mL).}
+#'   \item{\code{glucagon}}{numeric; glucagon (pmol).}
 #'   \item{\code{glucose}}{numeric; glucose (mg/dL).}
 #'   \item{\code{glycerol}}{numeric; glycerol (mg/dL).}
-#'   \item{\code{glucagon}}{numeric; glucagon (pmol).}
 #'   \item{\code{insulin}}{numeric; insulin (pg/mL).}
 #'   \item{\code{insulin_iu}}{numeric; insulin (\eqn{\mu}IU/mL) using the
 #'   conversion 1 pg/mL = 0.023 \eqn{\mu}IU/mL provided in the package insert.}
+#'   \item{\code{insulin_pm}}{numeric; insulin (pM) calculated by dividing
+#'   insulin (pg/mL) by its molecular weight (5.804 kDa).}
+#'   \item{\code{lactate}}{numeric; lactate (mmol/L).}
 #'   \item{\code{leptin}}{numeric; leptin (pg/mL).}
-#'   \item{\code{corticosterone}}{numeric; corticosterone (ng/mL).}
-#'   \item{\code{ins_gcg_ratio}}{numeric; molar insulin/glucagon ratio.
-#'   Calculated as (insulin (pg/mL) / 5.804 (Da)) / glucagon (pmol).}
-#'   \item{\code{homa_ir}}{numeric; Homeostatic Model Assessment for Insulin
-#'   Resistance (HOMA-IR). Insulin (\eqn{\mu}IU/mL) x glucose (mg/dL) / 405.}
+#'   \item{\code{nefa}}{numeric; non-esterified fatty acids (NEFA) (mmol/L).}
+#'   \item{\code{total_ketones}}{numeric; total ketone bodies (\eqn{\mu}mol/L).}
 #' }
 #'
 #' @details
-#' \bold{Fujifilm Wako (Osaka, Japan):}
-#' \itemize{
-#'   \item Total ketones: \emph{415-73301, 411-73401}
-#'   \item NEFA: \emph{995-34791, 999-34691, 993-35191, 991-34891}
+#' \tabular{lll}{
+#'   \bold{Analyte} \tab \bold{Catalogue No.} \tab \bold{Company} \cr
+#'   Corticosterone \tab 55-CORMS-E01 \tab Alpco (Salem, NH) \cr
+#'   Glucose \tab B24985 \tab Beckman Coulter (Brea, CA) \cr
+#'   Glycerol \tab 445850 \tab Beckman Coulter \cr
+#'   Lactate \tab A95550 \tab Beckman Coulter \cr
+#'   Total Ketones \tab 415-73301, 411-73401 \tab Fujifilm Wako (Osaka, Japan) \cr
+#'   NEFA \tab 995-34791, 999-34691, 993-35191, 991-34891 \tab Fujifilm Wako \cr
+#'   Glucagon \tab K1535YK \tab Meso Scale  Discovery (Rockville, MD) \cr
+#'   Insulin, Leptin \tab K15158C (multiplex assay) \tab Meso Scale Discovery \cr
 #' }
 #'
-#' \bold{Beckman (Brea, CA):}
-#' \itemize{
-#'   \item Lactate: \emph{A95550}
-#'   \item Glucose: \emph{B24985}
-#'   \item Glycerol: \emph{445850}
-#' }
-#'
-#' \bold{Meso Scale Discovery (Rockville, MD):}
-#' \itemize{
-#'   \item Glucagon: \emph{K1535YK}
-#'   \item Insulin, Leptin: \emph{K15158C (multiplex assay)}
-#' }
-#'
-#' \bold{Alpco (Salem, NH):}
-#' \itemize{
-#'   \item Corticosterone: \emph{55-CORMS-E01}
-#' }
+#' @seealso \code{\link{ANALYTES_EMM}}, \code{\link{ANALYTES_STATS}}
 #'
 #' @md
 #'
 #' @keywords datasets
-"PLASMA_ANALYTES"
+"ANALYTES"
+
+
+#' @title Plasma clinical analytes estimated marginal means
+#'
+#' @description A nested list of \code{emmGrid} objects. The first level
+#'   indicates whether the EMMs were for timewise or male vs. female (MvF)
+#'   comparisons. The second level is a list of \code{emmGrid} objects, one for
+#'   each clinical analyte: Glucagon, Glucose, Glycerol, Leptin, and NEFA.
+#'
+#' @usage ANALYTES_EMM
+#'
+#' @details
+#' See \code{vignette("ANALYTES_STATS")} for details.
+#'
+#' @seealso \code{\link{ANALYTES}}, \code{\link{ANALYTES_STATS}},
+#'   \code{\link[emmeans]{emmeans}}
+#'
+#' @examples
+#' names(ANALYTES_EMM$timewise) # clinical analytes
+#'
+#' str(ANALYTES_EMM$timewise)
+#'
+#' # Print one of the emmGrid objects
+#' ANALYTES_EMM$timewise$Glucagon
+#'
+#' @keywords datasets
+"ANALYTES_EMM"
 
 
 #' @title Statistical analyses of clinical analytes in plasma
 #'
-#' @description Statistical analyses of most clinical analytes described in
-#'   \code{\link{PLASMA_ANALYTES}}.
+#' @description Statistical analyses of several clinical analytes described in
+#'   \code{\link{ANALYTES}}.
 #'
-#' @usage PLASMA_ANALYTE_STATS
+#' @usage ANALYTES_STATS
+#'
+#' @format A list of \code{data.frame} objects with names "timewise"
+#'   (trained vs. SED comparisons) and "MvF" (male vs. female comparisons).
+#'
+#' @details
+#' See \code{vignette("ANALYTES_STATS")} for details.
+#'
+#' @seealso \code{\link{ANALYTES}}, \code{\link{ANALYTES_EMM}}
+#'
+#' @examples
+#' head(ANALYTES_STATS$timewise) # trained vs. SED comparisons
+#' head(ANALYTES_STATS$MvF) # male vs. female comparisons
 #'
 #' @keywords datasets
-"PLASMA_ANALYTE_STATS"
+"ANALYTES_STATS"
 
 
 #' @title Measures of adipocyte size
 #'
 #' @description Measures of adipocyte size: diameter, area, volume.
 #'
-#' @usage
-#' ADIPOCYTE_SIZE
+#' @usage ADIPOCYTE_SIZE
 #'
 #' @format A \code{data.frame} with 55825 rows and 7 variables:
 #'
 #' \describe{
-#'   \item{bid}{integer; unique 5 digit identifier of all samples collected for
-#'   an acute test/sample collection period. All samples collected during that
-#'   period will have the same BID.}
+#'   \item{\code{pid}}{integer; randomly generated 8-digit identifier used in
+#'   linkage to phenotypic data. All samples from the same animal have the same
+#'   PID.}
 #'   \item{sex}{factor; the sex of the rat with 2 levels "Female" and "Male".}
 #'   \item{timepoint}{factor; exercise training group. Either "SED"
 #'   (sedentary) or the number of weeks of training ("1W", "2W", "4W", "8W").}
-#'   \item{diameter}{numeric; adipocyte diameter.}
-#'   \item{area}{numeric; adipocyte area.}
-#'   \item{volume}{volume; adipocyte volume.}
-#'   \item{count}{integer; total number of adipocytes across all images for a
-#'   particular BID.}
+#'   \item{diameter}{numeric; adipocyte diameter in microns.}
+#'   \item{diameter_bin}{ordered factor; diameter binned in approximately 5
+#'   micron intervals.}
+#'   \item{area}{numeric; adipocyte area in square microns.}
+#'   \item{volume}{volume; adipocyte volume in cubic microns.}
+#'   \item{n_adipocytes}{integer; total number of adipocytes across all images
+#'   for a particular animal.}
 #' }
 #'
-#' @details Adipocyte area was calculated using CellProfiler. Diameter and
-#'   volume were derived from area, under the assumption that each adipocyte was
-#'   a perfect sphere.
+#' @details Adipocyte area was calculated using CellProfiler. Diameter was
+#'   derived from area, under the assumption of circular cross-sections. Volume
+#'   was derived from area, under the assumption of spherical adipocytes.
+#'
+#' @examples
+#' print.data.frame(head(ADIPOCYTE_SIZE))
 #'
 #' @keywords datasets
 "ADIPOCYTE_SIZE"
@@ -885,9 +916,9 @@
 #' \describe{
 #'   \item{contrast}{factor; the comparison being made ("4W / SED" or
 #'   "8W / SED").}
-#'   \item{diameter_bin}{ordered factor; adipocyte diameter binned in
-#'   approximately 5 micron intervals.}
-#'   \item{sex}{factor; the sex of the rat with 2 levels "Female" and "Male".}
+#'   \item{diameter_bin}{factor; adipocyte diameter binned in approximately 5
+#'   micron intervals.}
+#'   \item{sex}{factor; the sex of the rat with levels "Female" and "Male".}
 #'   \item{ratio}{numeric; ratio of the trained adipocyte rate to the sedentary
 #'   adipocyte rate. See details.}
 #'   \item{SE}{numeric; standard error for the ratio.}
@@ -902,17 +933,19 @@
 #'
 #' @details Adipocytes are binned in approximately 5 micron intervals according
 #'   to their diameter (\code{diameter_bin}). The number of adipocytes in each
-#'   bin per BID is tallied, as well as the total number of adipocytes per BID.
-#'   The log of the total adipocytes per BID is included as an offset term in a
-#'   negative binomial regression model that contains all main effects and
-#'   interactions between sex, timepoint, and \code{diameter_bin} as predictors
-#'   of the number of binned adipocytes. The offset term allows for modeling of
-#'   the number of binned adipocytes per total number of adipocytes by BID
-#'   (modeled as a rate).
+#'   bin per animal, as well as the total number of adipocytes are tallied per
+#'   animal. The log of the total adipocytes per animal is included as an offset
+#'   term in a negative binomial regression model that contains all main effects
+#'   and interactions between \code{sex}, \code{timepoint}, and
+#'   \code{diameter_bin} as predictors of the number of binned adipocytes. The
+#'   offset term allows for modeling of the number of binned adipocytes per
+#'   total number of adipocytes by animal (modeled as a rate).
 #'
 #'   Within each combination of sex and diameter bin, the Dunnett procedure is
 #'   applied to test for differences between the trained timepoints (4W, 8W) and
 #'   the sedentary group (SED).
+#'
+#'   See \code{vignette("ANALYTES_STATS")} for details.
 #'
 #' @seealso \code{\link{ADIPOCYTE_SIZE}}, \code{\link[MASS]{glm.nb}},
 #'   \code{\link[emmeans]{emmeans}}
