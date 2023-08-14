@@ -13,3 +13,4 @@
 ^.*\.bib$
 ^plots$
 ^vignettes/articles$
+^supplementary-tables$
