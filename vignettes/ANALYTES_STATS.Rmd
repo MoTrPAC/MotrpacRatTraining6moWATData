@@ -101,26 +101,21 @@ fit.glucagon <- glm(glucagon ~ sex * timepoint,
 plot_lm(fit.glucagon)
 ```
 
-Observation 6 is outlying in the QQ-plot. Simplifying the model may fix this.
+Observation 6 is outlying in the QQ-plot, and it has the largest Cook's distance. While there is no biological justification for removal, doing so will bring the mean of the female 2W group closer to the mean of the female SED group, so the results will be more conservative. Therefore, we will remove this observation and report it in the final results table.
 
 ```{r}
-anova(fit.glucagon, test = "F")
-```
-
-Only sex is a significant predictor.
-
-```{r}
-fit.glucagon.1 <- update(fit.glucagon, formula = . ~ sex)
-anova(fit.glucagon.1, fit.glucagon, test = "F")
-```
-
-```{r}
+fit.glucagon.1 <- update(fit.glucagon, subset = -6)
 plot_lm(fit.glucagon.1)
 ```
 
-Simplifying the model did not fix the problem with observation 6, which has a much lower glycogen concentration than the other samples in the 2W female group. Unfortunately, there is no biological justification for removal, so we will keep it.
+The diagnostic plots look fine. We will try to simplify the model.
 
-There is no significant difference between the models at the 0.05 level, but we will lose the ability to compare trained groups to their sedentary counterparts, so we will use the interaction model.
+```{r}
+fit.glucagon <- fit.glucagon.1
+anova(fit.glucagon, test = "F")
+```
+
+The interaction is significant, so we will not drop any terms.
 
 ```{r}
 summary(fit.glucagon)
@@ -509,6 +504,8 @@ model_df <- model_list %>%
           value = "model") %>% 
   mutate(model = gsub("(?<=[\\s])\\s*|^\\s+|\\s+$", "", model, perl = TRUE),
          model_type = sub("^([^\\(]+).*", "\\1", model),
+         obs_removed = ifelse(response == "Glucagon", 
+                              "10734945", NA_character_),
          formula = sub(".*formula = ([^,]+),.*", "\\1", model),
          family = sub(".*family = ([^\\)]+\\)),.*", "\\1", model),
          family = ifelse(model_type == "lm", "gaussian", family),
