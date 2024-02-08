@@ -5,7 +5,30 @@
 \alias{PSP_KINASE_SUBSTRATE}
 \title{PhosphoSitePlus kinase-substrate relationships}
 \format{
-An object of class \code{data.frame}.
+An object of class \code{data.frame} with 12684 rows and 16 columns:
+
+\describe{
+  \item{GENE}{character; gene symbol.}
+  \item{KINASE}{character; kinase.}
+  \item{KIN_ACC_ID}{character; kinase UniProt accession.}
+  \item{KIN_ORGANISM}{character; kinase organism. Only "human".}
+  \item{SUBSTRATE}{character; substrate.}
+  \item{SUB_GENE_ID}{integer; substrate Entrez gene ID.}
+  \item{SUB_ACC_ID}{character; substrate UniProt accession.}
+  \item{SUB_GENE}{character; substrate gene.}
+  \item{SUB_ORGANISM}{character; substrate organism. Only "human".}
+  \item{SUB_MOD_RSD}{character; modification site (S, T, or Y followed by
+  amino acid position.)}
+  \item{SITE_GRP_ID}{character; unique identifier for a modification site and
+  its homologous sites in all proteoforms and species.}
+  \item{SITE_+/-7_AA}{character; site flanking sequence. The amino acid for
+  the site itself is lowercase. If the site is near the start or end of the
+  protein sequence, the flanking sequence will be padded with underscores.}
+  \item{DOMAIN}{character; pfam domain for the modification site.}
+  \item{IN_VIVO_RXN}{character; in vivo kinase assay/reaction.}
+  \item{IN_VITRO_RXN}{character; in vitro kinase assay/reaction.}
+  \item{CST_CAT#}{character; unknown.}
+}
 }
 \usage{
 PSP_KINASE_SUBSTRATE
@@ -25,6 +48,6 @@ The "Kinase_Substrate_Dataset.xlsx" file, downloaded from v6.6.0.4
 Hornbeck, P. V., Zhang, B., Murray, B., Kornhauser, J. M.,
   Latham, V., & Skrzypek, E. (2015). PhosphoSitePlus, 2014: mutations, PTMs
   and recalibrations. \emph{Nucleic acids research, 43}(Database issue),
-  D512--D520. \url{https://doi.org/10.1093/nar/gku1267}
+  D512–D520. \url{https://doi.org/10.1093/nar/gku1267}
 }
 \keyword{datasets}

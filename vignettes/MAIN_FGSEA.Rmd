@@ -1,0 +1,187 @@
+---
+title: "FGSEA of Omics Datasets"
+author: Tyler Sagendorf
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_document:
+    toc: true
+bibliography: references.bib
+csl: apa-numeric-superscript-brackets.csl
+link-citations: yes
+vignette: >
+  %\VignetteIndexEntry{FGSEA of Omics Datasets}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r setup}
+library(MotrpacRatTraining6moWATData)
+library(MotrpacRatTraining6moWAT)
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(purrr)
+```
+
+# Overview
+
+Fast Gene Set Enrichment Analysis (FGSEA)[@korotkevich_fgsea_2019] will be performed using Entrez gene identifiers for proteomics and transcriptomics and RefMet metabolite identifiers for metabolomics. Gene Ontology gene sets will be used for proteomics and phosphoproteomics, while RefMet chemical subclasses will be used to group metabolites into metabolite sets. We assume that the majority of the white adipose tissue (WAT) proteome and transcriptome were captured by our datasets, so we only keep gene sets that retain the majority of their genes after filtering to what was present in our -omics datasets. That is, only those gene sets with at least 85% of their original genes will be used for testing. Gene sets will be filtered further based on size so that they must contain at least 15 genes. For metabolomics, a minimum of 10 metabolites per chemical subclass are required, though a membership filter will not be applied. Sets contain no more than 300 members due to pre-filtering of `MSIGDB_PATHWAYS` (see `help("MSIGDB_PATHWAYS")` for details).
+
+
+## Transcriptomics
+
+There is a one-to-many mapping between transcripts and Entrez genes, so we will need to account for this.
+
+```{r}
+table(grepl(";", TRNSCRPT_DA$MvF_SED$entrez_gene))
+# 177 transcripts have multiple genes. Separate to multiple rows
+
+TRNSCRPT_DA_SEP <- TRNSCRPT_DA %>%
+  map(.f = ~ separate_rows(.x, entrez_gene, gene_symbol, sep = ";") %>%
+        filter(entrez_gene != "NA"))
+
+# Entrez to gene symbol conversion vector for leading edge
+TRNSCRPT_entrez_to_symbol <- TRNSCRPT_DA_SEP$MvF_SED %>%
+  dplyr::select(entrez_gene, gene_symbol) %>%
+  distinct() %>%
+  deframe()
+head(TRNSCRPT_entrez_to_symbol)
+
+# Select gene sets that are largely unchanged when filtering
+# to only those Entrez IDs present in the results.
+TRNSCRPT_MSIGDB <- MSIGDB_PATHWAYS %>%
+  mutate(entrez_gene = map(.x = entrez_gene, .f = intersect,
+                           y = names(TRNSCRPT_entrez_to_symbol)),
+         set_size_post = lengths(entrez_gene),
+         ratio = set_size_post / set_size) %>%
+  filter(ratio >= 0.85, # at least 85% of the original set remains
+         set_size_post >= 15)
+
+table(TRNSCRPT_MSIGDB$gs_subcat) # how many gene sets remain?
+# GO:BP GO:CC GO:MF
+#  2864   347   498
+```
+
+```{r}
+# FGSEA
+TRNSCRPT_FGSEA <- map(TRNSCRPT_DA_SEP, function(res_i) {
+  fgsea2(pathways = TRNSCRPT_MSIGDB,
+         stats = rank_genes(res_i, genes = "entrez_gene"),
+         seed = 0, nPermSimple = 10000,
+         adjust.globally = TRUE, nproc = 1) %>%
+    # Map Entrez IDs in leading edge subset to gene symbols
+    mutate(leadingEdge_genes = map(
+      .x = leadingEdge,
+      .f = ~ na.omit(TRNSCRPT_entrez_to_symbol[as.character(.x)])
+    )) %>%
+    # Reorder columns
+    dplyr::select(pathway, gs_subcat, gs_description, everything()) %>%
+    relocate(contrast, .before = leadingEdge)
+})
+```
+
+## Proteomics
+
+```{r}
+# Entrez to gene symbol conversion vector for leading edge
+PROT_entrez_to_symbol <- fData(PROT_EXP) %>%
+  dplyr::select(entrez_gene, gene_symbol) %>%
+  distinct() %>%
+  deframe()
+head(PROT_entrez_to_symbol)
+
+# Select gene sets that are largely unchanged when filtering
+# to only those Entrez IDs present in the results.
+PROT_MSIGDB <- MSIGDB_PATHWAYS %>%
+  mutate(entrez_gene = map(.x = entrez_gene, .f = intersect,
+                           y = names(PROT_entrez_to_symbol)),
+         set_size_post = lengths(entrez_gene),
+         ratio = set_size_post / set_size) %>%
+  filter(ratio >= 0.85, # at least 85% of the original set remains
+         set_size_post >= 15)
+
+table(PROT_MSIGDB$gs_subcat) # how many gene sets remain?
+# GO:BP GO:CC GO:MF
+#   234    99    78
+```
+
+```{r}
+# FGSEA
+PROT_FGSEA <- map(PROT_DA, function(res_i) {
+  fgsea2(pathways = PROT_MSIGDB,
+         stats = rank_genes(res_i, genes = "entrez_gene"),
+         seed = 0, nPermSimple = 10000,
+         adjust.globally = TRUE, nproc = 1) %>%
+    # Map Entrez IDs in leading edge subset to gene symbols
+    mutate(leadingEdge_genes = map(
+      .x = leadingEdge,
+      .f = ~ na.omit(PROT_entrez_to_symbol[as.character(.x)])
+    )) %>%
+    # Reorder columns
+    dplyr::select(pathway, gs_subcat, gs_description, everything()) %>%
+    relocate(contrast, .before = leadingEdge)
+})
+```
+
+## Metabolomics 
+
+Unlike with proteomics and transcriptomics, we are not limited to testing terms that are largely unchanged after filtering. This is because the RefMet chemical subclasses are homogenous groups (e.g., subsetting the acyl carnitines will still result in a group of only acyl carnitines).
+
+```{r}
+# Reformat fData for use with fgsea2
+REFMET_SUBCLASSES <- fData(METAB_EXP) %>%
+  group_by(refmet_sub_class) %>%
+  summarise(feature = list(feature_ID)) %>%
+  mutate(gs_subcat = "refmet_sub_class",
+         gs_exact_source = refmet_sub_class,
+         gs_description = refmet_sub_class,
+         set_size = lengths(feature)) %>%
+  filter(set_size >= 10)
+
+nrow(REFMET_SUBCLASSES) # 19
+```
+
+```{r}
+# FGSEA
+METAB_FGSEA <- map(METAB_DA, function(res_i) {
+  fgsea2(pathways = REFMET_SUBCLASSES,
+         gene_column = "feature",
+         stats = rank_genes(res_i, genes = "feature"),
+         seed = 0, nPermSimple = 10000,
+         adjust.globally = TRUE, nproc = 1) %>%
+    # Reorder columns
+    dplyr::rename(refmet_sub_class = pathway) %>%
+    dplyr::select(-starts_with("gs_")) %>%
+    relocate(contrast, .before = leadingEdge)
+})
+```
+
+```{r, eval=FALSE}
+# Save
+usethis::use_data(TRNSCRPT_FGSEA, internal = FALSE, overwrite = TRUE,
+                  version = 3, compress = "bzip2")
+
+usethis::use_data(PROT_FGSEA, internal = FALSE, overwrite = TRUE,
+                  version = 3, compress = "bzip2")
+
+usethis::use_data(METAB_FGSEA, internal = FALSE, overwrite = TRUE,
+                  version = 3, compress = "bzip2")
+```
+
+# Session Info
+
+```{r}
+sessionInfo()
+```
+
+# References
+

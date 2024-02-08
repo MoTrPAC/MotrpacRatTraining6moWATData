@@ -19,10 +19,10 @@ An object of class
   phosphorylation data.
 }
 \details{
-\link[MotrpacRatTraining6moData]{RAT_TO_HUMAN_PHOSPHO} for details
-  of mapping between rat and human phosphorylation sites.
+\code{\link[MotrpacRatTraining6moData]{RAT_TO_HUMAN_PHOSPHO}} for
+  details of mapping between rat and human phosphorylation sites.
 
-  \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE} for details of
+  See \code{\link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}} for details of
   feature-to-gene mapping.
 }
 \examples{
@@ -36,7 +36,7 @@ head(pData(PHOSPHO_EXP))      # phenoData
 }
 \seealso{
 \code{\link[Biobase]{ExpressionSet-class}},
-  \link[MotrpacRatTraining6moData]{RAT_TO_HUMAN_PHOSPHO},
-  \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}
+  \code{\link[MotrpacRatTraining6moData]{RAT_TO_HUMAN_PHOSPHO}},
+  \code{\link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}}
 }
 \keyword{datasets}

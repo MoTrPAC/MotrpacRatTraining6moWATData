@@ -1,0 +1,187 @@
+---
+title: "Heatmaps of Metabolites Grouped by WGCNA Module"
+author: "Tyler Sagendorf"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+This article generates heatmaps of metabolites/lipids grouped by their WGCNA modules (Fig. 5F; Extended Data Fig. 4A--C).
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r setup}
+library(MotrpacRatTraining6moWATData)
+library(ComplexHeatmap)
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(Biobase)
+library(circlize)
+
+save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
+```
+
+```{r}
+# Values for heatmaps
+x <- METAB_WGCNA$modules %>%
+  merge(exprs(METAB_EXP) %>% 
+          as.data.frame() %>%
+          rownames_to_column("feature_ID"),
+        by = "feature_ID") %>%
+  pivot_longer(cols = matches(as.character(METAB_EXP$pid)),
+               names_to = "pid") %>%
+  filter(!is.na(value)) %>%
+  mutate(pid = as.numeric(pid)) %>%
+  group_by(feature_ID) %>%
+  mutate(value = scale(value)[,1]) %>%
+  left_join(pData(METAB_EXP), by = "pid") %>%
+  group_by(exp_group, feature_ID, name_in_figures,
+           refmet_sub_class, moduleID) %>%
+  summarise(value = mean(value)) %>%
+  # select(feature, name_in_figures, refmet_sub_class, value) %>%
+  pivot_wider(names_from = "exp_group",
+              values_from = "value")
+
+# Add asterisks to indicate significance of timewise comparisons
+label_mat <- METAB_DA$trained_vs_SED %>%
+  filter(feature_ID %in% x$feature_ID) %>%
+  mutate(timepoint = sub("[FM]_([^ ]+).*", "\\1", contrast),
+         sex = ifelse(grepl("F", contrast), "F", "M"),
+         group = paste0(sex, "_", timepoint),
+         label = ifelse(adj.P.Val < 0.05, "*", "")) %>%
+  pivot_wider(id_cols = feature_ID, 
+              names_from = group,
+              values_from = label, 
+              values_fill = "") %>%
+  column_to_rownames("feature_ID") %>%
+  mutate(F_SED = "",
+         M_SED = "") %>%
+  as.matrix() %>%
+  .[x$feature_ID, levels(METAB_EXP$exp_group)]
+```
+
+```{r}
+## Create heatmaps -----
+scale <- 2
+
+ha <- distinct(pData(METAB_EXP), sex, timepoint) %>%
+  transmute(Sex = sex,
+            Timepoint = timepoint) %>%
+  HeatmapAnnotation(
+    df = .,
+    border = TRUE,
+    gp = gpar(col = "black"),
+    gap = 0,
+    which = "column",
+    height = unit(6*2, "pt") * scale,
+    col = list(
+      Sex = c("Female" = "#ff6eff", "Male" = "#5555ff"),
+      Timepoint = c('SED' = 'white',
+                    '1W' = '#F7FCB9',
+                    '2W' = '#ADDD8E',
+                    '4W' = '#238443',
+                    '8W' = '#002612')
+    ),
+    annotation_name_gp = gpar(fontsize = 7 * scale),
+    annotation_legend_param = list(Timepoint = list(
+      at = c("SED", "1W", "2W", "4W", "8W")),
+      border = "black",
+      labels_gp = gpar(fontsize = 6.5 * scale),
+      title_gp = gpar(fontsize = 7 * scale, fontface = "bold")
+    )
+  )
+
+features <- c("Acyl carnitines", "Amino acids", "Acyl CoAs", "Nucleotides")
+nucleotides <- c(paste0(rep(c("A", "G", "U", "C"), each = 3),
+                        rep(c("M", "D", "T"), times = 4), "P"),
+                 paste0("NAD", c("+", "H", "P+", "PH")))
+heights <- c(3.7, 5.3, 5.5, 1.8)
+widths <- c(2.9, 2.9, 3, 2.7)
+min_val <- c(-1.6, -1.8, -1.7, -1.4)
+max_val <- c(1.8, 1.9, 2, 1.6)
+```
+
+```{r eval=save_plots}
+for (i in seq_along(features)) {
+  
+  if (features[i] == "Nucleotides") {
+    x_sub <- x %>%
+      column_to_rownames("feature_ID") %>%
+      select(name_in_figures, moduleID,
+             matches(levels(METAB_EXP$exp_group))) %>%
+      .[nucleotides, ] %>% # reorder
+      droplevels.data.frame()
+    
+    cluster_rows <- merge_legends <- FALSE
+  } else {
+    x_sub <- x %>%
+      filter(refmet_sub_class == features[i]) %>%
+      column_to_rownames("feature_ID") %>%
+      select(name_in_figures, moduleID,
+             matches(levels(METAB_EXP$exp_group))) %>%
+      droplevels.data.frame() %>%
+      arrange(moduleID)
+    
+    cluster_rows <- merge_legends <- TRUE
+  }
+  
+  label_mat_i <- label_mat[rownames(x_sub), ]
+  
+  if (features[i] == "Acyl carnitines") {
+    row_title <- unique(x_sub$moduleID)
+  } else {
+    row_title <- NULL
+  }
+  
+  ht <- select(x_sub, -c(name_in_figures, moduleID)) %>%
+    as.matrix() %>%
+    Heatmap(matrix = .,
+            col = circlize::colorRamp2(
+              breaks = c(min_val[i], 0, max_val[i]),
+              colors = c("#3366ff", "white", "darkred")
+            ),
+            cluster_columns = FALSE,
+            cluster_rows = cluster_rows,
+            show_column_names = FALSE,
+            row_labels = x_sub$name_in_figures,
+            split = x_sub$moduleID,
+            row_title = row_title,
+            row_title_gp = gpar(fontsize = 6 * scale),
+            row_title_rot = 0,
+            cluster_row_slices = FALSE,
+            top_annotation = ha,
+            border = "black",
+            row_names_gp = gpar(fontsize = 5 * scale),
+            height = nrow(.) * unit(5.5, "pt") * scale,
+            width = ncol(.) * unit(5.5, "pt") * scale,
+            column_split = rep(1:2, each = 5),
+            column_title = NULL,
+            heatmap_legend_param = list(
+              title = "Mean\nZ-Score",
+              at = c(min_val[i], -1:1, max_val[i]),
+              title_gp = gpar(fontsize = 7 * scale,
+                              fontface = "bold"),
+              labels_gp = gpar(fontsize = 6 * scale),
+              legend_height = 6 * scale * unit(8, "pt"),
+              border = "black"
+            ))
+  
+  feature_name <- gsub(" ", "_", tolower(features[i]))
+  
+  # Save heatmap
+  pdf(file = sprintf(file.path("..", "..", "plots", "METAB_module_%s.pdf"), feature_name),
+      width = widths[i] * scale, 
+      height = heights[i] * scale,
+      family = "ArialMT")
+  draw(ht, merge_legends = merge_legends,
+       align_heatmap_legend = "heatmap_top",
+       align_annotation_legend = "heatmap_top")
+  dev.off()
+}
+```

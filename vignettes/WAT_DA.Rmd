@@ -1,0 +1,160 @@
+---
+title: "Differential Analysis of Omics Datasets"
+author: Tyler Sagendorf
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_document:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Differential Analysis of Omics Datasets}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+csl: apa-numeric-superscript-brackets.csl
+link-citations: yes
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+# Overview
+
+We will use a wrapper around functions from the `limma` package[@ritchie_limma_2015] to perform differential analysis on several sets of contrasts. See `help("limma_full", package = "MotrpacRatTraining6moWAT")` for more details. Volcano plots are created in a separate article.
+
+```{r setup}
+# Required packages
+library(MotrpacRatTraining6moWATData)
+library(MotrpacRatTraining6moWAT) # limma_full
+library(dplyr)
+library(purrr)
+```
+
+## Contrasts to test
+
+```{r}
+# Sex-specific training differences
+contr_train <- sprintf("%s_%s - %s_SED",
+                       rep(c("F", "M"), each = 4),
+                       rep(paste0(2^(0:3), "W"), times = 2),
+                       rep(c("F", "M"), each = 4))
+
+# Training-induced sexual dimorphism (sex by timepoint interaction)
+contr_diff <- sprintf("(%s) - (%s)",
+                      contr_train[5:8],
+                      contr_train[1:4])
+
+# List of contrast groups
+contr_list <- list("trained_vs_SED" = contr_train,
+                   "MvF_SED" = "M_SED - F_SED",
+                   "MvF_exercise_response" = contr_diff)
+contr_list
+```
+
+## Proteomics
+
+```{r prot-DA}
+PROT_DA <- map2(contr_list, c(TRUE, FALSE, FALSE), function(contrasts, plot) {
+  limma_full(object = PROT_EXP,
+             model.str = "~ 0 + exp_group",
+             coef.str = "exp_group",
+             contrasts = contrasts,
+             var.group = "viallabel",
+             plot = plot) %>%
+    arrange(contrast, feature) %>%
+    dplyr::select(-B)
+}, .progress = TRUE)
+```
+
+## Phosphoproteomics
+
+```{r phospho-DA}
+PHOSPHO_DA <- map2(
+  contr_list, c(TRUE, FALSE, FALSE), function(contrasts, plot) {
+    limma_full(object = PHOSPHO_EXP,
+               model.str = "~ 0 + exp_group",
+               coef.str = "exp_group",
+               contrasts = contrasts,
+               var.group = "vialLabel",
+               plot = plot) %>%
+      arrange(contrast, feature) %>%
+      dplyr::select(-B)
+  }, .progress = TRUE)
+```
+
+## Transcriptomics
+
+```{r}
+# Covariates included in https://doi.org/10.1101/2022.09.21.508770,
+# processed in the same way
+covariates <- "rin + pct_globin + pct_umi_dup + median_5_3_bias"
+
+TRNSCRPT_DA <- map2(
+  contr_list, c(TRUE, FALSE, FALSE), function(contrasts, plot) {
+    limma_full(object = TRNSCRPT_EXP,
+               model.str = sprintf("~ 0 + exp_group + %s", covariates),
+               coef.str = "exp_group",
+               contrasts = contrasts,
+               var.group = "viallabel",
+               plot = plot) %>%
+      arrange(contrast, feature) %>%
+      dplyr::select(-B)
+    # entrez_gene is of type character because of the one-to-many
+    # transcript to gene mapping. Keep this in mind.
+  })
+```
+
+## Metabolomics
+
+We will run differential analysis separately for each platform and then combine the results. This way, we can estimate separate mean-variance trends for each platform.
+
+```{r}
+# Platforms for DEA
+assays <- unique(fData(METAB_EXP)[["dataset"]])
+
+# Differential analysis results list
+METAB_DA <- map(contr_list, function(contrasts) {
+  map(assays, function(assay) {
+    message(assay)
+    # subset to features in group to model separate mean-variance trends
+    METAB_EXP[fData(METAB_EXP)[["dataset"]] == assay, ] %>%
+      limma_full(model.str = "~ 0 + exp_group",
+                 coef.str = "exp_group",
+                 contrasts = contrasts,
+                 var.group = "vialLabel") %>%
+      arrange(contrast, feature) %>%
+      dplyr::select(-B)
+  }) %>%
+    data.table::rbindlist() %>%
+    mutate(contrast = factor(contrast, levels = unique(contrast)),
+           adj.P.Val = p.adjust(P.Value, method = "BH")) %>%
+    arrange(contrast, feature)
+})
+```
+
+```{r, eval=FALSE}
+# Save results
+usethis::use_data(PROT_DA, internal = FALSE, overwrite = TRUE,
+                  version = 3, compress = "bzip2")
+
+usethis::use_data(PHOSPHO_DA, internal = FALSE, overwrite = TRUE,
+                  version = 3, compress = "bzip2")
+
+usethis::use_data(TRNSCRPT_DA, internal = FALSE, overwrite = TRUE,
+                  version = 3, compress = "bzip2")
+
+usethis::use_data(METAB_DA, internal = FALSE, overwrite = TRUE,
+                  version = 3, compress = "bzip2")
+```
+
+# Session Info
+
+```{r}
+sessionInfo()
+```
+
+# References

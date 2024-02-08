@@ -27,9 +27,10 @@ The original 32883 transcripts were filtered with
   \code{rin}, \code{pct_umi_dup}, and \code{median_5_3_bias} were
   mean-imputed, centered, and scaled.
 
-  \link[MotrpacRatTraining6moData]{OUTLIERS} for sample outlier information.
+  See \code{\link[MotrpacRatTraining6moData]{OUTLIERS}} for sample outlier
+  information.
 
-  \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE} for details of
+  See \code{\link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}} for details of
   feature-to-gene mapping.
 }
 \examples{
@@ -43,8 +44,9 @@ head(pData(TRNSCRPT_EXP))      # phenoData
 }
 \seealso{
 \code{\link[Biobase]{ExpressionSet-class}},
-  \link[MotrpacRatTraining6moData]{TRNSCRPT_WATSC_RAW_COUNTS},
-  \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}, \link[edgeR]{DGEList},
-  \link[edgeR]{filterByExpr}, \link[edgeR]{calcNormFactors}
+  \code{\link[MotrpacRatTraining6moData]{TRNSCRPT_WATSC_RAW_COUNTS}},
+  \code{\link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}},
+  \code{\link[edgeR]{DGEList}}, \code{\link[edgeR]{filterByExpr}},
+  \code{\link[edgeR]{calcNormFactors}}
 }
 \keyword{datasets}

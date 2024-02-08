@@ -19,8 +19,8 @@ An object of class
   data for differential analysis and WGCNA.
 }
 \details{
-\link[MotrpacRatTraining6moData]{FEATURE_TO_GENE} for details of
-  feature-to-gene mapping.
+See \code{\link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}} for
+  details of feature-to-gene mapping.
 }
 \examples{
 library(Biobase)
@@ -33,7 +33,7 @@ head(pData(PROT_EXP))      # phenoData
 }
 \seealso{
 \code{\link[Biobase]{ExpressionSet-class}},
-  \link[MotrpacRatTraining6moData]{PROT_WATSC_NORM_DATA},
-  \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}
+  \code{\link[MotrpacRatTraining6moData]{PROT_WATSC_NORM_DATA}},
+  \code{\link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}}
 }
 \keyword{datasets}

@@ -29,13 +29,13 @@ head(pData(METAB_EXP))      # phenoData
 }
 \references{
 Fahy, E., & Subramaniam, S. (2020). RefMet: A reference
-  nomenclature for metabolomics. \emph{Nature Methods, 17}(12), 1173--1174.
+  nomenclature for metabolomics. \emph{Nature Methods, 17}(12), 1173–1174.
   \url{https://doi.org/10.1038/s41592-020-01009-y}
 }
 \seealso{
 \code{\link[Biobase]{ExpressionSet-class}},
-  \link[MotrpacRatTraining6moData]{METAB_FEATURE_ID_MAP},
-  \link[MotrpacRatTraining6moData]{METAB_NORM_DATA_NESTED},
+  \code{\link[MotrpacRatTraining6moData]{METAB_FEATURE_ID_MAP}},
+  \code{\link[MotrpacRatTraining6moData]{METAB_NORM_DATA_NESTED}},
   \href{https://www.metabolomicsworkbench.org/databases/refmet/index.php}{Metabolomics
   Workbench RefMet Database}
 }

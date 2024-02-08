@@ -1,0 +1,109 @@
+---
+title: "Heatmap of total triacylglycerol concentrations"
+author: "Tyler Sagendorf"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+This article generates a heatmap of total TAG concentrations (Fig. 5E).
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r setup}
+library(MotrpacRatTraining6moWATData)
+library(ComplexHeatmap)
+library(dplyr)
+library(Biobase)
+
+save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
+```
+
+```{r}
+# Scaling factor for plot elements
+scale <- 2
+
+# Barplot annotation
+TG_hm <- HeatmapAnnotation(`Median \nTotal TAG \n(ug/mg tissue)` =
+                             anno_barplot(METAB_TG_CONC$median_total_TG,
+                                          bar_width = 1, # 0.85
+                                          height = unit(45 * scale, "pt")),
+                           annotation_name_gp = gpar(fontsize = 7 * scale))
+
+# Column annotation
+ha <- select(pData(METAB_TG_CONC), sex, timepoint) %>%
+  transmute(Sex = sex,
+            Timepoint = timepoint) %>%
+  HeatmapAnnotation(
+    df = .,
+    border = TRUE,
+    gp = gpar(col = "black"),
+    gap = 0,
+    which = "column",
+    height = unit(6 * 2, "pt") * scale,
+    col = list(
+      Sex = c("Female" = "#ff6eff",
+              "Male" = "#5555ff"),
+      Timepoint = c("SED" = "white",
+                    "1W" = "#F7FCB9",
+                    "2W" = "#ADDD8E",
+                    "4W" = "#238443",
+                    "8W" = "#002612")
+    ),
+    annotation_name_gp = gpar(fontsize = 7 * scale),
+    annotation_legend_param = list(Timepoint = list(
+      at = c("SED", "1W", "2W", "4W", "8W")),
+      border = "black",
+      labels_gp = gpar(fontsize = 6.5 * scale),
+      title_gp = gpar(fontsize = 7 * scale, fontface = "bold")
+    )
+  )
+
+# Subset to top 20 metabolites
+METAB_TG_CONC <- METAB_TG_CONC[order(fData(METAB_TG_CONC)[["rank"]]), ][1:20, ]
+
+ht <- exprs(METAB_TG_CONC) %>%
+  Heatmap(matrix = .,
+          col = circlize::colorRamp2(
+            breaks = c(-1.9, 0, 2.1),
+            colors = c("#3366ff", "white", "darkred")
+          ),
+          cluster_columns = FALSE,
+          cluster_rows = FALSE,
+          show_column_names = FALSE,
+          row_labels = fData(METAB_TG_CONC)[["name_in_figures"]],
+          top_annotation = ha,
+          border = "black",
+          row_names_gp = gpar(fontsize = 5 * scale),
+          height = nrow(.) * unit(5.5, "pt") * scale,
+          width = ncol(.) * unit(5.5, "pt") * scale,
+          column_split = rep(1:2, each = 5),
+          column_title = NULL,
+          heatmap_legend_param = list(
+            title = "Standardized\nMedian\nConcentration",
+            at = c(-1.9, -1:1, 2.1),
+            title_gp = gpar(fontsize = 7 * scale,
+                            fontface = "bold"),
+            labels_gp = gpar(fontsize = 6 * scale),
+            legend_height = 5 * scale * unit(8, "pt"),
+            border = "black"
+          ))
+
+# Stack barplot on top of heatmap
+ht <- TG_hm %v% ht
+```
+
+```{r, eval=save_plots}
+# Save
+pdf(file = file.path("..", "..", "plots", "total_TAG_heatmap.pdf"),
+    width = 2.5 * scale, height = 2.5 * scale, family = "ArialMT")
+draw(ht, merge_legends = TRUE,
+     align_heatmap_legend = "heatmap_top",
+     align_annotation_legend = "heatmap_top")
+dev.off()
+```

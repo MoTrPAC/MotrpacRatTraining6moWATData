@@ -1,0 +1,266 @@
+---
+title: "Plots of log2 relative abundances of various proteins"
+author: "Tyler Sagendorf"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_document:
+    toc: true
+---
+
+This article generates plots of various proteins: Acaca, Fabp4, Lipe, Plin1, and Adipoq (Extended Data Fig. 7D, E). Most were included as plots in the first round of reviewer responses, rather than in the manuscript figures.
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  warning = FALSE,
+  fig.height = 1.7, 
+  fig.width = 2.2, 
+  out.height = "50%",
+  out.width = "50%",
+  dpi = 400
+)
+
+save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
+```
+
+```{r setup}
+library(MotrpacRatTraining6moWATData)
+library(MotrpacRatTraining6moData)
+library(Biobase)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggsignif)
+library(latex2exp)
+library(ggbeeswarm)
+```
+
+```{r}
+genes <- c("Acaca", "Fabp4", "Lipe", "Plin1", "Adipoq")
+
+# Differential analysis results
+stats <- PROT_DA$trained_vs_SED %>%
+  filter(gene_symbol %in% genes,
+         adj.P.Val < 0.05) %>%
+  mutate(signif = cut(adj.P.Val,
+                      breaks = c(0, 0.001, 0.01, 0.05, 1),
+                      labels = c("***", "**", "*", ""),
+                      include.lowest = TRUE, right = FALSE,
+                      ordered_result = TRUE),
+         sex = ifelse(grepl("^F", contrast), "Female", "Male"))
+
+# Individual data points to plot
+x <- cbind(select(fData(PROT_EXP), gene_symbol), exprs(PROT_EXP)) %>%
+  filter(gene_symbol %in% genes) %>%
+  pivot_longer(cols = -gene_symbol,
+               names_to = "viallabel",
+               values_to = "value") %>%
+  pivot_wider(values_from = value, names_from = gene_symbol) %>%
+  left_join(pData(PROT_EXP), by = "viallabel")
+```
+
+```{r}
+# Custom plot theme
+t1 <- theme_bw() +
+  theme(text = element_text(size = 6.5, color = "black"),
+        line = element_line(linewidth = 0.3, color = "black"),
+        axis.ticks = element_line(linewidth = 0.3, color = "black"),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text = element_text(size = 5,
+                                 color = "black"),
+        axis.text.x = element_text(size = 6.5, angle = 90, hjust = 1,
+                                   vjust = 0.5),
+        axis.title = element_text(size = 6.5, margin = margin(),
+                                  color = "black"),
+        axis.line = element_line(linewidth = 0.3),
+        strip.background = element_blank(),
+        strip.text = element_text(size = 6.5, color = "black",
+                                  margin = margin(b = 5, unit = "pt")),
+        panel.spacing = unit(-1, "pt"),
+        plot.title = element_text(size = 9, color = "black",
+                                  hjust = 0.5, face = "bold"),
+        plot.subtitle = element_text(size = 6, color = "black"),
+        legend.position = "none",
+        strip.placement = "outside"
+  )
+```
+
+
+## Acaca
+
+```{r}
+## Acaca
+p_acaca <- ggplot(x, aes(x = timepoint, y = Acaca)) +
+  stat_summary(geom = "crossbar",
+               fun.data = ~ mean_cl_normal(.x),
+               mapping = aes(color = sex),
+               fatten = 1, linewidth = 0.4) +
+  geom_point(shape = 16, size = 0.6,
+             position = position_beeswarm(cex = 3.5,
+                                                      dodge.width = 0.4)) +
+  geom_signif(
+    data = stats,
+    aes(y_position = 0.8,
+        xmin = "SED",
+        xmax = "8W",
+        annotations = "*"),
+    textsize = 3,
+    vjust = 0.25,
+    tip_length = 0.02,
+    color = "black",
+    size = 0.3,
+    manual = TRUE
+  ) +
+  facet_grid(~ sex) +
+  labs(x = NULL,
+       y = TeX("log$_2$ relative abundance"),
+       title = "Acaca") +
+  scale_color_manual(values = c("#ff6eff", "#5555ff")) +
+  scale_y_continuous(expand = expansion(mult = 5e-3),
+                     breaks = seq(-1.5, 1, 0.5)) +
+  coord_cartesian(ylim = c(-1.6, 1), clip = "off") +
+  t1
+
+p_acaca
+```
+
+```{r, eval=save_plots}
+ggsave(file.path("..", "..", "plots", "proteins_Acaca.pdf"), p_acaca, 
+       height = 1.7, width = 2.2, dpi = 400, bg = "white")
+```
+
+
+## Adipoq
+
+```{r}
+## Adipoq
+p_adi <- ggplot(x, aes(x = timepoint, y = Adipoq)) +
+  stat_summary(geom = "crossbar",
+               fun.data = ~ mean_cl_normal(.x),
+               mapping = aes(color = sex),
+               fatten = 1, linewidth = 0.4) +
+  geom_point(shape = 16, size = 0.6,
+             position = position_beeswarm(cex = 3.5,
+                                                      dodge.width = 0.4)) +
+  facet_grid(~ sex) +
+  labs(x = NULL,
+       y = TeX("log$_2$ relative abundance"),
+       title = "Adipoq") +
+  scale_color_manual(values = c("#ff6eff", "#5555ff")) +
+  scale_y_continuous(expand = expansion(mult = 5e-3),
+                     breaks = seq(-0.4, 0.8, 0.4)) +
+  coord_cartesian(ylim = c(-0.5, 0.8), clip = "off") +
+  t1
+
+p_adi
+```
+
+```{r, eval=save_plots}
+ggsave(file.path("..", "..", "plots", "proteins_Adipoq.pdf"), p_adi, 
+       height = 1.7, width = 2.2, dpi = 400, bg = "white")
+```
+
+
+## Fabp4
+
+```{r}
+## Fabp4
+p_fab <- ggplot(x, aes(x = timepoint, y = Fabp4)) +
+  stat_summary(geom = "crossbar",
+               fun.data = ~ mean_cl_normal(.x),
+               mapping = aes(color = sex),
+               fatten = 1, linewidth = 0.4) +
+  geom_point(shape = 16, size = 0.6,
+             position = position_beeswarm(cex = 3.5,
+                                                      dodge.width = 0.4)) +
+  facet_grid(~ sex) +
+  labs(x = NULL,
+       y = TeX("log$_2$ relative abundance"),
+       title = "Fabp4") +
+  scale_color_manual(values = c("#ff6eff", "#5555ff")) +
+  scale_y_continuous(expand = expansion(mult = 5e-3),
+                     breaks = seq(-0.8, 0.8, 0.4)) +
+  coord_cartesian(ylim = c(-0.8, 0.85), clip = "off") +
+  t1
+
+p_fab
+```
+
+```{r, eval=save_plots}
+ggsave(file.path("..", "..", "plots", "proteins_Fabp4.pdf"), p_fab, 
+       height = 1.7, width = 2.2, dpi = 400, bg = "white")
+```
+
+
+## Lipe (Hsl)
+
+```{r}
+## Lipe
+p_lipe <- ggplot(x, aes(x = timepoint, y = Lipe)) +
+  stat_summary(geom = "crossbar",
+               fun.data = ~ mean_cl_normal(.x),
+               mapping = aes(color = sex),
+               fatten = 1, linewidth = 0.4) +
+  geom_point(shape = 16, size = 0.6,
+             position = position_beeswarm(cex = 3.5,
+                                                      dodge.width = 0.4)) +
+  facet_grid(~ sex) +
+  labs(x = NULL,
+       y = TeX("log$_2$ relative abundance"),
+       title = "Lipe (Hsl)") +
+  scale_color_manual(values = c("#ff6eff", "#5555ff")) +
+  scale_y_continuous(expand = expansion(mult = 5e-3),
+                     breaks = seq(-0.8, 0.8, 0.4)) +
+  coord_cartesian(ylim = c(-0.8, 0.8), clip = "off") +
+  t1
+
+p_lipe
+```
+
+```{r, eval=save_plots}
+ggsave(file.path("..", "..", "plots", "proteins_Lipe.pdf"), p_lipe, 
+       height = 1.7, width = 2.2, dpi = 400, bg = "white")
+```
+
+
+## Plin1
+
+```{r}
+## Plin1
+p_plin <- ggplot(x, aes(x = timepoint, y = Plin1)) +
+  stat_summary(geom = "crossbar",
+               fun.data = ~ mean_cl_normal(.x),
+               mapping = aes(color = sex),
+               fatten = 1, linewidth = 0.4) +
+  geom_point(shape = 16, size = 0.6,
+             position = position_beeswarm(cex = 3.5,
+                                                      dodge.width = 0.4)) +
+  facet_grid(~ sex) +
+  labs(x = NULL,
+       y = TeX("log$_2$ relative abundance"),
+       title = "Plin1") +
+  scale_color_manual(values = c("#ff6eff", "#5555ff")) +
+  scale_y_continuous(expand = expansion(mult = 5e-3),
+                     breaks = seq(-0.8, 0.8, 0.4)) +
+  coord_cartesian(ylim = c(-0.85, 0.8), clip = "off") +
+  t1
+
+p_plin
+```
+
+```{r, eval=save_plots}
+ggsave(file.path("..", "..", "plots", "proteins_Plin1.pdf"), p_plin, 
+       height = 1.7, width = 2.2, dpi = 400, bg = "white")
+```
+
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+

@@ -2,3 +2,9 @@
 ^.*\.Rproj$
 .Rproj.user
 docs
+inst/doc
+/doc/
+/Meta/
+/sandbox/
+/plots/
+/supplementary/

@@ -1,0 +1,130 @@
+---
+title: "Plots of WGCNA Module Over-Representation Analysis Results"
+author: "Tyler Sagendorf"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+This article generates plots of the WGCNA over-representation analysis results (Fig. 4C--E).
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE,
+  fig.height = 1.8, 
+  fig.width = 2.2
+)
+```
+
+```{r setup}
+library(MotrpacRatTraining6moWATData)
+library(MotrpacRatTraining6moWAT) # plot_ORA
+library(dplyr)
+library(ggplot2)
+
+save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
+```
+
+# METAB
+
+```{r}
+METAB_MODULE_ORA <- mutate(METAB_MODULE_ORA,
+                           gs_subcat = "refmet_sub_class",
+                           pathway = refmet_sub_class,
+                           gs_description = refmet_sub_class)
+
+p_metab <- plot_ORA(METAB_MODULE_ORA,
+                    mods = 1:7,
+                    subset = "refmet_sub_class")
+```
+
+```{r eval=save_plots}
+ggsave(file.path("..", "..", "plots", "METAB_module_ORA_dotplot.pdf"), p_metab,
+       height = 1.8, width = 2.2, family = "ArialMT")
+```
+
+# PROT
+
+```{r}
+## MF
+prot_MF <- plot_ORA(PROT_MODULE_ORA,
+                    subset = "GO:MF",
+                    mods = 1:11,
+                    rel_heights = c(0.8, 0.1))
+```
+
+```{r eval=save_plots}
+ggsave(file.path("..", "..", "plots", "PROT_module_ORA_GO-MF_dotplot.pdf"), prot_MF,
+       height = 3, width = 3, family = "ArialMT")
+```
+
+```{r}
+## BP
+prot_BP <- plot_ORA(PROT_MODULE_ORA,
+                    subset = "GO:BP",
+                    mods = 1:11,
+                    rel_heights = c(0.8, 0.1))
+```
+
+```{r eval=save_plots}
+ggsave(file.path("..", "..", "plots", "PROT_module_ORA_GO-BP_dotplot.pdf"), prot_BP,
+       height = 3, width = 3, family = "ArialMT")
+```
+
+```{r}
+## CC
+prot_CC <- plot_ORA(PROT_MODULE_ORA,
+                    subset = "GO:CC",
+                    mods = 1:11,
+                    rel_heights = c(0.8, 0.1))
+```
+
+```{r eval=save_plots}
+ggsave(file.path("..", "..", "plots", "PROT_module_ORA_GO-CC_dotplot.pdf"), prot_CC,
+       height = 3, width = 3, family = "ArialMT")
+```
+
+# TRNSCRPT
+
+```{r}
+# MF
+trnscrpt_MF <- plot_ORA(TRNSCRPT_MODULE_ORA,
+                        subset = "GO:MF",
+                        mods = 1:14,
+                        n_terms = 4,
+                        rel_heights = c(1, 0.15))
+```
+
+```{r eval=save_plots}
+ggsave(file.path("..", "..", "plots", "TRNSCRPT_module_ORA_GO-MF_dotplot.pdf"), trnscrpt_MF,
+       height = 4, width = 3.5, family = "ArialMT")
+```
+
+```{r}
+# BP
+trnscrpt_BP <- plot_ORA(TRNSCRPT_MODULE_ORA,
+                        subset = "GO:BP",
+                        mods = 1:14,
+                        n_terms = 4,
+                        rel_heights = c(1, 0.09))
+```
+
+```{r eval=save_plots}
+ggsave(file.path("..", "..", "plots", "TRNSCRPT_module_ORA_GO-BP_dotplot.pdf"), trnscrpt_BP,
+       height = 5, width = 3.5, family = "ArialMT")
+```
+
+```{r}
+# CC
+trnscrpt_CC <- plot_ORA(TRNSCRPT_MODULE_ORA,
+                        subset = "GO:CC",
+                        mods = 1:14, n_terms = 4,
+                        rel_heights = c(1, 0.15))
+```
+
+```{r eval=save_plots}
+ggsave(file.path("..", "..", "plots", "TRNSCRPT_module_ORA_GO-CC_dotplot.pdf"), trnscrpt_CC,
+       height = 4, width = 3.5, family = "ArialMT")
+```
+

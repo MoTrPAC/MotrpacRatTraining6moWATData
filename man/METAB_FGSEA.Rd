@@ -5,12 +5,29 @@
 \alias{METAB_FGSEA}
 \title{Metabolomics RefMet chemical subclass FGSEA}
 \format{
-An object of class \code{list} of length 3.
+A named list of 3 \code{data.frame} objects. Similar to what is in
+  \code{\link{GO_FGSEA}}.
 }
 \usage{
 METAB_FGSEA
 }
 \description{
-Metabolomics RefMet chemical subclass FGSEA
+FGSEA of the metabolomics differential analysis results using
+  the Metabolomics Workbench RefMet chemical subclasses.
+}
+\details{
+Metabolites were grouped according to their RefMet subclass and
+  FGSEA was performed the same as for gene sets. Only those subclasses with
+  at least 10 metabolites, after filtering to what was detected in WAT, were
+  tested for enrichment.
+}
+\references{
+Fahy, E., & Subramaniam, S. (2020). RefMet: A reference
+  nomenclature for metabolomics. \emph{Nature Methods, 17}(12), 1173–1174.
+  \url{https://doi.org/10.1038/s41592-020-01009-y}
+}
+\seealso{
+\href{https://www.metabolomicsworkbench.org/databases/refmet/index.php}{Metabolomics
+  Workbench RefMet Database}
 }
 \keyword{datasets}

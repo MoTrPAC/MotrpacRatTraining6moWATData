@@ -2,7 +2,8 @@ Package: MotrpacRatTraining6moWATData
 Type: Package
 Title: Data and Analysis Results for the MoTrPAC PASS1B Rat White Adipose Tissue 
     Companion Paper
-Version: 0.1.0
+Version: 2.0.0
+Date: 2024-02-08
 Authors@R: 
   c(
     person(given = "Tyler J.", family = "Sagendorf",
@@ -39,18 +40,34 @@ Depends:
     R (>= 3.5.0)
 Suggests:
     Biobase,
+    data.table,
     dplyr,
+    edgeR,
     emmeans,
+    fgsea,
+    ggbeeswarm,
+    ggplot2,
+    ggrepel,
+    ggsignif,
+    knitr,
+    latex2exp,
+    lemon,
     MASS,
     MotrpacRatTraining6moData (>= 1.7.0),
-    MotrpacRatTraining6moWAT (>= 0.1.0),
+    MotrpacRatTraining6moWAT (>= 1.0.0),
+    MotrpacRatTrainingPhysiologyData,
     purrr,
+    readxl,
+    rmarkdown,
+    stringr,
     tibble,
     tidyr
 Remotes:
     github::MoTrPAC/MotrpacRatTraining6moData,
-    github::PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWAT
+    github::MoTrPAC/MotrpacRatTraining6moWAT,
+    github::MoTrPAC/MotrpacRatTrainingPhysiologyData
 RoxygenNote: 7.2.3
 URL: 
-    https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/, 
-    https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/
+    https://motrpac.github.io/MotrpacRatTraining6moWATData/, 
+    https://github.com/MoTrPAC/MotrpacRatTraining6moWATData/
+VignetteBuilder: knitr

@@ -5,12 +5,38 @@
 \alias{PHOSPHO_KSEA}
 \title{Phosphoproteomics KSEA}
 \format{
-An object of class \code{list} of length 3.
+A named list of 3 \code{data.frame} objects. Similar to what is in
+  \code{\link{GO_FGSEA}}.
 }
 \usage{
 PHOSPHO_KSEA
 }
 \description{
-Phosphoproteomics KSEA
+Kinase—Substrate Enrichment Analysis (KSEA) of the
+  phosphoproteomics differential analysis results using kinase sets from
+  PhosphoSitePlus.
+}
+\details{
+See \code{\link{PSP_KINASE_SUBSTRATE}} for details on the kinase
+  sets.
+
+  Rat phosphorylation sites in \code{\link{PHOSPHO_DA}} were mapped to their
+  human orthologs and multiply-phosphorylated sites were split and aggregated
+  to the single-site level by taking the arithmetic mean of the
+  -log\eqn{_{10}}(p-value) signed by the log\eqn{_2} fold-change. FGSEA was
+  then performed with \code{\link[MotrpacRatTraining6moWAT]{fgsea2}} by
+  grouping substrates according to their kinases and treating these kinase
+  groups as gene sets. Only those kinases with at least 3 substrates were
+  tested for enrichment.
+}
+\references{
+Hornbeck, P. V., Zhang, B., Murray, B., Kornhauser, J. M.,
+  Latham, V., & Skrzypek, E. (2015). PhosphoSitePlus, 2014: mutations, PTMs
+  and recalibrations. \emph{Nucleic acids research, 43}(Database issue),
+  D512–D520. \url{https://doi.org/10.1093/nar/gku1267}
+}
+\seealso{
+\code{\link{PHOSPHO_DA}}, \code{\link{PSP_KINASE_SUBSTRATE}},
+  \code{\link[MotrpacRatTraining6moWAT]{fgsea2}}
 }
 \keyword{datasets}

@@ -1,0 +1,90 @@
+---
+title: "Statistical analysis of"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Statistical analysis of}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  warning = FALSE,
+  fig.height = 5,
+  fig.width = 7
+)
+```
+
+```{r setup}
+library(MotrpacRatTraining6moWAT)
+library(MotrpacRatTraining6moWATData)
+library(MASS) # glm.nb
+library(emmeans)
+library(dplyr)
+```
+
+# Regression Model
+
+```{r}
+# Count adipocytes by bin and experimental group
+count_summary <- ADIPOCYTE_SIZE %>%
+  group_by(pid, sex, timepoint, diameter_bin) %>%
+  summarise(binned_adipocytes = n(),
+            .groups = "keep") %>%
+  group_by(pid) %>%
+  mutate(total_adipocytes = sum(binned_adipocytes),
+         adipocyte_prop = binned_adipocytes / total_adipocytes) %>%
+  ungroup()
+```
+
+```{r}
+# Negative Binomial GLM with log link and offset
+fit <- glm.nb(binned_adipocytes ~ sex * timepoint * diameter_bin +
+                offset(log(total_adipocytes)),
+              link = "log",
+              data = count_summary)
+
+plot_lm <- function(x) {
+  on.exit(par(mfrow = c(1, 1)))
+  par(mfrow = c(2, 3))
+  for (i in 1:6) plot(x, which = i)
+}
+
+plot_lm(fit)
+```
+
+Observations 18 and 19 appear to be outlying, but there are almost 56K observations in the data, so they will not substantially affect the model fit.
+
+```{r}
+# Model summary
+summary(fit)
+```
+
+
+# Comparisons
+
+We will compare each trained group to their sex-matched sedentary controls by diameter bin using the Dunnett test for comparisons against a reference.
+
+```{r}
+ADIPOCYTE_SIZE_STATS <- emmeans(fit, specs = "timepoint",
+                                by = c("diameter_bin", "sex")) %>%
+  contrast(method = "dunnett") %>%
+  summary(infer = TRUE, type = "response") %>%
+  as.data.frame() %>%
+  mutate(diameter_bin = factor(diameter_bin),
+         signif = cut(p.value,
+                      breaks = c(0, 0.001, 0.01, 0.05, 1),
+                      labels = c("***", "**", "*", ""),
+                      include.lowest = TRUE, right = FALSE,
+                      ordered_result = TRUE))
+```
+
+```{r, eval=FALSE}
+# Save
+usethis::use_data(ADIPOCYTE_SIZE_STATS, internal = FALSE,
+                  overwrite = TRUE, version = 3, compress = "bzip2")
+```
+

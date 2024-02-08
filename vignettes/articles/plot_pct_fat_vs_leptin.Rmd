@@ -1,0 +1,73 @@
+---
+title: "Plot of Change in % Body Fat vs. Plasma Leptin"
+author: "Tyler Sagendorf"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+This article generates a scatterplot of the (post - pre) change in % body fat vs. plasma leptin levels (Extended Data Fig. 1G).
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  dpi = 400,
+  out.width = "50%",
+  out.height = "50%"
+)
+```
+
+```{r setup}
+library(MotrpacRatTraining6moWATData)
+library(dplyr)
+library(ggplot2)
+
+save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
+```
+
+```{r}
+x <- PHENO_WAT %>% 
+  filter(omics_analysis) %>% 
+  transmute(pid = as.numeric(pid),
+            fat_diff = post_fat_pct - pre_fat_pct) %>% 
+  left_join(ANALYTES, by = "pid") %>% 
+  dplyr::select(pid, sex, timepoint, fat_diff, leptin)
+```
+
+```{r out.height=1.7, out.width=3}
+p <- ggplot(x, aes(x = fat_diff, y = leptin)) +
+  stat_smooth(aes(group = sex), method = "lm", 
+              formula = "y ~ x", se = FALSE, lty = 2,
+              color = "black", linewidth = 0.3) +
+  geom_point(aes(shape = sex, color = timepoint),
+             size = 1) +
+  scale_x_continuous(name = "Change in % Body Fat (Post - Pre)",
+                     breaks = seq(-6, 4, 2)) +
+  scale_y_continuous(name = "Leptin (pg/mL)",
+                     limits = c(0, NA),
+                     breaks = 1e04 * (0:6),
+                     labels = label_scientific(digits = 1)) +
+  scale_color_manual(name = "Timepoint",
+                     values = c("#bebebe", "#238443", "black")) +
+  guides(shape = guide_legend(title = "Sex")) +
+  theme_bw(base_size = 6) +
+  theme(axis.text = element_text(size = 6, color = "black"),
+        axis.title.x = element_text(size = 6.5, color = "black",
+                                    margin = margin(t = 6)),
+        axis.title.y = element_text(size = 6.5, color = "black",
+                                    margin = margin(r = 6)),
+        legend.title = element_text(size = 6.5, color = "black"),
+        legend.text = element_text(size = 6, color = "black"),
+        legend.key.size = unit(8, "pt"),
+        axis.line = element_line(color = "black", linewidth = 0.3),
+        panel.grid.major = element_line(linewidth = 0.3),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank())
+
+p
+```
+
+```{r, eval=save_plots}
+ggsave(file.path("..", "..", "plots", "pct_fat_vs_leptin.pdf"), p,
+       height = 1.7, width = 2.4, family = "ArialMT")
+```
+

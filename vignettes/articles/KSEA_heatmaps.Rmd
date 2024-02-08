@@ -1,0 +1,121 @@
+---
+title: "Heatmaps of Kinase--Substrate Enrichment Analysis Results"
+author: "Tyler Sagendorf"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+This article generates heatmaps of the KSEA results (Fig. 3E, Extended Data Fig. 5E).
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r setup}
+# Required packages
+library(MotrpacRatTraining6moWATData)
+library(MotrpacRatTraining6moWAT)
+library(dplyr)
+library(ComplexHeatmap)
+library(latex2exp)
+
+save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
+```
+
+```{r, eval=save_plots}
+for (group_i in names(PHOSPHO_KSEA)[c(1, 3)]) {
+  # Top ~20 most enriched kinases
+  top_kinases <- PHOSPHO_KSEA[[group_i]] %>%
+    group_by(kinase) %>%
+    summarise(min_pval = min(pval)) %>%
+    slice_min(order_by = min_pval, n = 20) %>%
+    pull(kinase)
+  
+  ## Kinase heatmap -------------------------------------------------------------
+  scale <- 2 # scale for saving heatmap
+  
+  if (group_i == "trained_vs_SED") {
+    # Column annotation (sex)
+    ca_df <- data.frame(Sex = rep(c("Female", "Male"), each = 4)) %>%
+      mutate(Sex = factor(Sex, levels = c("Female", "Male")))
+    ca_colors <- list("Sex" = c("#ff6eff", "#5555ff"))
+    names(ca_colors$Sex) <- levels(ca_df$Sex)
+    
+    top_annotation <- HeatmapAnnotation(
+      df = ca_df, col = ca_colors,
+      show_annotation_name = TRUE,
+      annotation_name_gp = gpar(fontsize = scale * 7),
+      gp = gpar(col = "black"),
+      border = TRUE, gap = 0,
+      annotation_legend_param = list(
+        border = "black",
+        grid_height = unit(14, "pt"),
+        grid_width = unit(14, "pt"),
+        title_gp = gpar(fontsize = scale * 7),
+        labels_gp = gpar(fontsize = scale * 6)
+      )
+    )
+    
+    column_labels <- rep(paste0(2 ^ (0:3), "W - SED"), times = 2)
+    column_split <- ca_df$Sex
+    colors <- c("#3366ff", "darkred", "grey")
+  } else {
+    column_labels <- latex2exp::TeX(
+      sprintf("(%dW - SED)$_{M - F}$", 2 ^ (0:3))
+    )
+    top_annotation <- column_split <- NULL
+    colors <- c("#ff6eff", "#5555ff", "grey")
+  }
+  
+  
+  # Enrichment heatmap
+  PHOSPHO_KSEA[[group_i]] %>%
+    filter(kinase %in% top_kinases) %>%
+    enrichmat(plot_sig_only = FALSE,
+              n_top = Inf,
+              colors = colors,
+              rownames_column = "kinase",
+              cell_size = unit(6 * scale, "points"),
+              padj_args = list(
+                title_gp = gpar(fontsize = 7 * scale),
+                labels_gp = gpar(fontsize = 6 * scale),
+                grid_height = unit(6 * scale, "pt"),
+                grid_width = unit(6 * scale, "pt")
+              ),
+              padj_legend_title = "BH-adjusted\np-value",
+              heatmap_args = list(
+                top_annotation = top_annotation,
+                cluster_row_slices = FALSE,
+                column_split = column_split,
+                show_parent_dend_line = FALSE,
+                column_title = NULL,
+                row_title = NULL,
+                column_labels = column_labels,
+                column_names_gp = gpar(fontsize = 5.5 * scale),
+                row_names_gp = gpar(fontsize = 5.5 * scale),
+                heatmap_legend_param = list(
+                  title_gp = gpar(fontsize = scale * 6.5),
+                  labels_gp = gpar(fontsize = scale * 6),
+                  legend_height = unit(90, "pt")
+                )),
+              height = scale * unit(2.5, "in"),
+              width = scale * unit(2.5, "in"),
+              draw_args = list(legend_gap = unit(0.4, "in"),
+                               gap = unit(0.5, "in"),
+                               adjust_annotation_extension = TRUE,
+                               heatmap_legend_side = "right", #"bottom",
+                               annotation_legend_side = "right",
+                               align_annotation_legend = "heatmap_top",
+                               align_heatmap_legend = "heatmap_top"
+              ),
+              save_args = list(dpi = 400, res = 400, family = "ArialMT"),
+              filename = sprintf(file.path("..", "..", "plots",
+                                           "PHOSPHO_kinase_heatmap_%s.pdf"),
+                                 group_i))
+}
+```
+

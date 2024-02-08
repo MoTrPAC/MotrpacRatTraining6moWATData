@@ -1,0 +1,402 @@
+---
+title: "Statistical analyses of post - pre training differences"
+author: Tyler Sagendorf
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_document:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Statistical analyses of post - pre training differences}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r setup, message=FALSE, warning=FALSE}
+# Required packages
+library(MotrpacRatTraining6moWATData)
+library(ggplot2)
+library(dplyr)
+library(emmeans)
+library(tibble)
+library(tidyr)
+library(purrr)
+theme_set(theme_bw()) # base plot theme
+```
+
+```{r}
+# Generate all regression diagnostic plots
+plot_lm <- function(x) {
+  par(mfrow = c(2, 3))
+  for (i in 1:6)
+    plot(x, which = i)
+  par(mfrow = c(1, 1))
+}
+```
+
+
+# Regression Models
+
+We will fit OLS or WLS regression models with sex, timepoint, and their interaction as predictors of the (post - pre) training differences for each phenotypic measure. Only those samples selected for -omics analysis will be considered. If a WLS model is used, the weights will be reciprocal group variances.
+
+
+## NMR Weight
+
+```{r, fig.height=4, fig.width=5}
+# Plot points
+ggplot(PHENO_WAT, aes(x = timepoint, y = post_weight - pre_weight,
+                      color = omics_analysis)) +
+  geom_point(position = position_jitterdodge(jitter.width = 0.15, 
+                                             jitter.height = 0, 
+                                             dodge.width = 0.4),
+             na.rm = TRUE, alpha = 0.5) +
+  facet_grid(~ sex, drop = TRUE) +
+  labs(y = "NMR weight (post - pre)") +
+  scale_color_manual(values = c("red", "black"),
+                     breaks = c(TRUE, FALSE)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        legend.position = "bottom", 
+        legend.direction = "horizontal")
+```
+
+There is one negative outlying value in the SED male group that may affect the model fit. We will start with a WLS model, since we observe different group variances.
+
+```{r}
+wt.weight <- filter(PHENO_WAT, omics_analysis) %>% 
+  group_by(sex, timepoint) %>% 
+  mutate(1 / var(post_weight - pre_weight, na.rm = TRUE)) %>% 
+  pull(-1)
+
+fit.weight <- lm(I(post_weight - pre_weight) ~ sex * timepoint,
+                 weights = wt.weight,
+                 data = filter(PHENO_WAT, omics_analysis))
+plot_lm(fit.weight)
+```
+
+The diagnostic plots appear relatively fine. We will try to simplify the model.
+
+```{r}
+anova(fit.weight, test = "F")
+```
+
+All terms are significant. We will not change the model.
+
+```{r}
+summary(fit.weight)
+```
+
+
+## NMR Fat Mass
+
+```{r, fig.height=4, fig.width=5}
+# Plot points
+ggplot(PHENO_WAT, aes(x = timepoint, y = post_fat - pre_fat,
+                      color = omics_analysis)) +
+  geom_point(position = position_jitterdodge(jitter.width = 0.15, 
+                                             jitter.height = 0, 
+                                             dodge.width = 0.4),
+             na.rm = TRUE, alpha = 0.5) +
+  facet_grid(~ sex, drop = TRUE) +
+  labs(y = "NMR Fat (post - pre)") +
+  scale_color_manual(values = c("red", "black"),
+                     breaks = c(TRUE, FALSE)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        legend.position = "bottom", 
+        legend.direction = "horizontal")
+```
+
+We observe unequal group variances, and an outlying value in the 4W males. We will fit a WLS model with reciprocal group variances as weights.
+
+```{r}
+wt.fat <- filter(PHENO_WAT, omics_analysis) %>% 
+  group_by(sex, timepoint) %>% 
+  mutate(1 / var(post_fat - pre_fat, na.rm = TRUE)) %>% 
+  pull(-1)
+
+fit.fat <- lm(I(post_fat - pre_fat) ~ sex * timepoint,
+              weights = wt.fat,
+              data = filter(PHENO_WAT, omics_analysis))
+plot_lm(fit.fat)
+```
+
+The diagnostic plots seem mostly fine. We will try to simplify the model.
+
+```{r}
+anova(fit.fat, test = "F")
+```
+
+All terms are significant.
+
+```{r}
+summary(fit.fat)
+```
+
+
+## NMR % Fat
+
+```{r, fig.height=4, fig.width=5}
+# Plot points
+ggplot(PHENO_WAT, aes(x = timepoint, y = post_fat_pct - pre_fat_pct,
+                      color = omics_analysis)) +
+  geom_point(position = position_jitterdodge(jitter.width = 0.15, 
+                                             jitter.height = 0, 
+                                             dodge.width = 0.4),
+             na.rm = TRUE, alpha = 0.5) +
+  facet_grid(~ sex, drop = TRUE) +
+  labs(y = "NMR % Fat (post - pre)") +
+  scale_color_manual(values = c("red", "black"),
+                     breaks = c(TRUE, FALSE)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        legend.position = "bottom", 
+        legend.direction = "horizontal")
+```
+
+We observe the same outlying value in the 4W male group. We will fit an OLS model first.
+
+```{r}
+fit.fat_pct <- lm(I(post_fat_pct - pre_fat_pct) ~ sex * timepoint,
+                  data = filter(PHENO_WAT, omics_analysis))
+plot_lm(fit.fat_pct)
+```
+
+We will incorporate reciprocal group variances as weights.
+
+```{r}
+wt.fat_pct <- filter(PHENO_WAT, omics_analysis) %>% 
+  group_by(sex, timepoint) %>% 
+  mutate(1 / var(post_fat_pct - pre_fat_pct, na.rm = TRUE)) %>% 
+  pull(-1)
+
+fit.fat_pct <- update(fit.fat_pct, weights = wt.fat_pct)
+plot_lm(fit.fat_pct)
+```
+
+The diagnostic plots look better, though still not great. We will try to simplify the model.
+
+```{r}
+anova(fit.fat_pct, test = "F")
+```
+
+All terms are significant, so we will not update the model.
+
+```{r}
+summary(fit.fat_pct)
+```
+
+
+## VO$_2$max Relative to Body Mass
+
+We will look at VO$_2$max ($\text{mL} \cdot (\text{kg body mass})^{-1} \cdot \text{min}^{-1}$).
+
+```{r, fig.height=4, fig.width=5}
+# Plot points
+ggplot(PHENO_WAT, aes(x = timepoint, 
+                      y = post_vo2max_ml_kg_min - pre_vo2max_ml_kg_min,
+                      color = omics_analysis)) +
+  geom_point(position = position_jitterdodge(jitter.width = 0.15, 
+                                             jitter.height = 0, 
+                                             dodge.width = 0.4),
+             na.rm = TRUE, alpha = 0.5) +
+  facet_grid(~ sex, drop = TRUE) +
+  labs(y = "Absolute VO2max (post - pre)") +
+  scale_color_manual(values = c("red", "black"),
+                     breaks = c(TRUE, FALSE)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        legend.position = "bottom", 
+        legend.direction = "horizontal")
+```
+
+The SED female group has a large outlying value. We will begin by fitting an OLS model.
+
+```{r}
+fit.vo2max_rel <- lm(I(post_vo2max_ml_kg_min - pre_vo2max_ml_kg_min) ~ 
+                       sex * timepoint,
+                     data = filter(PHENO_WAT, omics_analysis))
+plot_lm(fit.vo2max_rel)
+```
+
+We will incorporate reciprocal group variances as weights.
+
+```{r}
+wt.vo2max_rel <- filter(PHENO_WAT, omics_analysis) %>% 
+  group_by(sex, timepoint) %>% 
+  mutate(1 / var(post_vo2max_ml_kg_min - pre_vo2max_ml_kg_min, 
+                 na.rm = TRUE)) %>% 
+  pull(-1)
+
+fit.vo2max_rel <- update(fit.vo2max_rel, weights = wt.vo2max_rel)
+plot_lm(fit.vo2max_rel)
+```
+
+The diagnostic plots look mostly fine. We will try to simplify the model.
+
+```{r}
+anova(fit.vo2max_rel, test = "F")
+```
+
+Only `timepoint` appears significant.
+
+```{r}
+fit.vo2max_rel.1 <- update(fit.vo2max_rel, formula = . ~ timepoint)
+anova(fit.vo2max_rel.1, fit.vo2max_rel, test = "F")
+```
+
+There is no significant difference between the models, so we will use the simpler one.
+
+```{r}
+fit.vo2max_rel <- fit.vo2max_rel.1
+plot_lm(fit.vo2max_rel)
+```
+
+The diagnostic plots look mostly fine.
+
+```{r}
+summary(fit.vo2max_rel)
+```
+
+
+## VO$_2$max Relative to Lean Mass
+
+We will look at VO$_2$max ($\text{mL} \cdot (\text{kg lean mass})^{-1} \cdot \text{min}^{-1}$).
+
+```{r, fig.height=4, fig.width=5}
+# Plot points
+ggplot(PHENO_WAT, aes(x = timepoint, 
+                      y = post_vo2max_ml_kg_lean_min - pre_vo2max_ml_kg_lean_min,
+                      color = omics_analysis)) +
+  geom_point(position = position_jitterdodge(jitter.width = 0.15, 
+                                             jitter.height = 0, 
+                                             dodge.width = 0.4),
+             na.rm = TRUE, alpha = 0.5) +
+  facet_grid(~ sex, drop = TRUE) +
+  labs(y = "Relative VO2max (post - pre)") +
+  scale_color_manual(values = c("red", "black"),
+                     breaks = c(TRUE, FALSE)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        legend.position = "bottom", 
+        legend.direction = "horizontal")
+```
+
+There is a large outlying value in the SED female group, though it is comparable to observations of samples not selected for -omics analyses. We will fit a WLS model with reciprocal group variances as weights.
+
+```{r}
+wt.vo2max_rel_lean <- filter(PHENO_WAT, omics_analysis) %>% 
+  group_by(sex, timepoint) %>% 
+  mutate(1 / var(post_vo2max_ml_kg_lean_min - pre_vo2max_ml_kg_lean_min, 
+                 na.rm = TRUE)) %>% 
+  pull(-1)
+
+fit.vo2max_rel_lean <- lm(I(post_vo2max_ml_kg_lean_min - 
+                              pre_vo2max_ml_kg_lean_min) ~ 
+                            sex * timepoint,
+                          weights = wt.vo2max_rel_lean,
+                          data = filter(PHENO_WAT, omics_analysis))
+plot_lm(fit.vo2max_rel_lean)
+```
+
+The diagnostic plots look fine. We will try to simplify the model.
+
+```{r}
+anova(fit.vo2max_rel_lean, test = "F")
+```
+
+The interaction is not significant.
+
+```{r}
+fit.vo2max_rel_lean <- update(fit.vo2max_rel_lean, 
+                              formula = . ~ sex + timepoint)
+plot_lm(fit.vo2max_rel_lean)
+```
+
+The diagnostic plots look mostly fine. 
+
+```{r}
+summary(fit.vo2max_rel_lean)
+```
+
+
+# Comparisons
+
+We will test whether the mean of each timepoint is significantly different from 0 by sex, if sex was included as a predictor. P-values will be adjusted across each set of 3 comparisons by sex using the Holm method.
+
+```{r}
+## Create emm_list objects
+model_list <- list("NMR Weight" = fit.weight,
+                   "NMR Fat Mass" = fit.fat,
+                   "NMR % Fat" = fit.fat_pct,
+                   "VO2max (relative to body mass)" = fit.vo2max_rel,
+                   "VO2max (relative to lean mass)" = fit.vo2max_rel_lean)
+
+# Extract model info
+model_df <- model_list %>% 
+  map_chr(.f = ~ paste(deparse(.x[["call"]]), collapse = "")) %>% 
+  enframe(name = "response", 
+          value = "model") %>% 
+  mutate(model = gsub("(?<=[\\s])\\s*|^\\s+|\\s+$", "", model, perl = TRUE),
+         model_type = sub("^([^\\(]+).*", "\\1", model),
+         formula = sub(".*formula = ([^,]+),.*", "\\1", model),
+         family = sub(".*family = ([^\\)]+\\)),.*", "\\1", model),
+         family = ifelse(model_type == "lm", "gaussian", family),
+         # if weights were used, they were reciprocal group variances
+         weights = ifelse(grepl("weights = ", model), 
+                          "reciprocal group variances", NA)) %>% 
+  dplyr::select(-model)
+
+# Results
+PHENO_WAT_STATS <- map(model_list, function(mod_i) {
+  terms_i <- attr(terms(mod_i), which = "term.labels")
+  by <- intersect("sex", terms_i)
+  
+  if (length(by) == 0) {
+    by <- NULL
+  }
+  
+  emmeans(mod_i, specs = "timepoint", by = by, 
+          infer = TRUE, adjust = "holm") %>% 
+    summary() %>% 
+    as.data.frame()
+}) %>%
+  enframe(name = "response") %>% 
+  unnest(value) %>%
+  mutate(signif = cut(p.value, 
+                      breaks = c(0, 0.001, 0.01, 0.05, 1),
+                      labels = c("***", "**", "*", ""),
+                      include.lowest = TRUE, right = FALSE,
+                      ordered_result = TRUE)) %>% 
+  relocate(p.value, .before = signif) %>% 
+  left_join(model_df, by = "response") %>% 
+  pivot_longer(cols = contains(".ratio"), 
+               names_to = "statistic_type", 
+               values_to = "statistic", 
+               values_drop_na = TRUE) %>% 
+  relocate(starts_with("statistic"), .before = p.value)
+```
+
+See `?PHENO_WAT_STATS` for details.
+
+```{r}
+print.data.frame(head(PHENO_WAT_STATS))
+```
+
+```{r, eval=FALSE, include=FALSE}
+# Save data
+usethis::use_data(PHENO_WAT_STATS, internal = FALSE, overwrite = TRUE,
+                  compress = "bzip2", version = 3)
+```
+
+# Session Info
+
+```{r}
+sessionInfo()
+```
+

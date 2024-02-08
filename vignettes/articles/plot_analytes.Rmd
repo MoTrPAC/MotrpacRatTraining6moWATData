@@ -1,0 +1,205 @@
+---
+title: "Plots of plasma clinical analytes"
+author: "Tyler Sagendorf"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_document:
+    toc: true
+---
+
+This article generates plots of the plasma clinical analytes (Fig. 1F--I, Extended Data Fig. 1E, F).
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE,
+  fig.height = 1.9,
+  fig.width = 1.9,
+  dpi = 400
+)
+
+save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
+```
+
+```{r setup}
+# Required packages
+library(MotrpacRatTraining6moWAT) # plot_baseline
+library(MotrpacRatTraining6moWATData)
+library(ggplot2)
+library(dplyr)
+library(purrr)
+library(tidyr)
+library(tibble)
+library(emmeans)
+
+save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
+```
+
+```{r}
+x <- ANALYTES %>%
+  filter(omics_subset) %>%
+  dplyr::rename(group = timepoint)
+
+stats_df <- ANALYTES_STATS$timewise
+
+# Reformat confidence interval data
+conf_df <- map(ANALYTES_EMM$timewise, function(emm_i) {
+  terms_i <- attr(terms(emm_i@model.info), which = "term.labels")
+
+  out <- summary(emm_i) %>%
+    as.data.frame() %>%
+    dplyr::rename(any_of(c(lower.CL = "asymp.LCL",
+                    upper.CL = "asymp.UCL",
+                    response_mean = "response",
+                    response_mean = "rate")))
+
+  out <- out %>%
+    mutate(timepoint = factor(timepoint,
+                          levels = c("SED", paste0(2 ^ (0:3), "W"))))
+
+  return(out)
+}) %>%
+  enframe(name = "response") %>%
+  unnest(value) %>%
+  dplyr::rename(group = timepoint)
+```
+
+## Glucagon
+
+```{r}
+## Glucagon
+plot_baseline(x, response = "glucagon",
+              conf = filter(conf_df, response == "Glucagon"),
+              stats = filter(stats_df, response == "Glucagon"),
+              bracket.nudge.y = 12) +
+  scale_y_continuous(name = "Glucagon (pM)",
+                     breaks = seq(0, 160, 40),
+                     expand = expansion(mult = 5e-3)) +
+  coord_cartesian(ylim = c(0, 160), clip = "off") +
+  theme(plot.margin = margin(t = 4, r = 4, b = 4, l = 4),
+        strip.text = element_text(margin = margin(b = 14)))
+```
+
+```{r, eval=save_plots}
+ggsave(file.path("..", "..", "plots", "analytes_glucagon.pdf"),
+       height = 1.9, width = 1.9, dpi = 400)
+```
+
+
+## Glucose
+
+```{r, fig.width=1.6}
+## Glucose
+plot_baseline(x, response = "glucose",
+              conf = filter(conf_df, response == "Glucose"),
+              stats = filter(stats_df, response == "Glucose"),
+              bracket.nudge.y = 6) +
+  scale_y_continuous(name = "Glucose (mg/dL)",
+                     expand = expansion(mult = 5e-3)) +
+  coord_cartesian(ylim = c(115, 200), clip = "off") +
+  theme(plot.margin = margin(t = 4, r = 4, b = 4, l = 4),
+        strip.text = element_text(margin = margin(b = 4)))
+```
+
+```{r, eval=save_plots}
+ggsave(file.path("..", "..", "plots", "analytes_glucose.pdf"),
+       height = 1.9, width = 1.6, dpi = 400)
+```
+
+
+## Glycerol
+
+```{r, fig.width=1.6}
+## Glycerol
+plot_baseline(x, response = "glycerol",
+              conf = filter(conf_df, response == "Glycerol"),
+              stats = filter(stats_df, response == "Glycerol"),
+              bracket.nudge.y = 0.2) +
+  scale_y_continuous(name = "Glycerol (mg/dL)",
+                     expand = expansion(mult = 5e-3)) +
+  coord_cartesian(ylim = c(0, 3), clip = "off") +
+  theme(plot.margin = margin(t = 4, r = 4, b = 4, l = 4),
+        strip.text = element_text(margin = margin(b = 5)))
+```
+
+```{r, eval=save_plots}
+ggsave(file.path("..", "..", "plots", "analytes_glycerol.pdf"),
+       height = 1.9, width = 1.6, dpi = 400)
+```
+
+
+## Insulin
+
+```{r, fig.width=1.8}
+## Insulin
+plot_baseline(x, response = "insulin_iu",
+              bracket.nudge.y = 10) +
+  scale_y_continuous(name = "Insulin (mg/dL)",
+                     expand = expansion(mult = 5e-3),
+                     breaks = seq(20, 140, 20),
+                     sec.axis = sec_axis(name = "Insulin (pg/mL)",
+                                         trans = ~ .x / 0.023,
+                                         breaks = 1000 * 1:6)) +
+  coord_cartesian(ylim = c(20, 140), clip = "off") +
+  theme(plot.margin = margin(t = 4, r = 4, b = 4, l = 4),
+        strip.text = element_text(margin = margin(b = 5)))
+```
+
+```{r, eval=save_plots}
+ggsave(file.path("..", "..", "plots", "analytes_insulin.pdf"),
+       height = 1.9, width = 1.8, dpi = 400)
+```
+
+
+## Leptin
+
+```{r, fig.width=1.6}
+## Leptin
+plot_baseline(x, response = "leptin",
+              conf = filter(conf_df, response == "Leptin"),
+              stats = filter(stats_df, response == "Leptin"),
+              bracket.nudge.y = 1e4 / 3) +
+  scale_y_continuous(name = "Leptin (pg/mL)",
+                     labels = scales::label_scientific(digits = 1),
+                     expand = expansion(mult = 5e-3)) +
+  coord_cartesian(ylim = c(0, 6e4), clip = "off") +
+  theme(plot.margin = margin(t = 4, r = 4, b = 4, l = 4),
+        strip.text = element_text(margin = margin(b = 14)))
+```
+
+```{r, eval=save_plots}
+ggsave(file.path("..", "..", "plots", "analytes_leptin.pdf"),
+       height = 1.9, width = 1.6, dpi = 400)
+```
+
+
+## NEFA
+
+```{r}
+## NEFA
+plot_baseline(x, response = "nefa",
+              conf = filter(conf_df, response == "NEFA"),
+              stats = filter(stats_df, response == "NEFA"),
+              bracket.nudge.y = 0.1) +
+  scale_y_continuous(name = "NEFA (mmol/L)",
+                     breaks = seq(0.3, 1.3, 0.2),
+                     expand = expansion(mult = 5e-3)) +
+  coord_cartesian(ylim = c(0.3, 1.3), clip = "off") +
+  theme(plot.margin = margin(t = 4, r = 4, b = 4, l = 4),
+        strip.text = element_text(margin = margin(b = 10)))
+```
+
+```{r, eval=save_plots}
+ggsave(file.path("..", "..", "plots", "analytes_nefa.pdf"),
+       height = 1.9, width = 1.9, dpi = 400)
+```
+
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+

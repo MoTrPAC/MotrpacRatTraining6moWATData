@@ -7,13 +7,102 @@
 \alias{PROT_FGSEA}
 \title{Gene Ontology FGSEA results}
 \format{
-An object of class \code{list} of length 3.
+A named list of 3 \code{data.frame} objects:
+
+  \describe{
+    \item{"trained_vs_SED"}{All trained timepoints compared to their
+    sex-matched sedentary control group. Example: F_1W - F_SED. Total of 8
+    contrasts.}
+    \item{"MvF_SED"}{Sedentary males compared to sedentary females. Only 1
+    contrast.}
+    \item{"MvF_exercise_response"}{Comparisons of the male and female
+    training responses. Example: (M_8W - M_SED) - (F_8W - F_SED). Total of 4
+    contrasts.}
+  }
+
+  Each \code{data.frame} contains the following 12 variables:
+
+  \describe{
+    \item{pathway}{character; Gene Ontology pathway identifier.}
+    \item{gs_subcat}{character; GO:BF (Biological Processes), GO:MF
+    (Molecular Functions), or GO:CC (Cellular Components). See
+    \url{http://geneontology.org/docs/ontology-documentation/}}
+    \item{gs_description}{character; Gene Ontology set description. See
+    \code{\link[MotrpacRatTraining6moWAT]{update_GO_names}} for details.}
+    \item{pval}{numeric; enrichment p-value.}
+    \item{padj}{numeric; BH-adjusted p-value. P-values are adjusted across
+    all contrasts within each ontology (GO:BP, GO:CC, GO:MF).}
+    \item{log2err}{numeric; the expected error for the standard deviation of
+    the p-value logarithm.}
+    \item{ES}{numeric; gene set enrichment score.}
+    \item{NES}{numeric; normalized enrichment score. Accounts for differences
+    in gene set size. Calculated as the quotient of the ES to the absolute
+    mean of the permutation enrichment scores that have the same sign as the
+    ES. See \url{https://doi.org/10.1101/060012} for details. Values in [-1,
+    1] are not interesting.}
+    \item{size}{integer; number of genes in each pathway after it has been
+    filtered to those that were present in the differential analysis
+    results.}
+    \item{contrast}{character; the comparison being made.}
+    \item{leadingEdge}{list; the Entrez gene IDs that drive the enrichment.
+    If the set has a negative ES, the genes are arranged from most to least
+    negative; otherwise, they are arranged from most to least positive. See
+    \url{http://software.broadinstitute.org/gsea/doc/GSEAUserGuideTEXT.htm#_Running_a_Leading}.}
+    \item{leadingEdge_genes}{list; the \code{leadingEdge} after mapping
+    Entrez genes to more human-readable gene symbols. Any genes that could
+    not be mapped were discarded, so \code{lengths(leadingEdge_genes)} may
+    not match \code{lengths(leadingEdge)}.}
+  }
 }
 \usage{
 TRNSCRPT_FGSEA # transcriptomics
 PROT_FGSEA     # proteomics
 }
 \description{
-Gene Ontology FGSEA results
+Fast Gene Set Enrichment Analysis (FGSEA) of transcriptomics and
+  proteomics differential analysis results using Gene Ontology terms from the
+  Molecular Signatures Database (MSigDB v7.5.1).
+}
+\references{
+Ashburner, M., Ball, C. A., Blake, J. A., Botstein, D., Butler, H., Cherry,
+  J. M., Davis, A. P., Dolinski, K., Dwight, S. S., Eppig, J. T., Harris, M.
+  A., Hill, D. P., Issel-Tarver, L., Kasarskis, A., Lewis, S., Matese, J. C.,
+  Richardson, J. E., Ringwald, M., Rubin, G. M., & Sherlock, G. (2000). Gene
+  ontology: tool for the unification of biology. The Gene Ontology
+  Consortium. \emph{Nature genetics, 25}(1), 25–29.
+  \url{https://doi.org/10.1038/75556}
+
+  Dolgalev, I. msigdbr: MSigDB Gene Sets for Multiple Organisms in a Tidy
+  Data Format. R package version 7.5.1,
+  \url{https:://igordot.github.io/msigdbr}
+
+  Gene Ontology Consortium (2021). The Gene Ontology resource: enriching a
+  GOld mine. \emph{Nucleic acids research, 49}(D1), D325–D334.
+  \url{https://doi.org/10.1093/nar/gkaa1113}
+
+  Korotkevich, G., Sukhov, V., Budin, N., Shpak, B., Artyomov, M. N., &
+  Sergushichev, A. (2021). Fast gene set enrichment analysis. \emph{BioRxiv}.
+  \url{https://doi.org/10.1101/060012}
+
+  Liberzon, A., Birger, C., Thorvaldsdóttir, H., Ghandi, M.,
+  Mesirov, J. P., & Tamayo, P. (2015). The Molecular Signatures Database
+  (MSigDB) hallmark gene set collection. \emph{Cell systems, 1}(6), 417–425.
+  \url{https://doi.org/10.1016/j.cels.2015.12.004}
+
+  Subramanian, A., Tamayo, P., Mootha, V. K., Mukherjee, S., Ebert, B. L.,
+  Gillette, M. A., Paulovich, A., Pomeroy, S. L., Golub, T. R., Lander, E.
+  S., & Mesirov, J. P. (2005). Gene set enrichment analysis: A
+  knowledge-based approach for interpreting genome-wide expression profiles.
+  \emph{Proceedings of the National Academy of Sciences of the United States
+  of America, 102}(43), 15545–15550.
+  \url{https://doi.org/10.1073/pnas.0506580102}
+}
+\seealso{
+\code{\link[fgsea]{fgseaMultilevel}},
+  \code{\link[MotrpacRatTraining6moWAT]{fgsea2}},
+  \code{\link[MotrpacRatTraining6moWAT]{msigdbr2}},
+  \code{\link[MotrpacRatTraining6moWAT]{enrichmat}}, \code{\link{PROT_DA}},
+  \code{\link{TRNSCRPT_DA}},
+  \code{\link{MSIGDB_PATHWAYS}}
 }
 \keyword{datasets}

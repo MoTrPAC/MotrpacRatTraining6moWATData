@@ -11,8 +11,8 @@ Contains data and code necessary to reproduce analyses that appear in "Sexual di
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/}
-  \item \url{https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/}
+  \item \url{https://motrpac.github.io/MotrpacRatTraining6moWATData/}
+  \item \url{https://github.com/MoTrPAC/MotrpacRatTraining6moWATData/}
 }
 
 }

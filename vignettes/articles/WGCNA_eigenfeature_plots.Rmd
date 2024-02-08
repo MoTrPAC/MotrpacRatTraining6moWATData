@@ -1,0 +1,62 @@
+---
+title: "Plots of WGCNA eigenfeatures for each -ome"
+author: "Tyler Sagendorf"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+This article generates plots of the WGCNA module eigenfeatures (Extended Data Fig. 6A--C).
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 6.5,
+  dpi = 400,
+  out.width = "50%",
+  out.height = "50%"
+)
+```
+
+```{r setup}
+library(MotrpacRatTraining6moWAT) # plot_eigenfeature
+library(MotrpacRatTraining6moWATData)
+library(ggplot2)
+
+save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
+```
+
+```{r, fig.height=3}
+# Proteomics
+p1 <- plot_eigenfeature(x = PROT_WGCNA)
+p1
+```
+
+```{r eval=save_plots}
+ggsave(file.path("..", "..", "plots", "PROT_module_eigenfeatures.pdf"), p1,
+       height = 3, width = 6.5, family = "ArialMT")
+```
+
+```{r, fig.height=2}
+# Metabolomics
+p2 <- plot_eigenfeature(x = METAB_WGCNA)
+p2
+```
+
+```{r eval=save_plots}
+ggsave(file.path("..", "..", "plots", "METAB_module_eigenfeatures.pdf"), p2,
+       height = 2, width = 6.5, family = "ArialMT")
+```
+
+```{r, fig.height=4}
+# Transcriptomics
+p3 <- plot_eigenfeature(x = TRNSCRPT_WGCNA)
+p3
+```
+
+```{r eval=save_plots}
+ggsave(file.path("..", "..", "plots", "TRNSCRPT_module_eigenfeatures.pdf"), p3,
+       height = 4, width = 6.5, family = "ArialMT")
+```
+

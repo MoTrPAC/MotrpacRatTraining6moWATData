@@ -1,0 +1,569 @@
+---
+title: "Statistical analyses of plasma clinical analytes"
+author: Tyler Sagendorf
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_document:
+    toc: true
+bibliography: references.bib
+csl: apa-numeric-superscript-brackets.csl
+link-citations: yes
+vignette: >
+  %\VignetteIndexEntry{Statistical analyses of plasma clinical analytes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+```{r setup}
+# Required packages
+library(MotrpacRatTraining6moWATData)
+library(ggplot2)
+library(dplyr)
+library(emmeans)
+library(tibble)
+library(tidyr)
+library(purrr)
+library(latex2exp)
+theme_set(theme_bw()) # base plot theme
+```
+
+```{r}
+# Generate all regression diagnostic plots
+plot_lm <- function(x) {
+  par(mfrow = c(2, 3))
+  for (i in 1:6)
+    plot(x, which = i)
+  par(mfrow = c(1, 1))
+}
+```
+
+
+# Regression Models
+
+Since clinical analytes are strictly positive, we will check the mean–variance relationship with code from Dunn and Smyth[@dunn_generalized_2018] (pg. 429–430) and fit an appropriate log-link GLM. This allows us to back-transform the means without introducing bias, unlike when the response is transformed. Also, the log-link allows us to test ratios between means, rather than their absolute differences.
+
+If there are obvious problems with the model diagnostic plots, or the mean–variance relationship does not correspond to an exponential family distribution, we will include reciprocal group variances as weights in a log-link Gaussian GLM. Finally, we will remove insignificant predictors to achieve model parsimony based on ANOVA F-tests.
+
+
+## Glucagon
+
+```{r}
+# Plot points
+ggplot(ANALYTES, aes(x = timepoint, y = glucagon, 
+                     color = omics_subset, group = omics_subset)) +
+  geom_point(position = position_jitterdodge(jitter.width = 0.1, 
+                                             dodge.width = 0.4, 
+                                             jitter.height = 0),
+             na.rm = TRUE, alpha = 0.5) +
+  facet_grid(~ sex) +
+  scale_color_manual(values = c("red", "black"),
+                     breaks = c(TRUE, FALSE)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        legend.position = "bottom", 
+        legend.direction = "horizontal")
+```
+
+We will check the mean-variance relationship.
+
+```{r}
+mv <- filter(ANALYTES, omics_subset) %>% 
+  group_by(sex, timepoint) %>% 
+  summarise(mn = mean(glucagon, na.rm = TRUE),
+            vr = var(glucagon, na.rm = TRUE))
+
+fit.mv <- lm(log(vr) ~ log(mn), data = mv)
+coef(fit.mv)
+```
+
+```{r, fig.height=4, fig.width=5}
+plot(log(vr) ~ log(mn), data = mv, las = 1, pch = 19, 
+     xlab = "log(group means)", ylab = "log(group variances)")
+abline(coef(fit.mv), lwd = 2)
+```
+
+The slope suggests a variance function approximately of the form $V(\mu) = \mu^{2}$, so a gamma distribution seems appropriate.
+
+```{r}
+fit.glucagon <- glm(glucagon ~ sex * timepoint,
+                    family = Gamma("log"),
+                    data = filter(ANALYTES, omics_subset))
+plot_lm(fit.glucagon)
+```
+
+Observation 6 is outlying in the QQ-plot, and it has the largest Cook's distance. While there is no biological justification for removal, doing so will bring the mean of the female 2W group closer to the mean of the female SED group, so the results will be more conservative. Therefore, we will remove this observation and report it in the final results table.
+
+```{r}
+fit.glucagon.1 <- update(fit.glucagon, subset = -6)
+plot_lm(fit.glucagon.1)
+```
+
+The diagnostic plots look fine. We will try to simplify the model.
+
+```{r}
+fit.glucagon <- fit.glucagon.1
+anova(fit.glucagon, test = "F")
+```
+
+The interaction is significant, so we will not drop any terms.
+
+```{r}
+summary(fit.glucagon)
+```
+
+
+## Glucose
+
+```{r}
+# Plot points
+ggplot(ANALYTES, aes(x = timepoint, y = glucose, 
+                     color = omics_subset, group = omics_subset)) +
+  geom_point(position = position_jitterdodge(jitter.width = 0.1, 
+                                             dodge.width = 0.4, 
+                                             jitter.height = 0),
+             na.rm = TRUE, alpha = 0.5) +
+  facet_grid(~ sex) +
+  scale_color_manual(values = c("red", "black"),
+                     breaks = c(TRUE, FALSE)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        legend.position = "bottom", 
+        legend.direction = "horizontal")
+```
+
+We will check the mean-variance relationship.
+
+```{r}
+mv <- filter(ANALYTES, omics_subset) %>% 
+  group_by(sex, timepoint) %>% 
+  summarise(mn = mean(glucose, na.rm = TRUE),
+            vr = var(glucose, na.rm = TRUE))
+
+fit.mv <- lm(log(vr) ~ log(mn), data = mv)
+coef(fit.mv)
+```
+
+```{r, fig.height=4, fig.width=5}
+plot(log(vr) ~ log(mn), data = mv, las = 1, pch = 19, 
+     xlab = "log(group means)", ylab = "log(group variances)")
+abline(coef(fit.mv), lwd = 2)
+```
+
+The slope suggests a variance function approximately of the form $V(\mu) = \mu^{-3}$, which does not correspond to any of the named distributions. We will instead incorporate reciprocal group variances as weights in a log-link Gaussian GLM.
+
+```{r}
+wt.glucose <- filter(ANALYTES, omics_subset) %>% 
+  group_by(sex, timepoint) %>% 
+  mutate(1 / var(glucose, na.rm = TRUE)) %>% 
+  pull(-1)
+
+fit.glucose <- glm(glucose ~ sex * timepoint,
+                   family = gaussian("log"),
+                   weights = wt.glucose,
+                   data = filter(ANALYTES, omics_subset))
+plot_lm(fit.glucose)
+```
+
+The right tail of the QQ-plot is lighter than expected, which means that p-values will be more conservative when we perform comparisons. We will try to simplify the model to see if that fixes things.
+
+```{r}
+anova(fit.glucose, test = "F")
+```
+
+All terms are significant, so we will not modify the model.
+
+```{r}
+summary(fit.glucose)
+```
+
+
+## Glycerol
+
+```{r}
+# Plot points
+ggplot(ANALYTES, aes(x = timepoint, y = glycerol, 
+                     color = omics_subset, group = omics_subset)) +
+  geom_point(position = position_jitterdodge(jitter.width = 0.1, 
+                                             dodge.width = 0.4, 
+                                             jitter.height = 0),
+             na.rm = TRUE, alpha = 0.5) +
+  facet_grid(~ sex) +
+  scale_color_manual(values = c("red", "black"),
+                     breaks = c(TRUE, FALSE)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        legend.position = "bottom", 
+        legend.direction = "horizontal")
+```
+
+There are outlying observations in the SED, 4W, and 8W female groups. We will check the mean-variance relationship.
+
+```{r}
+mv <- filter(ANALYTES, omics_subset) %>% 
+  group_by(sex, timepoint) %>% 
+  summarise(mn = mean(glycerol, na.rm = TRUE),
+            vr = var(glycerol, na.rm = TRUE))
+
+fit.mv <- lm(log(vr) ~ log(mn), data = mv)
+coef(fit.mv)
+```
+
+```{r, fig.height=4, fig.width=5}
+plot(log(vr) ~ log(mn), data = mv, las = 1, pch = 19, 
+     xlab = "log(group means)", ylab = "log(group variances)")
+abline(coef(fit.mv), lwd = 2)
+```
+
+The slope suggests a variance function approximately of the form $V(\mu) = \mu^{3.85}$, which does not correspond to any of the named distributions. We will instead incorporate reciprocal group variances as weights in a log-link Gaussian GLM.
+
+```{r}
+wt.glycerol <- filter(ANALYTES, omics_subset) %>% 
+  group_by(sex, timepoint) %>% 
+  mutate(1 / var(glycerol, na.rm = TRUE)) %>% 
+  pull(-1)
+
+fit.glycerol <- glm(glycerol ~ sex * timepoint,
+                    family = gaussian("log"),
+                    weights = wt.glycerol,
+                    data = filter(ANALYTES, omics_subset))
+plot_lm(fit.glycerol)
+```
+
+The diagnostic plots look mostly fine. We will try to simplify the model.
+
+```{r}
+anova(fit.glycerol, test = "F")
+```
+
+The interaction is significant, so we will not remove any terms.
+
+```{r}
+summary(fit.glycerol)
+```
+
+
+## Insulin
+
+It does not matter which units we use for insulin. It does not affect the model fit or the ratios when we set up the comparisons later.
+
+```{r}
+# Plot points
+ggplot(ANALYTES, aes(x = timepoint, y = insulin_pm, 
+                     color = omics_subset, group = omics_subset)) +
+  geom_point(position = position_jitterdodge(jitter.width = 0.1, 
+                                             dodge.width = 0.4, 
+                                             jitter.height = 0),
+             na.rm = TRUE, alpha = 0.5) +
+  facet_grid(~ sex) +
+  scale_color_manual(values = c("red", "black"),
+                     breaks = c(TRUE, FALSE)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        legend.position = "bottom", 
+        legend.direction = "horizontal")
+```
+
+There are outlying values in the 2W female and 1W, 2W, and 4W male groups. We will check the mean-variance relationship, though the male observations are not outlying when compared to the full cohort. Additionally, we do not observe differences between the timepoints, though there may be sex differences.
+
+```{r}
+mv <- filter(ANALYTES, omics_subset) %>% 
+  group_by(sex, timepoint) %>% 
+  summarise(mn = mean(insulin_pm, na.rm = TRUE),
+            vr = var(insulin_pm, na.rm = TRUE))
+
+fit.mv <- lm(log(vr) ~ log(mn), data = mv)
+coef(fit.mv)
+```
+
+```{r, fig.height=4, fig.width=5}
+plot(log(vr) ~ log(mn), data = mv, las = 1, pch = 19, 
+     xlab = "log(group means)", ylab = "log(group variances)")
+abline(coef(fit.mv), lwd = 2)
+```
+
+The slope is close to 5, which doesn't correspond to any of the named distributions. We will try reciprocal group variance weights with a log-link Gaussian GLM that has only sex as a predictor.
+
+```{r}
+wt.ins <- filter(ANALYTES, omics_subset) %>% 
+  group_by(sex, timepoint) %>% 
+  mutate(1 / var(insulin_pm, na.rm = TRUE)) %>% 
+  pull(-1)
+
+fit.ins <- glm(insulin_pm ~ sex,
+               family = gaussian("log"),
+               weights = wt.ins,
+               data = filter(ANALYTES, omics_subset))
+plot_lm(fit.ins)
+```
+
+The diagnostic plots look fine.
+
+```{r}
+summary(fit.ins)
+```
+
+
+## Leptin
+
+```{r}
+# Plot points
+ggplot(ANALYTES, aes(x = timepoint, y = leptin, 
+                     color = omics_subset, group = omics_subset)) +
+  geom_point(position = position_jitterdodge(jitter.width = 0.1, 
+                                             dodge.width = 0.4, 
+                                             jitter.height = 0),
+             na.rm = TRUE, alpha = 0.5) +
+  facet_grid(~ sex) +
+  scale_color_manual(values = c("red", "black"),
+                     breaks = c(TRUE, FALSE)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        legend.position = "bottom", 
+        legend.direction = "horizontal")
+```
+
+We will check the mean-variance relationship.
+
+```{r}
+mv <- filter(ANALYTES, omics_subset) %>%
+  group_by(sex, timepoint) %>% 
+  summarise(mn = mean(leptin, na.rm = TRUE),
+            vr = var(leptin, na.rm = TRUE))
+
+fit.mv <- lm(log(vr) ~ log(mn), data = mv)
+coef(fit.mv)
+```
+
+```{r, fig.height=4, fig.width=5}
+plot(log(vr) ~ log(mn), data = mv, las = 1, pch = 19, 
+     xlab = "log(group means)", ylab = "log(group variances)")
+abline(coef(fit.mv), lwd = 2)
+```
+
+The slope is just above 2, so a gamma GLM may be appropriate.
+
+```{r}
+fit.lep <- glm(leptin ~ sex * timepoint,
+               family = Gamma("log"),
+               data = filter(ANALYTES, omics_subset))
+plot_lm(fit.lep)
+```
+
+Observations are deviating from the right tail of the QQ-plot. We will fit a log-link Gaussian GLM with reciprocal group variances as weights.
+
+```{r}
+wt.lep <- filter(ANALYTES, omics_subset) %>% 
+  group_by(sex, timepoint) %>% 
+  mutate(1 / var(leptin, na.rm = TRUE)) %>% 
+  pull(-1)
+
+fit.lep <- glm(leptin ~ sex * timepoint,
+               family = gaussian("log"),
+               weights = wt.lep,
+               data = filter(ANALYTES, omics_subset))
+plot_lm(fit.lep)
+```
+
+The diagnostic plots appear mostly fine, so we will try to simplify the model.
+
+```{r}
+anova(fit.lep, test = "F")
+```
+
+All terms are significant at the 0.001 level.
+
+```{r}
+summary(fit.lep)
+```
+
+
+## NEFA
+
+```{r}
+# Plot points
+ggplot(ANALYTES, aes(x = timepoint, y = nefa, 
+                     color = omics_subset, group = omics_subset)) +
+  geom_point(position = position_jitterdodge(jitter.width = 0.1, 
+                                             dodge.width = 0.4, 
+                                             jitter.height = 0),
+             na.rm = TRUE, alpha = 0.5) +
+  facet_grid(~ sex) +
+  scale_color_manual(values = c("red", "black"),
+                     breaks = c(TRUE, FALSE)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        legend.position = "bottom", 
+        legend.direction = "horizontal")
+```
+
+We will check the mean-variance relationship.
+
+```{r}
+mv <- filter(ANALYTES, omics_subset) %>% 
+  group_by(sex, timepoint) %>% 
+  summarise(mn = mean(nefa, na.rm = TRUE),
+            vr = var(nefa, na.rm = TRUE))
+
+fit.mv <- lm(log(vr) ~ log(mn), data = mv)
+coef(fit.mv)
+```
+
+```{r, fig.height=4, fig.width=5}
+plot(log(vr) ~ log(mn), data = mv, las = 1, pch = 19, 
+     xlab = "log(group means)", ylab = "log(group variances)")
+abline(coef(fit.mv), lwd = 2)
+```
+
+The slope of the line is close to 3.7, which is more extreme than an inverse Gaussian distribution. We will try a log-link Gaussian with reciprocal group variance weights.
+
+```{r}
+wt.nefa <- filter(ANALYTES, omics_subset) %>% 
+  group_by(sex, timepoint) %>% 
+  mutate(1 / var(nefa, na.rm = TRUE)) %>% 
+  pull(-1)
+
+fit.nefa <- glm(nefa ~ sex * timepoint,
+                family = gaussian("log"),
+                weights = wt.nefa,
+                data = filter(ANALYTES, omics_subset))
+plot_lm(fit.nefa)
+```
+
+The diagnostic plots look mostly fine. We will try to simplify the model.
+
+```{r}
+anova(fit.nefa, test = "F")
+```
+
+The interaction is significant, so we will not modify the model.
+
+```{r}
+summary(fit.nefa)
+```
+
+
+## Insulin/Glucagon
+
+Rather than fitting a model with the insulin/glucagon molar ratio as the response, we will use the approach described by Kronmal[@kronmal_spurious_1993] in section 3: "ONLY DEPENDENT VARIABLE A RATIO". First, we will look at a plot of insulin vs. glucagon to determine their relationship. We will include a loess curve to visualize any trends.
+
+```{r, fig.height=4, fig.width=5}
+ggplot(ANALYTES, aes(x = glucagon, y = insulin_pm)) +
+  geom_point(na.rm = TRUE, alpha = 0.5) +
+  stat_smooth(method = "loess", formula = y ~ x, na.rm = TRUE)
+```
+
+It does not seem like there is a relationship between insulin and glucagon, so we will not proceed with modeling.
+
+
+# Comparisons
+
+We will compare the means of each trained timepoint to those of their sex-matched sedentary controls within each age group using the Dunnett test. Additionally, we will compare males to females by timepoint and adjust p-values across all timepoints for a particular analyte using the Holm method.
+
+```{r}
+# Create emm_list objects
+model_list <- list("Glucagon" = fit.glucagon,
+                   "Glucose" = fit.glucose,
+                   "Glycerol" = fit.glycerol,
+                   "Insulin" = fit.ins,
+                   "Leptin" = fit.lep,
+                   "NEFA" = fit.nefa)
+
+ANALYTES_EMM <- map(model_list, function(mod_i) {
+  terms_i <- attr(terms(mod_i), which = "term.labels")
+  specs <- intersect(c("timepoint", "sex"), terms_i)
+  
+  out <- map(specs, function(specs_i) {
+    by_i <- setdiff(specs, specs_i)
+    
+    if (length(by_i) == 0) {
+      by_i <- NULL
+    }
+    
+    emmeans(mod_i, specs = specs_i, by = by_i, 
+            type = "response", infer = TRUE)
+  }) %>% 
+    setNames(specs)
+  
+  return(out)
+}) %>% 
+  list_transpose() %>% 
+  map(~ .x[!map_lgl(.x, is.null)]) %>% 
+  setNames(c("timewise", "MvF"))
+```
+
+```{r}
+# Extract model info
+model_df <- model_list %>% 
+  map_chr(.f = ~ paste(deparse(.x[["call"]]), collapse = "")) %>% 
+  enframe(name = "response", 
+          value = "model") %>% 
+  mutate(model = gsub("(?<=[\\s])\\s*|^\\s+|\\s+$", "", model, perl = TRUE),
+         model_type = sub("^([^\\(]+).*", "\\1", model),
+         obs_removed = ifelse(response == "Glucagon", 
+                              "10734945", NA_character_),
+         formula = sub(".*formula = ([^,]+),.*", "\\1", model),
+         family = sub(".*family = ([^\\)]+\\)),.*", "\\1", model),
+         family = ifelse(model_type == "lm", "gaussian", family),
+         # if weights were used, they were reciprocal group variances
+         weights = ifelse(grepl("weights = ", model), 
+                          "reciprocal group variances", NA)) %>% 
+  dplyr::select(-model)
+
+# Results
+ANALYTES_STATS <- ANALYTES_EMM %>% 
+  map2(.y = c("none", "holm"), function(comp_i, cross.adjust_i) {
+    map(comp_i, function(emm_i) {
+      contrast(emm_i, method = "dunnett") %>% 
+        summary(cross.adjust = cross.adjust_i) %>%
+        as.data.frame() %>%
+        rename(any_of(c(lower.CL = "asymp.LCL",
+                        upper.CL = "asymp.UCL")))
+    }) %>%
+      enframe(name = "response") %>%
+      unnest(value) %>%
+      arrange(response) %>%
+      mutate(signif = cut(p.value,
+                          breaks = c(0, 0.001, 0.01, 0.05, 1),
+                          labels = c("***", "**", "*", ""),
+                          include.lowest = TRUE, right = FALSE,
+                          ordered_result = TRUE)) %>%
+      relocate(p.value, .before = signif) %>%
+      relocate(ends_with("CL", ignore.case = FALSE), .before = null) %>%
+      left_join(model_df, by = "response") %>%
+      pivot_longer(cols = contains(".ratio"),
+                   names_to = "statistic_type",
+                   values_to = "statistic",
+                   values_drop_na = TRUE) %>%
+      relocate(starts_with("statistic"), .before = p.value)
+  })
+```
+
+See `?ANALYTES_STATS` for details.
+
+```{r}
+print.data.frame(head(ANALYTES_STATS[["timewise"]]))
+print.data.frame(head(ANALYTES_STATS[["MvF"]]))
+```
+
+```{r, eval=FALSE}
+# Save data
+usethis::use_data(ANALYTES_STATS, internal = FALSE, overwrite = TRUE,
+                  compress = "bzip2", version = 3)
+
+usethis::use_data(ANALYTES_EMM, internal = FALSE, overwrite = TRUE,
+                  compress = "bzip2", version = 3)
+```
+
+# Session Info
+
+```{r}
+sessionInfo()
+```
+
+# References
+

@@ -1,0 +1,127 @@
+---
+title: "Heatmap of lipid regulatory proteins"
+author: "Tyler Sagendorf"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+This article generates a heatmap of lipid regulatory proteins (Fig. 5D). 
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(MotrpacRatTraining6moWATData)
+library(Biobase)
+library(dplyr)
+library(tidyr)
+library(ComplexHeatmap)
+
+save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
+```
+
+```{r}
+# Proteins to plot
+proteins <- c("Acaca", "Cpt1a", "Slc25a20", "Rab18", "Abcd3",
+              "Hacl1", "Abcd1", "Abcd3", "Dgat1", "Dgat2",
+              "Pck1", "Pck2", "Spast", "Pex11b", "Plin1", "Plin2",
+              # From https://rupress.org/view-large/figure/6879897/JCB_201311051_Fig2.jpeg
+              "Acsl1", "Acsl5", paste0("Agpat", 1:5), "Gpat3", "Gpat4")
+
+# Isoform handling
+PROT_EXP <- PROT_EXP[fData(PROT_EXP)[["gene_symbol"]] %in% proteins &
+                             featureNames(PROT_EXP) != "XP_008762000.1", ]
+
+mat <- pData(PROT_EXP) %>%
+  select(sex, timepoint) %>%
+  cbind(t(exprs(PROT_EXP))) %>%
+  pivot_longer(cols = -c(sex, timepoint),
+               names_to = "protein") %>%
+  mutate(protein = fData(PROT_EXP)[protein, "gene_symbol"],
+         protein = protein) %>%
+  filter(!is.na(value)) %>%
+  group_by(protein) %>%
+  mutate(value = scale(value)) %>%
+  group_by(sex, timepoint, protein) %>%
+  summarise(mean_val = mean(value), .groups = "keep") %>%
+  pivot_wider(id_cols = c(sex, timepoint),
+              values_from = mean_val,
+              names_from = protein) %>%
+  as.data.frame() %>%
+  `rownames<-`(with(., interaction(sex, timepoint))) %>%
+  select(-c(sex, timepoint)) %>%
+  t() %>%
+  as.matrix()
+```
+
+```{r}
+## Create heatmap ----
+scale <- 2
+
+ha <- pData(PROT_EXP) %>% 
+  distinct(sex, timepoint) %>%
+  arrange(sex, timepoint) %>%
+  dplyr::rename(Sex = sex, Timepoint = timepoint) %>%
+  HeatmapAnnotation(
+    df = .,
+    border = TRUE,
+    gp = gpar(col = "black"),
+    gap = 0,
+    which = "column",
+    height = unit(6 * 2, "pt")*scale,
+    col = list(
+      Sex = c("Female" = "#ff6eff", "Male" = "#5555ff"),
+      Timepoint = c('SED' = 'white',
+                    '1W' = '#F7FCB9',
+                    '2W' = '#ADDD8E',
+                    '4W' = '#238443',
+                    '8W' = '#002612')
+    ),
+    annotation_name_gp = gpar(fontsize = 7 * scale),
+    annotation_legend_param = list(Timepoint = list(
+      at = c("SED", "1W", "2W", "4W", "8W")),
+      border = "black",
+      labels_gp = gpar(fontsize = 6.5 * scale),
+      title_gp = gpar(fontsize = 7 * scale, fontface = "bold")
+    )
+  )
+
+ht <- mat %>%
+  Heatmap(matrix = .,
+          col = circlize::colorRamp2(
+            breaks = c(-1.6, 0, 1.8),
+            colors = c("#3366ff", "white", "darkred")
+          ),
+          cluster_columns = FALSE,
+          show_column_names = FALSE,
+          clustering_distance_rows = "pearson",
+          top_annotation = ha,
+          border = "black",
+          row_names_gp = gpar(fontsize = 5 * scale),
+          height = nrow(.) * unit(5.5, "pt") * scale,
+          width = ncol(.) * unit(5.5, "pt") * scale,
+          column_split = rep(1:2, each = 5),
+          column_title = NULL,
+          heatmap_legend_param = list(
+            title = "Mean\nZ-Score",
+            at = c(-1.6, -1:1, 1.8),
+            title_gp = gpar(fontsize = 7 * scale,
+                            fontface = "bold"),
+            labels_gp = gpar(fontsize = 6 * scale),
+            legend_height = 5 * scale * unit(8, "pt"),
+            border = "black"
+          ))
+```
+
+```{r, eval=save_plots}
+pdf(file = file.path("..", "..", "plots", 
+                     "lipid_regulatory_proteins_heatmap.pdf"),
+    width = 2.3 * scale, height = 2.2 * scale, family = "ArialMT")
+draw(ht, merge_legends = TRUE,
+     align_heatmap_legend = "heatmap_top",
+     align_annotation_legend = "heatmap_top")
+dev.off()
+```
