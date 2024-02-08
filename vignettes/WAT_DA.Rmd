@@ -5,34 +5,34 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
   rmarkdown::html_document:
     toc: true
-bibliography: references.bib
-csl: apa-numeric-superscript-brackets.csl
-link-citations: yes
 vignette: >
   %\VignetteIndexEntry{Differential Analysis of Omics Datasets}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+csl: apa-numeric-superscript-brackets.csl
+link-citations: yes
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
   comment = "#>",
   message = FALSE,
   warning = FALSE
 )
 ```
 
+# Overview
+
+We will use a wrapper around functions from the `limma` package[@ritchie_limma_2015] to perform differential analysis on several sets of contrasts. See `help("limma_full", package = "MotrpacRatTraining6moWAT")` for more details. Volcano plots are created in a separate article.
+
 ```{r setup}
+# Required packages
 library(MotrpacRatTraining6moWATData)
 library(MotrpacRatTraining6moWAT) # limma_full
 library(dplyr)
 library(purrr)
 ```
-
-# Overview
-
-We will use a wrapper around functions from the `limma` package[@ritchie_limma_2015] to perform differential analysis on several sets of contrasts. See `help("limma_full", package = "MotrpacRatTraining6moWAT")` for more details. Volcano plots are created in a separate article.
 
 ## Contrasts to test
 
@@ -58,12 +58,13 @@ contr_list
 ## Proteomics
 
 ```{r prot-DA}
-PROT_DA <- map(contr_list, function(contrasts) {
+PROT_DA <- map2(contr_list, c(TRUE, FALSE, FALSE), function(contrasts, plot) {
   limma_full(object = PROT_EXP,
              model.str = "~ 0 + exp_group",
              coef.str = "exp_group",
              contrasts = contrasts,
-             var.group = "viallabel") %>%
+             var.group = "viallabel",
+             plot = plot) %>%
     arrange(contrast, feature) %>%
     dplyr::select(-B)
 }, .progress = TRUE)
@@ -72,15 +73,17 @@ PROT_DA <- map(contr_list, function(contrasts) {
 ## Phosphoproteomics
 
 ```{r phospho-DA}
-PHOSPHO_DA <- map(contr_list, function(contrasts) {
-  limma_full(object = PHOSPHO_EXP,
-             model.str = "~ 0 + exp_group",
-             coef.str = "exp_group",
-             contrasts = contrasts,
-             var.group = "vialLabel") %>%
-    arrange(contrast, feature) %>%
-    dplyr::select(-B)
-}, .progress = TRUE)
+PHOSPHO_DA <- map2(
+  contr_list, c(TRUE, FALSE, FALSE), function(contrasts, plot) {
+    limma_full(object = PHOSPHO_EXP,
+               model.str = "~ 0 + exp_group",
+               coef.str = "exp_group",
+               contrasts = contrasts,
+               var.group = "vialLabel",
+               plot = plot) %>%
+      arrange(contrast, feature) %>%
+      dplyr::select(-B)
+  }, .progress = TRUE)
 ```
 
 ## Transcriptomics
@@ -90,18 +93,19 @@ PHOSPHO_DA <- map(contr_list, function(contrasts) {
 # processed in the same way
 covariates <- "rin + pct_globin + pct_umi_dup + median_5_3_bias"
 
-TRNSCRPT_DA <- map(contr_list, function(contrasts) {
-  limma_full(object = TRNSCRPT_EXP,
-             model.str = sprintf("~ 0 + exp_group + %s", covariates),
-             coef.str = "exp_group",
-             contrasts = contrasts,
-             var.group = "viallabel",
-             plot = TRUE) %>%
-    arrange(contrast, feature) %>%
-    dplyr::select(-B)
-  # entrez_gene is of type character because of the one-to-many
-  # transcript to gene mapping. Keep this in mind.
-})
+TRNSCRPT_DA <- map2(
+  contr_list, c(TRUE, FALSE, FALSE), function(contrasts, plot) {
+    limma_full(object = TRNSCRPT_EXP,
+               model.str = sprintf("~ 0 + exp_group + %s", covariates),
+               coef.str = "exp_group",
+               contrasts = contrasts,
+               var.group = "viallabel",
+               plot = plot) %>%
+      arrange(contrast, feature) %>%
+      dplyr::select(-B)
+    # entrez_gene is of type character because of the one-to-many
+    # transcript to gene mapping. Keep this in mind.
+  })
 ```
 
 ## Metabolomics
