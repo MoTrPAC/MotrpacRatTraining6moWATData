@@ -1,0 +1,169 @@
+---
+title: "Differential analysis UpSet Plots"
+author: "Tyler Sagendorf"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+This article generates UpSet plots of the differential analysis results (Fig. 3A, B).
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r setup}
+# Required packages
+library(MotrpacRatTraining6moWATData)
+library(dplyr)
+library(purrr)
+library(tidyr)
+library(tibble)
+library(data.table)
+library(grid)
+library(grDevices)
+library(ComplexHeatmap)
+
+save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
+```
+
+```{r}
+# Get differential analysis results (trained vs. SED comparisons)
+omes <- c("TRNSCRPT", "PROT", "PHOSPHO", "METAB")
+
+res <- map(omes, function(ome) {
+  file <- paste0(ome, "_DA")
+  dea_res <- get(file)
+  
+  dea_res$trained_vs_SED %>%
+    filter(adj.P.Val < 0.05) %>%
+    mutate(ome = ome) %>%
+    dplyr::select(ome, contrast, feature,
+                  any_of(c("gene_symbol", "entrez_gene", "refmet_sub_class")))
+}) %>%
+  rbindlist(fill = TRUE) %>%
+  mutate(ome = factor(ome, levels = omes))
+
+res <- res %>%
+  group_by(ome, contrast) %>%
+  summarise(feature = list(unique(feature))) %>%
+  ungroup()
+```
+
+```{r, eval=save_plots}
+## Create female-only and male-only UpSet plots
+for (sex in c("F", "M")) {
+  scale <- 1.5
+  
+  res1 <- filter(res, grepl(paste0("^", sex), contrast))
+  
+  tmp_i <- res1 %>%
+    group_by(contrast) %>%
+    summarise(feature = list(reduce(feature, union))) %>%
+    deframe()
+  
+  m <- make_comb_mat(tmp_i)
+  cs <- comb_size(m)
+  ss <- set_size(m)
+  m <- m[, order(-cs)[1:min(15, length(cs))]]
+  cs <- comb_size(m)
+  bar_ratio <- max(ss) / max(cs) * 0.8
+  row_order <- seq_along(ss)
+  column_order <- order(-cs)
+  
+  beside <- FALSE
+  # Colorblind-friendly colors: TRNSCRPT, PROT, PHOSPHO, METAB
+  fill_colors <- c("#614E3E", "#4E94F5", "#A5C3E0", "#D9CEA5")
+  
+  # Intersection sizes by ome
+  comb_bar <- res1 %>%
+    unnest(feature) %>%
+    mutate(value = 1) %>%
+    pivot_wider(id_cols = c(ome, feature),
+                names_from = "contrast",
+                values_from = "value",
+                values_fill = 0) %>%
+    pivot_longer(cols = -c(ome, feature)) %>%
+    group_by(ome, feature) %>%
+    summarise(name = paste(value, collapse = "")) %>%
+    group_by(ome, name) %>%
+    tally() %>%
+    pivot_wider(id_cols = name, values_from = "n",
+                names_from = "ome",
+                values_fill = 0) %>%
+    column_to_rownames("name") %>%
+    .[names(cs), ]
+  
+  # Intersection sizes
+  ta <- HeatmapAnnotation(
+    "Intersection Size" = anno_barplot(
+      x = comb_bar,
+      border = FALSE,
+      beside = beside,
+      gp = gpar(fill = fill_colors),
+      axis_param = list(gp = gpar(fontsize = 5.5 * scale))),
+    annotation_name_side = "left",
+    annotation_name_gp = gpar(fontsize = 6 * scale),
+    annotation_height = unit(0.7, "in") * scale)
+  
+  # Number of differential features by ome and contrast
+  set_bar <- res1 %>%
+    mutate(n = lengths(feature)) %>%
+    pivot_wider(id_cols = "contrast",
+                names_from = ome, values_from = n,
+                values_fill = 0) %>%
+    column_to_rownames("contrast")
+  
+  # Number of differential features
+  ra <- HeatmapAnnotation(
+    "Differential Features" = anno_barplot(
+      x = set_bar,
+      beside = beside,
+      border = FALSE,
+      gp = gpar(fill = fill_colors),
+      axis_param = list(gp = gpar(fontsize = 5.5 * scale)),
+      ylim = c(0, 2000)),
+    which = "row",
+    annotation_name_gp = gpar(fontsize = 6 * scale),
+    annotation_width = unit(1, "in") * scale)
+  
+  # UpSet plot
+  ht <- UpSet(m,
+              pt_size = unit(8 * scale, "pt"),
+              lwd = 2 * scale,
+              set_order = row_order,
+              comb_order = column_order,
+              top_annotation = ta,
+              right_annotation = ra,
+              row_names_gp = gpar(fontsize = 7 * scale),
+              width = 10 * unit(10, "pt") * scale,
+              height = 4 * unit(10, "pt") * scale,
+              row_labels = latex2exp::TeX(
+                sprintf("(%dW - SED)$_%s$", 2 ^ (0:3), sex)
+              )
+  )
+  
+  # Fill legend
+  lt <- Legend(at = omes, labels = omes,
+               border = TRUE,
+               gap = unit(0, "pt"),
+               grid_height = unit(7, "pt") * scale,
+               grid_width = unit(7, "pt") * scale,
+               labels_gp = gpar(fontsize = 6 * scale),
+               legend_gp = gpar(fill = fill_colors))
+  
+  
+  # Save UpSet plot to pdf
+  pdf(file = file.path("..", "..", "plots", 
+                       sprintf("UpSet_timewise_DEA_summary_%s.pdf",
+                               ifelse(sex == "F", "female", "male"))),
+      height = 2.2 * scale, width = 4 * scale, bg = "white",
+      family = "ArialMT")
+  draw(ht, annotation_legend_list = lt,
+       align_annotation_legend = "global_center")
+  dev.off()
+}
+```

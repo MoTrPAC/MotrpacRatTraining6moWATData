@@ -1,0 +1,165 @@
+---
+title: "Heatmaps of FGSEA Results"
+author: "Tyler Sagendorf"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+This article generates heatmaps of the FGSEA results (Fig. 3C, D, E, G; Extended Data Figs. 3A--D, 5A--D, F).
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r setup}
+# Required packages
+library(MotrpacRatTraining6moWATData)
+library(MotrpacRatTraining6moWAT)
+library(ComplexHeatmap)
+library(grid)
+library(dplyr)
+library(purrr)
+
+save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
+```
+
+```{r}
+omes <- c("METAB", "PROT", "TRNSCRPT")
+
+for (ome in omes) {
+  file <- paste0(ome, "_FGSEA")
+  fgsea_res <- get(file)
+  
+  if (ome == "METAB") {
+    fgsea_res <- map(fgsea_res,
+                     ~ mutate(.x, gs_subcat = "refmet_sub_class",
+                              pathway = refmet_sub_class,
+                              gs_description = refmet_sub_class))
+  }
+  
+  
+  if (ome %in% c("PROT", "TRNSCRPT")) {
+    heatmap_legend_side <- annotation_legend_side <- "bottom"
+    align_heatmap_legend <- align_annotation_legend <- "global_center"
+    direction <- "horizontal"
+    legend_width <- unit(90, "points")
+    legend_height <- NULL
+  } else {
+    heatmap_legend_side <- annotation_legend_side <- "right"
+    align_heatmap_legend <- align_annotation_legend <- "heatmap_top"
+    direction <- "vertical"
+    legend_width <- NULL
+    legend_height <- unit(90, "points")
+  }
+  
+  # Enrichment heatmaps ------------------------------
+  scale <- 2
+  
+  # Trained vs. SED and sex by training interaction (MvF_exercise_response)
+  res_list <- fgsea_res[c(1, 3)]
+  subcats <- unique(fgsea_res$MvF_SED$gs_subcat)
+  
+  for (subcat_i in subcats) {
+    db_i <- sub(":", "-", subcat_i)
+    
+    for (name_i in names(res_list)) {
+      if (name_i == "trained_vs_SED") {
+        column_labels <- rep(paste0(2 ^ (0:3), "W - SED"), times = 2)
+        
+        anno_df <- data.frame(Sex = rep(c("Female", "Male"), each = 4))
+        anno_colors <- list(Sex = c("Female" = "#ff6eff", "Male" = "#5555ff"))
+        
+        top_annotation <- HeatmapAnnotation(
+          df = anno_df, col = anno_colors,
+          gap = unit(0, "points"),
+          gp = gpar(col = "black"),
+          annotation_name_gp = gpar(fontsize = 7 * scale),
+          annotation_legend_param = list(
+            nrow = 2, by_row = T,
+            grid_height = unit(14, "points"),
+            grid_width = unit(14, "points"),
+            border = "black",
+            title_gp = gpar(fontsize = 7 * scale),
+            labels_gp = gpar(fontsize = 6 * scale)
+          ))
+        
+        column_split <- anno_df$Sex
+        colors <- c("#3366ff", "darkred", "grey")
+        
+      } else {
+        column_labels <- latex2exp::TeX(
+          sprintf("(%dW - SED)$_{M - F}$", 2^(0:3))
+        )
+        top_annotation <- column_split <- NULL
+        colors <- c("#ff6eff", "#5555ff", "grey")
+      }
+      
+      x <- res_list[[name_i]]
+      
+      if ("gs_description" %in% colnames(x)) {
+        x <- x %>%
+          filter(gs_subcat == subcat_i) %>%
+          mutate(
+            row_labels = cutstr(gs_description, split = " ", n = 35),
+            row_labels = ifelse(nchar(gs_description) > 35 + nchar(pathway) + 5,
+                                sprintf("%s...(%s)", row_labels, pathway),
+                                gs_description),
+            keep_ids = NULL)
+      } else {
+        x <- mutate(x, row_labels = pathway)
+      }
+      
+      enrichmat(x,
+                n_top = 20,
+                colors = colors,
+                scale_by = "row",
+                cell_size = unit(6 * scale, "points"),
+                padj_legend_title = "BH-adjusted\np-value",
+                padj_args = list(
+                  title_gp = gpar(fontsize = 7 * scale),
+                  labels_gp = gpar(fontsize = 6 * scale),
+                  grid_height = unit(6 * scale, "pt"),
+                  grid_width = unit(6 * scale, "pt")
+                ),
+                rownames_column = "row_labels",
+                heatmap_args = list(
+                  column_labels = column_labels,
+                  column_title_side = "bottom",
+                  column_split = column_split,
+                  column_title = NULL,
+                  column_names_gp = gpar(fontsize = 5.5 * scale),
+                  row_names_gp = gpar(fontsize = 5.5 * scale),
+                  top_annotation = top_annotation,
+                  heatmap_legend_param = list(
+                    title_gp = gpar(fontsize = scale * 6.5),
+                    labels_gp = gpar(fontsize = scale * 6),
+                    direction = direction,
+                    legend_width = legend_width,
+                    legend_height = legend_height
+                  )
+                ),
+                filename = sprintf(file.path("..", "..", "plots", "FGSEA_%s_%s_%s.pdf"),
+                                   ome, name_i, db_i),
+                height = scale * unit(3, "in"),
+                width = scale * unit(3, "in"),
+                units = "in",
+                draw_args = list(
+                  legend_gap = unit(0.4, "in"),
+                  gap = unit(0.5, "in"),
+                  adjust_annotation_extension = TRUE,
+                  heatmap_legend_side = heatmap_legend_side,
+                  annotation_legend_side = annotation_legend_side,
+                  align_annotation_legend = align_annotation_legend,
+                  align_heatmap_legend = align_heatmap_legend
+                ),
+                save_args = list(dpi = 400, res = 400, family = "ArialMT")
+      )
+    }
+  }
+}
+```
+

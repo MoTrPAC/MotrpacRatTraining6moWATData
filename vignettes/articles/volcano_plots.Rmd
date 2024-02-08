@@ -1,0 +1,432 @@
+---
+title: "Volcano Plots"
+author: "Tyler Sagendorf"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+This article contains generates volcano plots (Fig 2A; Extended Data Fig. 2A--D).
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE,
+  dpi = 400,
+  out.width = "50%",
+  out.height = "50%"
+)
+```
+
+```{r setup}
+library(MotrpacRatTraining6moWATData)
+library(MotrpacRatTraining6moWAT)
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(purrr)
+library(latex2exp)
+library(ggplot2)
+library(ggrepel)
+library(scales)
+
+save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
+```
+
+```{r}
+# List of all differential analysis results
+all_DA <- list(TRNSCRPT = TRNSCRPT_DA,
+               PROT     = PROT_DA,
+               PHOSPHO  = PHOSPHO_DA,
+               METAB    = METAB_DA)
+
+all_DA$PHOSPHO$MvF_SED <- all_DA$PHOSPHO$MvF_SED %>%
+  mutate(site = paste0(gene_symbol, "-", site))
+
+## Updates required for volcano plots
+update_dea_res <- function(x) {
+  x <- x %>%
+    dplyr::select(feature, contrast, P.Value, adj.P.Val, logFC, feature,
+                  any_of(c("site", "gene_symbol",
+                           "entrez_gene", "name_in_figures"))) %>%
+    mutate(log10_pval = -log10(adj.P.Val),
+           sign_logFC = as.character(sign(logFC)),
+           sign_logFC = ifelse(adj.P.Val < 0.05, sign_logFC, "NS"),
+           sign_logFC = factor(sign_logFC,
+                               levels = c("-1", "1", "NS"),
+                               labels = c("dn", "up", "NS"))) %>%
+    arrange(contrast, sign_logFC)
+  
+  # Count number of features by sign(logFC)
+  x_sub <- x %>%
+    group_by(contrast, sign_logFC) %>%
+    summarise(n = n()) %>%
+    mutate(label = paste(n, sign_logFC)) %>%
+    group_by(contrast) %>%
+    summarise(label = paste(label, collapse = ", "))
+  
+  x <- left_join(x, x_sub, by = "contrast")
+  return(x)
+}
+
+# Function for label nudge
+nudge_volcano_labels <- function(x, offset = 0.4) {
+  y <- x
+  len_y <- length(y)
+  increment <- offset / 8
+  
+  if (len_y > 1) {
+    for (i in 2:len_y) {
+      while (y[i] <= y[i - 1] + offset) {
+        y[i] <- y[i] + increment
+      }
+    }
+  }
+  
+  y <- y - x
+  
+  return(y)
+}
+```
+
+```{r}
+## Volcano plots for combined MvF SED results --------------------
+MvF_volcano <- map(.x = all_DA, pluck, "MvF_SED") %>%
+  map(~ update_dea_res(.x) %>%
+        mutate(across(starts_with("entrez_gene"), as.character))
+  ) %>%
+  enframe(name = "ome") %>%
+  unnest(value) %>%
+  mutate(ome = paste0(ome, "\n", label),
+         ome = factor(ome, levels = unique(ome))) %>%
+  plot_volcano(colors = c("#ff6eff", "#5555ff", "grey")) +
+  facet_wrap(~ ome, nrow = 1) +
+  scale_y_continuous(limits = c(0, 30),
+                     sec.axis = sec_axis(trans = ~ 10 ^ (-.),
+                                         breaks = 0.05),
+                     expand = expansion(mult = 0.01)) +
+  labs(x = TeX("$log_2$(fold-change): Male - Female"),
+       y = TeX("$-log_{10}$(BH-adjusted p-value)")) +
+  theme(strip.text = element_text(margin = margin(0, 0, 5, 0, "pt")))
+```
+
+```{r}
+# Add feature labels
+point_labels <- MvF_volcano$data %>%
+  filter(adj.P.Val < 0.05) %>%
+  group_by(ome, contrast, sign_logFC) %>%
+  slice_min(order_by = adj.P.Val, n = 5) %>%
+  rbind(filter(MvF_volcano$data, 
+               adj.P.Val < 0.05, 
+               gene_symbol %in% c("Adipoq", "Slc2a4"))) %>% 
+  mutate(SiteID = ifelse(grepl("^PHOSPHO", ome),
+                         paste0(gene_symbol, "-", site),
+                         NA),
+         feature_label = case_when(
+           !is.na(site) ~ site,
+           !is.na(gene_symbol) ~ gene_symbol,
+           !is.na(entrez_gene) ~ entrez_gene,
+           !is.na(name_in_figures) ~ name_in_figures,
+           TRUE ~ feature)) %>%
+  # Remove certain features from the plot
+  filter(!(feature_label %in% c("AABR07039356.2", "Prickle2") & 
+             grepl("^TRNSCRPT", ome)),
+         !(feature_label %in% c("Stn1", "Ccar2") & 
+             grepl("^PROT", ome))) %>% 
+  dplyr::select(ome, contrast, sign_logFC, feature, feature_label, 
+                adj.P.Val, P.Value, logFC) %>%
+  mutate(feature_label = case_when(
+    feature_label == "TG 58:34*" ~ "TG 58:4",
+    feature_label == "PE P-38:5 or PE O-38:6" ~ "PE O-38:6",
+    feature_label == "Hydroxydodecanoic acid" ~ "FA 12:0-OH",
+    feature_label == "Hydroxydecanoic acid" ~ "FA 10:0-OH",
+    TRUE ~ feature_label),
+    log10_pval = -log10(adj.P.Val)) %>% 
+  arrange(contrast, log10_pval, -P.Value) %>%
+  group_by(contrast, sign_logFC, ome) %>%
+  mutate(nudge_y = nudge_volcano_labels(x = log10_pval, offset = 2.2),
+         nudge_x = sign(logFC) * c(0.5, 1.05) * max(abs(logFC), 3) + 
+           2 * sign(logFC)) %>%
+  ungroup()
+```
+
+```{r, fig.height=2.3, fig.width=6.5}
+MvF_volcano <- MvF_volcano +
+  geom_label_repel(aes(x = logFC, y = -log10(adj.P.Val), 
+                       label = feature_label),
+                   data = point_labels,
+                   force = 0,
+                   size = 5 / .pt,
+                   fill = alpha("white", 0.7),
+                   label.padding = 0.12,
+                   label.size = 0.2,
+                   segment.size = 0.3,
+                   box.padding = 0.15,
+                   min.segment.length = unit(0, "pt"),
+                   nudge_x = point_labels$nudge_x,
+                   nudge_y = point_labels$nudge_y,
+                   max.overlaps = Inf)
+
+MvF_volcano
+```
+
+```{r eval=save_plots}
+ggsave(file.path("..", "..", "plots", "volcano_MvF_SED_all_omes.pdf"),
+       MvF_volcano, height = 2.3, width = 6.5, units = "in",
+       dpi = 400, bg = "white")
+```
+
+```{r eval=save_plots, fig.height=55, fig.width=180, units="mm"}
+## Create volcano plots for each ome
+omes <- c("TRNSCRPT", "PROT", "PHOSPHO", "METAB")
+features <- c("Transcripts", "Proteins", "Phosphosites", "Metabolites")
+
+for (i in seq_along(omes)) {
+  # Get DEA results
+  features <- features[i]
+  ome <- omes[i]
+  message(ome)
+  dea_res <- map(all_DA[[i]], .f = update_dea_res)
+  
+  ## Trained vs SED ------------------------------------------------------------
+  message("Timewise")
+  train_res <- dea_res$trained_vs_SED %>%
+    mutate(contrast = factor(
+      contrast, levels = unique(contrast),
+      labels = TeX(
+        sprintf("(%dW - SED)$_{%s}$",
+                rep(2 ^ (0:3), times = 2),
+                rep(c("F", "M"), each = 4))
+      )
+    ))
+  
+  switch(ome,
+         TRNSCRPT = {
+           features_to_label = data.frame(
+             feature_label = c(
+               # Female
+               ## 1W - SED
+               "Ace", "Smpd3", "Aamdc", "Camk2b", "Acly", "Fasn", "Grb14", 
+               "Olah", "Hmgcs2", "Ca12",
+               ## 2W - SED
+               "Fasn", "Acly", "Grb14", "Olah", "Hmgcs2", "Ca12",
+               ## 4W - SED
+               "Fasn", "Aqp3", "Crabp2", "Aacs", "Acly", "Grb14", "Olah", 
+               "Hmgcs2", "Ca12",
+               ## 8W - SED
+               "Crabp2", "Fads2", "Acaca", "Fasn", "Acaca", "Endou", "Orm1", 
+               "Acly", "Grb14", "Olah", "Hmgcs2", "Ca12",
+               
+               # Male
+               ## 1W - SED
+               "Acot1", "Adcy3", "Hif1a", "Steap4", "Fasn", "Acly", "Grb14", 
+               "Olah", "Hmgcs2", "Ca12",
+               ## 2W - SED
+               "Kdr", "Elovl6", "Pdgfrb", "Hif1a", "Fasn", "Acly", "Grb14", 
+               "Olah", "Hmgcs2", "Ca12",
+               ## 4W - SED
+               "Kcnj13", "Ctsz", "Nkap", "Fasn", "Acly", "Grb14", "Olah", 
+               "Hmgcs2", "Ca12",
+               ## 8W - SED
+               "RT1-A1", "Ctsz", "Atp11a", "Lpcat1", "Fasn", "Acly", "Grb14", 
+               "Olah", "Hmgcs2", "Ca12"), 
+             contrast = rep(levels(train_res$contrast), 
+                            c(10, 6, 9, 12, 
+                              10, 10, 9, 10))) %>% 
+             mutate(contrast = factor(contrast, 
+                                      levels = levels(train_res$contrast)))
+         },
+         PROT = {
+           features_to_label <- data.frame(
+             feature_label = c(
+               # Female
+               ## 1W - SED
+               "Camk2b", "Ace", "Maip", "Atp6v0d1", "Immt", "Slc25a11", 
+               "Slc25a3", "Slc25a15", "Tmed2", "Sec61a1", "Lrpprc", "Slc25a15", 
+               "Grb14", "Orm1",
+               ## 2W - SED
+               "Camk2b", "Ace", "Lrg1", "Maip", "Atp6v0d1", "Immt", "Slc25a11", 
+               "Slc25a3", "Slc25a15", "Tmed2", "Sec61a1", "Lrpprc", "Slc25a15", 
+               "Grb14", "Orm1",
+               ## 4W - SED
+               "Lifr", "Orm1", "Ltbp2", "Il1r2", "Maip", "Atp6v0d1", "Immt", 
+               "Slc25a11", "Slc25a3", "Slc25a15", "Tmed2", "Sec61a1", "Lrpprc", 
+               "Slc25a15", "Grb14",
+               ## 8W - SED
+               "Lifr", "Endou", "Arg1", "Orm1", "Tgfbr3", "Hspa1b", "Maip", 
+               "Atp6v0d1", "Immt", "Slc25a11", "Slc25a3", "Slc25a15", "Tmed2", 
+               "Sec61a1", "Lrpprc", "Slc25a15", "Grb14",
+               
+               # Male
+               ## 1W - SED
+               "Tie1", "Hdac4", "Fth1", "Maip", "Immt", "Slc25a11", "Slc25a3", 
+               "Slc25a15", "Lrpprc", "Slc25a15", "Grb14", "Orm1",
+               ## 2W - SED
+               "Fth1", "Cuta", "Hsd17b12", "Glyctk", "Hdac4", "Maip", "Immt", 
+               "Slc25a11", "Slc25a3", "Slc25a15", "Lrpprc", "Slc25a15", "Grb14",
+               "Orm1",
+               ## 4W - SED
+               "Fth1", "Hebp2", "Crabp1", "Slc27a1", "Maoa", "Rbp1", "Hsd17b12", 
+               "Akr1d1", "Nos1", "Maip", "Immt", "Slc25a11", "Slc25a3", 
+               "Slc25a15", "Lrpprc", "Slc25a15", "Grb14", "Orm1",
+               ## 8W - SED
+               "Hacl1", "Hsph1", "Hspa1b", "Lep", "Sparc", "Maip", "Immt", 
+               "Slc25a11", "Slc25a3", "Slc25a15", "Lrpprc", "Slc25a15", 
+               "Grb14", "Orm1"),
+             contrast = rep(levels(train_res$contrast), 
+                            c(14, 15, 15, 17,
+                              12, 14, 18, 14))) %>% 
+             mutate(contrast = factor(contrast, 
+                                      levels = levels(train_res$contrast)))
+         },
+         METAB = {
+           metab_features <- train_res %>%
+             filter(adj.P.Val < 0.05) %>% 
+             dplyr::select(name_in_figures, P.Value, adj.P.Val, contrast) %>% 
+             distinct() %>% 
+             group_by(name_in_figures) %>% 
+             filter(all(levels(train_res$contrast)[1:4] %in% contrast) |
+                      all(levels(train_res$contrast)[5:8] %in% contrast)) %>% 
+             group_by(name_in_figures, contrast) %>% 
+             slice_min(P.Value, n = 1, with_ties = FALSE) %>% 
+             mutate(sex_female = grepl("F", contrast)) %>% 
+             group_by(name_in_figures, sex_female) %>% 
+             filter(n() == 4) %>% 
+             group_by(name_in_figures, sex_female) %>% 
+             summarise(mean_padj = mean(-log10(adj.P.Val))) %>%
+             group_by(sex_female) %>%
+             slice_max(mean_padj, n = 5) %>% 
+             pull(name_in_figures) %>%
+             unique()
+           
+           features_to_label <- train_res %>% 
+             filter(adj.P.Val < 0.05) %>% 
+             filter(name_in_figures %in% metab_features) %>% 
+             dplyr::select(feature_label = name_in_figures, contrast) %>% 
+             distinct() %>% 
+             mutate(feature_label = sub(" or P[EC] ", "\\|\\|", feature_label))
+         },
+         PHOSPHO = {
+           features_to_label <- train_res %>% 
+             mutate(feature_label = paste0(gene_symbol, "-", site)) %>% 
+             filter(feature_label %in% 
+                      c("Pde4a-S140", "Pde4b-S118", "Ankrd2-S317", 
+                        "Lrrfip1-S257", "Lrrfip1-S232", "Lrrfip1-S85", 
+                        "Camk2b-T398", "Htt-S621", "Klc1-S521;S524", 
+                        "Uhrf1bp1l-S418", "Bnip3-T66", "Ulf1-S458")) %>% 
+             filter(adj.P.Val < 0.05) %>% 
+             dplyr::select(-feature) %>% 
+             distinct() %>% 
+             group_by(contrast, feature_label) %>% 
+             slice_min(order_by = P.Value, n = 1, with_ties = FALSE) %>% 
+             dplyr::select(feature_label, contrast)
+         }
+  )
+  
+  train_labels <- train_res %>%
+    filter(adj.P.Val < 0.05) %>%
+    add_column(site = NA, 
+               name_in_figures = NA, 
+               gene_symbol = NA,
+               .name_repair = "unique") %>%
+    mutate(name_in_figures = sub(" or P[EC] ", "\\|\\|", name_in_figures),
+           feature_label = case_when(
+             !is.na(site) ~ paste(gene_symbol, site, sep = "-"),
+             !is.na(name_in_figures) ~ name_in_figures,
+             TRUE ~ gene_symbol
+           )) %>%
+    dplyr::select(contrast, feature_label, adj.P.Val, 
+                  log10_pval, P.Value, logFC) %>% 
+    distinct() %>% 
+    inner_join(features_to_label, 
+               by = c("contrast", "feature_label")) %>% 
+    group_by(contrast, feature_label) %>%
+    slice_min(order_by = adj.P.Val, n = 1) %>%
+    ungroup() %>%
+    arrange(contrast, log10_pval, -P.Value) %>%
+    group_by(contrast, sign(logFC)) %>%
+    mutate(nudge_y = nudge_volcano_labels(
+      x = log10_pval,
+      offset = 0.4 + 0.1 * (ome == "TRNSCRPT") - 0.05 * (ome == "PHOSPHO")
+    ) - 0.25 * (n() == 1),
+    nudge_x = sign(logFC) * 
+      rescale(rank(abs(logFC)),
+              to = c(0.6, 1.5) * max(abs(logFC), 3))) %>%
+    ungroup() %>%
+    group_by(contrast) %>%
+    mutate(nudge_x = nudge_x - (ome == "METAB") * 1 * min(abs(logFC)))
+  
+  ## Volcano plots
+  v_train <- plot_volcano(train_res) +
+    facet_wrap(~ contrast, nrow = 1,
+               scales = "free_x",
+               labeller = label_parsed) +
+    labs(x = TeX("$log_2$(fold-change)"),
+         y = TeX("$-log_{10}$(BH-adjusted p-value)"))
+  
+  # Add annotations for number of up, down, or NS features
+  v_train <- v_train +
+    geom_label(data = distinct(train_res, contrast, label),
+               aes(label = label, x = -Inf, y = Inf),
+               size = 5 / .pt, 
+               label.size = NA,
+               label.padding = unit(4, "pt"),
+               fill = alpha("white", 0.5),
+               # label.r = unit(1.5, "pt"),
+               hjust = 0.05, vjust = 0) +
+    coord_cartesian(clip = "off")
+  
+  # Set axis limits
+  if (ome != "TRNSCRPT") {
+    v_train <- v_train +
+      scale_x_continuous(breaks = seq(-8, 8, 2),
+                         expand = expansion(mult = 0.05,
+                                            add = 0.5))
+  }
+  
+  if (ome == "METAB") {
+    v_train <- v_train +
+      scale_y_continuous(limits = c(0, 6),
+                         expand = expansion(mult = 1e-2),
+                         sec.axis = sec_axis(trans = ~ 10 ^ (-.),
+                                             breaks = 0.05))
+  }
+  
+  v_train <- v_train +
+    geom_label_repel(aes(x = logFC, y = log10_pval,
+                         label = feature_label),
+                     data = train_labels,
+                     force = 0 + 0.5 * (ome == "METAB"),
+                     direction = "x",
+                     size = 5 / .pt, # (5 - 0.7 * (ome == "METAB")) / .pt,
+                     fill = alpha("white", 0.65),
+                     label.padding = 0.10,
+                     label.size = 0.16,
+                     segment.size = 0.3,
+                     box.padding = 0.13,
+                     min.segment.length = unit(0, "pt"),
+                     nudge_x = train_labels$nudge_x,
+                     nudge_y = train_labels$nudge_y +
+                       case_when(ome == "TRNSCRPT" ~ 0.6, # 0.4
+                                 ome == "PHOSPHO" ~ 0.6, # 0.4
+                                 ome == "PROT" ~ 0.6, # 0.5
+                                 ome == "METAB" ~ 0.8), # 0.6
+                     seed = 0,
+                     max.overlaps = Inf) +
+    theme(panel.grid.major = element_blank())
+  
+  v_train # display plot
+  
+  ggsave(file.path("..", "..", "plots", 
+                   sprintf("volcano_%s_trained_vs_SED.pdf", ome)),
+         v_train, height = 55, width = 180, units = "mm", family = "ArialMT")
+}
+```
+
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+

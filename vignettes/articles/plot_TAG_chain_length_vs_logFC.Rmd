@@ -1,0 +1,123 @@
+---
+title: "Plots of TAG chain length or number of double bonds vs. log2 fold-change"
+author: "Tyler Sagendorf"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+This article generates plots of triacylglycerol (TAG) chain length or number of double bonds vs. log$_2$ fold-change (Extended Data Fig. 7B, C).
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  warning = FALSE,
+  fig.height = 1.8, 
+  fig.width = 3.5, 
+  dpi = 400
+)
+
+save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
+```
+
+```{r setup}
+# Required packages
+library(MotrpacRatTraining6moWATData)
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+library(grid)
+library(gridExtra)
+library(lemon) # facet_rep_grid
+library(latex2exp)
+```
+
+```{r}
+plot_TAG <- function(x) {
+  lapply(c("chain_length", "double_bond"), function(var_i) {
+    
+    if (var_i == "chain_length") {
+      y_lims <- c(-1.5, 2)
+      x_minor_breaks <- seq(30, 60, 5)
+      x_breaks <- seq(30, 60, 10)
+    } else {
+      y_lims <- c(-1.4, 1.4)
+      x_minor_breaks <- 0:11
+      x_breaks <- seq(0, 11, 2)
+    }
+    
+    ggplot(x, aes(x = !!sym(var_i),
+                  y = logFC, color = sex)) +
+      geom_hline(color = "black", yintercept = 0, lty = "dashed",
+                 linewidth = 0.3 * scale) +
+      geom_point(size = 1.2, alpha = 0.5) +
+      geom_smooth(linewidth = 0.4, se = TRUE, method = "loess",
+                  span = 1, fill = "black", alpha = 0.2) +
+      # redraw lines on top
+      geom_smooth(linewidth = 0.3 * scale, se = FALSE, method = "loess",
+                  span = 1, fill = "black", color = "black") +
+      lemon::facet_rep_grid(sex ~ timepoint, scales = "free_x",
+                            repeat.tick.labels = "bottom") +
+      scale_y_continuous(name = latex2exp::TeX("log$_2$(fold-change)"),
+                         expand = expansion(mult = 5e-3)) +
+      coord_cartesian(ylim = y_lims) +
+      scale_x_continuous(breaks = x_breaks,
+                         minor_breaks = x_minor_breaks,
+                         expand = expansion(5e-3)) +
+      scale_color_manual(name = NULL, values = c("#ff6eff", "#5555ff")) +
+      theme_bw() +
+      theme(text = element_text(size = 6.5 * scale, color = "black"),
+            line = element_line(linewidth = 0.3 * scale, color = "black"),
+            axis.line.y.right = element_blank(),
+            axis.ticks = element_line(linewidth = 0.3 * scale, 
+                                      color = "black"),
+            axis.text = element_text(size = 5 * scale, color = "black"),
+            axis.title = element_text(size = 6.5 * scale, color = "black"),
+            axis.title.x = element_text(margin = margin(t = 6, unit = "pt")),
+            axis.title.y = element_text(margin = margin(r = 6, unit = "pt")),
+            strip.background = element_blank(),
+            strip.text = element_text(size = 6.5 * scale, hjust = 0),
+            panel.spacing.x = unit(ifelse(var_i == "chain_length",
+                                          0, -7 * scale), "pt"),
+            panel.grid.minor = element_blank(),
+            panel.grid = element_line(linewidth = 0.3 * scale),
+            strip.text.y = element_text(hjust = 0.5),
+            plot.title = element_text(size = 7 * scale, color = "black"),
+            plot.subtitle = element_text(size = 5.5 * scale, color = "black"))
+  })
+}
+```
+
+```{r}
+x <- METAB_DA$trained_vs_SED %>%
+  filter(lipid_class == "TG") %>%
+  select(contrast, logFC, chain_length, double_bond) %>%
+  mutate(sex = substr(contrast, 1, 1),
+         sex = factor(sex, levels = c("F", "M"),
+                      labels = c("Female", "Male")),
+         timepoint = gsub("[MF]_", "", contrast),
+         timepoint = factor(timepoint))
+```
+
+```{r}
+scale <- 2 # divide plot dimensions by 2 when adding to final figures.
+plotlist <- plot_TAG(x)
+
+plotlist[[1]] <- plotlist[[1]] +
+  labs(x = "TAG Chain Length") +
+  theme(panel.grid.minor.y = element_blank())
+
+plotlist[[2]] <- plotlist[[2]] +
+  labs(x = "TAG Double Bonds")
+```
+
+```{r, eval=save_plots}
+ggsave(file.path("..", "..", "plots", "TAG_logFC_chain_length.pdf"),
+       plotlist[[1]], height = 1.8 * scale, width = 3.5 * scale, 
+       family = "ArialMT")
+
+ggsave(file.path("..", "..", "plots", "TAG_logFC_double_bonds.pdf"),
+       plotlist[[2]], height = 1.8 * scale, width = 3.5 * scale, 
+       family = "ArialMT")
+```
+

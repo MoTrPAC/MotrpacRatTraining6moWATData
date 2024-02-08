@@ -1,0 +1,297 @@
+---
+title: "Heatmaps of WGCNA Module Correlations"
+author: "Tyler Sagendorf"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+This article generates heatmaps of the eigenfeature--eigenfeature and eigenfeature--phenotype correlations (Fig. 4A, B).
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r setup}
+library(MotrpacRatTraining6moWATData)
+library(Biobase)
+library(ComplexHeatmap)
+library(dplyr)
+library(purrr)
+library(tidyr)
+library(tibble)
+library(data.table)
+library(circlize)
+
+save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
+```
+
+```{r}
+# Module correlation heatmap function
+modcor_heatmap <- function(x, scale = 1, ...)
+{
+  # Heatmap for each ome
+  omes <- names(x)
+  
+  map(omes, function(ome) {
+    cor_mat <- x[[ome]][["cor"]] %>% t()
+    padj_mat <- x[[ome]][["padj"]] %>% t()
+    # label_mat <- x[[ome]][["label"]]
+    
+    cell_size <- unit(5.5, "pt")
+    
+    # Heatmap
+    ht <- Heatmap(
+      matrix = cor_mat,
+      col = circlize::colorRamp2(
+        breaks = c(-1, 0, 1),
+        colors = c("#3366ff", "white", "darkred")
+      ),
+      cluster_columns = FALSE,
+      cluster_rows = FALSE,
+      row_names_side = "left",
+      border = TRUE,
+      height = scale * cell_size * nrow(cor_mat),
+      width = scale * cell_size * ncol(cor_mat),
+      column_title = ome,
+      row_names_gp = gpar(fontsize = 5 * scale),
+      column_names_gp = gpar(fontsize = 5 * scale),
+      column_title_gp = gpar(fontsize = 7 * scale),
+      row_title_gp = gpar(fontsize = 7 * scale),
+      show_heatmap_legend = ome == omes[1],
+      heatmap_legend_param = list(
+        title = "Spearman\nCorrelation",
+        at = seq(-1, 1, 0.5),
+        title_gp = gpar(fontsize = 7 * scale),
+        labels_gp = gpar(fontsize = 6 * scale),
+        legend_width = 6 * scale * unit(8, "pt"),
+        border = "black",
+        legend_direction = "horizontal"
+      ),
+      layer_fun = layer_fun <- function(j, i, x, y, w, h, f)
+      {
+        # Cell background
+        grid.rect(x = x, y = y, width = w, height = h,
+                  gp = gpar(col = NA,
+                            fill = ifelse(pindex(padj_mat, i, j) < 0.05,
+                                          "black", "white")))
+        
+        grid.circle(
+          x = x, y = y, 
+          r = 0.92 * scale * cell_size / 2,
+          gp = gpar(
+            col = NA,
+            fill = circlize::colorRamp2(
+              breaks = c(-1, 0, 1),
+              colors = c("#3366ff", "white", "darkred")
+            )(pindex(cor_mat, i, j))))
+      },
+      ...)
+    
+    return(ht)
+  }) %>%
+    setNames(omes)
+}
+```
+
+```{r}
+bid_to_pid <- list(METAB_EXP, PROT_EXP, TRNSCRPT_EXP) %>%
+  map(function(.x) {
+    pData(.x) %>%
+      dplyr::select(pid, bid) %>%
+      mutate(across(everything(), as.character))
+  }) %>%
+  purrr::reduce(rbind) %>%
+  distinct()
+
+# WGCNA module eigenfeatures
+MEs <- list("METAB" = METAB_WGCNA,
+            "PROT" = PROT_WGCNA,
+            "TRNSCRPT" = TRNSCRPT_WGCNA) %>%
+  map(function(x) {
+    pluck(x, "MEs") %>%
+      filter(moduleNum != 0)
+  }) %>%
+  enframe(name = "ome") %>%
+  unnest(value) %>%
+  mutate(bid = as.character(bid)) %>%
+  left_join(bid_to_pid, by = "bid")
+
+# Metabolomics modules only
+ME_metab <- MEs %>%
+  filter(ome == "METAB") %>%
+  select(bid, METAB_ME = ME,
+         METAB_module = moduleID)
+
+## Eigenfeature correlations
+eigen_cor <- MEs %>%
+  filter(ome != "METAB") %>%
+  mutate(ome = factor(ome, levels = c("TRNSCRPT", "PROT"))) %>%
+  left_join(ME_metab, by = "bid") %>%
+  na.omit() %>%
+  group_by(ome, moduleID, METAB_module) %>%
+  summarise(n = n(),
+            cor = cor.test(ME, METAB_ME, method = "spearman", 
+                           na.action = na.omit)$estimate,
+            pval = cor.test(ME, METAB_ME, method = "spearman", 
+                            na.action = na.omit)$p.value,
+            .groups = "keep") %>%
+  group_by(ome) %>%
+  mutate(padj = p.adjust(pval, method = "BH"),
+         label = case_when(padj < 0.001 ~ "***",
+                           padj < 0.01 ~ "**",
+                           padj < 0.05 ~ "*",
+                           TRUE ~ "")) %>%
+  ungroup() %>%
+  split.data.frame(f = .[["ome"]]) %>%
+  map(function(xi) {
+    cols <- c("cor", "padj", "label")
+    map(cols, function(col_i) {
+      pivot_wider(xi, id_cols = moduleID,
+                  names_from = METAB_module,
+                  values_from = !!sym(col_i)) %>%
+        column_to_rownames("moduleID") %>%
+        as.matrix()
+    }) %>%
+      setNames(cols)
+  })
+
+# Scaling factor for heatmap elements. Divide heatmap dimensions by 2 when
+# adding to final figures.
+scale <- 2
+
+# Legend for significance markers
+lsig <- Legend(title = "BH-adjusted\np-value",
+               at = 1:2, border = "black",
+               title_gp = gpar(fontsize = 7 * scale),
+               labels_gp = gpar(fontsize = 6 * scale),
+               legend_gp = gpar(fill = c("white", "black")),
+               labels = c(latex2exp::TeX("$\\geq 0.05$"), 
+                          latex2exp::TeX("$< 0.05$")))
+
+metab_title <- Legend(title = "METAB", labels = "",
+                      title_gp = gpar(fontsize = 7 * scale))
+```
+
+```{r eval=save_plots}
+# Heatmap list
+ht_list1 <- modcor_heatmap(eigen_cor, scale = scale) %>%
+  purrr::reduce(`+`) # horizontal concatenation of heatmaps
+
+pdf(file.path("..", "..", "plots", 
+              "WGCNA_eigenfeature_correlation_heatmap.pdf"),
+    width = 2.6 * scale, height = 1.5 * scale, family = "ArialMT")
+draw(ht_list1, heatmap_legend_list = lsig,
+     legend_gap = scale * unit(20, "pt"),
+     gap = scale * unit(4, "pt"),
+     heatmap_legend_side = "bottom",
+     annotation_legend_list = metab_title,
+     annotation_legend_side = "right")
+dev.off()
+```
+
+```{r}
+## Eigenfeature-Trait correlation heatmap --------------------------------------
+# Proteins - adiponectin, leptin
+protein_vals <- exprs(PROT_EXP)[
+  which(fData(PROT_EXP)[["gene_symbol"]] %in%
+          c("Adipoq", "Lep")), , drop = F] %>%
+  t() %>%
+  `colnames<-`(c("scWAT Leptin", "scWAT Adiponectin")) %>%
+  as.data.frame() %>%
+  mutate(pid = as.character(PROT_EXP$pid))
+
+# Calculated elsewhere
+count_WAT <- ADIPOCYTE_SIZE %>%
+  group_by(pid) %>%
+  summarise(total_adipocytes = n())
+
+# load("../PASS1B_phenotypic_measures.RData")
+
+# Change in VO2max, body weight, fat mass
+sample_measures <- PHENO_WAT %>% 
+  filter(omics_analysis) %>% 
+  transmute(pid = as.character(pid),
+            vo2max_diff = post_vo2max_ml_kg_min - pre_vo2max_ml_kg_min,
+            nmr_mass_diff = post_weight - pre_weight,
+            nmr_fat_diff = post_fat - pre_fat) %>% 
+  left_join(count_WAT) %>% 
+  left_join(protein_vals)
+
+## Clinical analytes
+analytes <- ANALYTES %>%
+  filter(omics_subset) %>%
+  dplyr::select(pid, nefa, glycerol, glucose, insulin, glucagon, leptin) %>%
+  mutate(pid = as.character(pid)) %>%
+  left_join(sample_measures) %>%
+  pivot_longer(cols = -pid) %>%
+  mutate(name = factor(name,
+                       levels = c("vo2max_diff", "nmr_mass_diff",
+                                  "nmr_fat_diff", "total_adipocytes",
+                                  "scWAT Adiponectin", "scWAT Leptin",
+                                  "nefa", "glycerol", "glucose", "insulin",
+                                  "glucagon", "leptin"),
+                       labels = c("VO2max Change", 
+                                  "Body Mass Change",
+                                  "Body Fat Change", 
+                                  "Adipocyte Count",
+                                  "scWAT Adiponectin", 
+                                  "scWAT Leptin",
+                                  paste("Plasma",
+                                        c("NEFA", "Glycerol", "Glucose",
+                                          "Insulin", "Glucagon",
+                                          "Leptin"))))) %>%
+  arrange(name)
+```
+
+```{r}
+## Eigenfeature-Sample Trait correlations
+eigen_trait_cor <- MEs %>%
+  mutate(ome = factor(ome, levels = c("METAB", "TRNSCRPT", "PROT"))) %>%
+  inner_join(analytes, by = "pid") %>%
+  na.omit() %>%
+  group_by(ome, moduleID, name) %>%
+  summarise(n = n(),
+            cor = cor.test(ME, value, method = "spearman", 
+                           na.action = na.omit)$estimate,
+            pval = cor.test(ME, value, method = "spearman", 
+                            na.action = na.omit)$p.value,
+            .groups = "keep") %>%
+  group_by(ome) %>%
+  mutate(padj = p.adjust(pval, method = "BH"),
+         label = case_when(padj < 0.001 ~ "***",
+                           padj < 0.01 ~ "**",
+                           padj < 0.05 ~ "*",
+                           TRUE ~ "")) %>%
+  ungroup() %>%
+  split.data.frame(f = .[["ome"]]) %>%
+  lapply(function(xi) {
+    cols <- c("cor", "padj", "label")
+    lapply(cols, function(col_i) {
+      pivot_wider(xi, id_cols = moduleID,
+                  names_from = name,
+                  values_from = !!sym(col_i)) %>%
+        column_to_rownames("moduleID") %>%
+        as.matrix()
+    }) %>%
+      setNames(cols)
+  })
+```
+
+```{r eval=save_plots}
+# Heatmap list
+ht_list2 <- modcor_heatmap(eigen_trait_cor, scale = scale) %>%
+  purrr::reduce(`+`) # horizontal concatenation of heatmaps
+
+pdf(file.path("..", "..", "plots", 
+              "WGCNA_eigenfeature_trait_correlation_heatmap.pdf"),
+    width = 3.4 * scale, height = 1.8 * scale, family = "ArialMT")
+draw(ht_list2, heatmap_legend_list = lsig,
+     legend_gap = scale * unit(20, "pt"),
+     gap = scale * unit(4, "pt"),
+     heatmap_legend_side = "bottom")
+dev.off()
+```

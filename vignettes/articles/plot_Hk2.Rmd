@@ -1,0 +1,144 @@
+---
+title: "Plot of hexokinase 2 (Hk2) protein log2 relative abundance"
+author: "Tyler Sagendorf"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+Plot of hexokinase 2 from the skeletal muscle proteomics data (Extended Data Fig. 1H).
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE,
+  fig.height = 1.7, 
+  fig.width = 2.5, 
+  dpi = 400
+)
+```
+
+```{r setup}
+library(MotrpacRatTraining6moData)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(emmeans)
+library(ggpubr)
+library(latex2exp)
+
+save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
+```
+
+```{r}
+# Hk2 values from normalized skeletal muscle proteomics data
+x <- PROT_SKMGN_NORM_DATA %>%
+  left_join(dplyr::select(FEATURE_TO_GENE, feature_ID, gene_symbol),
+            by = "feature_ID", multiple = "all") %>%
+  relocate(gene_symbol, .after = feature_ID) %>%
+  filter(gene_symbol == "Hk2") %>%
+  dplyr::select(-c(feature_ID, gene_symbol, feature, tissue, assay)) %>%
+  pivot_longer(cols = everything(),
+               names_to = "viallabel",
+               values_to = "Hk2") %>%
+  left_join(dplyr::select(PHENO, viallabel, timepoint = group, sex),
+            by = "viallabel") %>%
+  mutate(sex = factor(sub("(.)", "\\U\\1", sex, perl = TRUE),
+                      levels = c("Female", "Male")),
+         timepoint = ifelse(timepoint == "control",
+                            "SED", toupper(timepoint)),
+         timepoint = factor(timepoint,
+                            levels = c("SED", paste0(2 ^ (0:3), "W"))),
+         exp_group = paste0(substr(sex, 1, 1), "_", timepoint))
+
+# Multiple regression model for Dunnett tests
+fit <- lm(Hk2 ~ sex * timepoint, data = x)
+summary(fit)
+```
+
+```{r}
+# Estimated marginal means and treatment vs. control (Dunnett) comparisons
+fit.emm <- emmeans(fit, specs = "timepoint", by = "sex")
+
+res <- contrast(fit.emm, method = "trt.vs.ctrl", infer = TRUE) %>%
+  summary() %>%
+  as.data.frame() %>%
+  mutate(signif = cut(p.value,
+                      breaks = c(0, 0.001, 0.01, 0.05, 1),
+                      labels = c("***", "**", "*", ""),
+                      include.lowest = TRUE, right = FALSE,
+                      ordered_result = TRUE))
+
+# Confidence intervals
+conf_df <- fit.emm %>%
+  summary(infer = TRUE) %>%
+  as.data.frame()
+
+stats <- filter(res, signif != "")
+
+# Plot
+p <- ggplot(x, aes(x = timepoint, y = Hk2)) +
+  geom_crossbar(aes(x = timepoint, y = emmean,
+                    ymin = lower.CL, ymax = upper.CL,
+                    color = sex),
+                data = conf_df, fatten = 1, width = 0.7,
+                linewidth = 0.4, show.legend = FALSE) +
+  geom_point(shape = 16, size = 0.4,
+             position = ggbeeswarm::position_beeswarm(cex = 3,
+                                                      dodge.width = 0.4)) +
+  facet_grid(~ sex) +
+  ggsignif::geom_signif(
+    data = stats,
+    mapping = aes(y_position = c(0.27, 0.67, 0.78, 0.10 + 1:4 * 0.1),
+                  xmin = rep("SED", nrow(stats)),
+                  xmax = sub(" .*", "", contrast),
+                  annotations = signif),
+    textsize = 6 / .pt,
+    vjust = 0.25,
+    tip_length = 0.02,
+    color = "black",
+    size = 0.3,
+    manual = TRUE) +
+  labs(x = NULL, y = TeX("Hk2 log$_2$ relative abundance")) +
+  scale_color_manual(values = c("#ff6eff", "#5555ff")) +
+  scale_y_continuous(expand = expansion(mult = 5e-3)) +
+  coord_cartesian(ylim = c(-0.6, 0.6), clip = "off") +
+  theme_bw() +
+  theme(text = element_text(size = 6.5, color = "black"),
+        line = element_line(linewidth = 0.3, color = "black"),
+        axis.ticks = element_line(linewidth = 0.3, color = "black"),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text = element_text(size = 5,
+                                 color = "black"),
+        axis.text.x = element_text(size = 6.5, angle = 90, hjust = 1,
+                                   vjust = 0.5),
+        axis.title = element_text(size = 6.5, margin = margin(),
+                                  color = "black"),
+        axis.line = element_line(linewidth = 0.3),
+        strip.background = element_blank(),
+        strip.text = element_text(size = 6.5, color = "black",
+                                  margin = margin(b = 18, unit = "pt")),
+        panel.spacing = unit(-1, "pt"),
+        plot.title = element_text(size = 7, color = "black"),
+        plot.subtitle = element_text(size = 6, color = "black"),
+        legend.position = "none",
+        strip.placement = "outside"
+  )
+
+p
+```
+
+```{r, eval=save_plots}
+ggsave(file.path("..", "..", "plots", "Hk2_skeletal_muscle.pdf"), p, 
+       height = 1.7, width = 2.5, dpi = 400, bg = "white")
+```
+
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
