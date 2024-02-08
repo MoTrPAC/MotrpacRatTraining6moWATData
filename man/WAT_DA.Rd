@@ -60,7 +60,7 @@ Differential analysis was performed with
 ## Number of differential features (-ome-wide FDR < 0.05)
 # Convenience function
 f1 <- function(x) {
-  purrr::map(x, with, table(contrast, adj.P.Val < 0.05))
+  lapply(x, function(.x) with(.x, table(contrast, adj.P.Val < 0.05)))
 }
 
 f1(PROT_DA)     # Proteins

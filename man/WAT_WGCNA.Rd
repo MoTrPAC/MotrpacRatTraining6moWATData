@@ -7,9 +7,6 @@
 \alias{TRNSCRPT_WGCNA}
 \alias{METAB_WGCNA}
 \title{WGCNA results}
-\format{
-An object of class \code{list} of length 2.
-}
 \usage{
 PROT_WGCNA     # proteomics
 TRNSCRPT_WGCNA # transcriptomics

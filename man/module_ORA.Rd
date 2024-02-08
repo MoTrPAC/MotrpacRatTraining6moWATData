@@ -48,6 +48,6 @@ Ashburner, M., Ball, C. A., Blake, J. A., Botstein, D., Butler,
 }
 \seealso{
 \code{\link[MotrpacRatTraining6moWAT]{fora2}},
-  \code{\link{WATSC_WGCNA}}, \code{\link{MSIGDB_PATHWAYS}}
+  \code{\link{WAT_WGCNA}}, \code{\link{MSIGDB_PATHWAYS}}
 }
 \keyword{datasets}

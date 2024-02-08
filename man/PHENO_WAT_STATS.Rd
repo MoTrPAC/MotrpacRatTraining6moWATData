@@ -11,7 +11,7 @@ An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) w
 PHENO_WAT_STATS
 }
 \description{
-Analyses of phenotypic data from \code{\link[PHENO_WAT]}. See
+Analyses of phenotypic data from \code{\link{PHENO_WAT}}. See
   \code{vignette("PHENO_WAT_STATS")} for details.
 }
 \examples{

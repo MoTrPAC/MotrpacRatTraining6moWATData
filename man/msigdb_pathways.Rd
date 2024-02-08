@@ -26,7 +26,7 @@ Gene sets from the Molecular Signatures Database (MSigDB). Used
 \details{
 Gene Ontology (Biological Process, Cellular Component, Molecular
   Function) pathways from version 7.5.1 of the Molecular Signatures Database
-  (MSigDB). Obtained via \link[msigdbr]{msigdbr} (\code{organism =
+  (MSigDB). Obtained via \code{\link[msigdbr]{msigdbr}} (\code{organism =
   "Rattus norvegicus"}) and reformatted. Prefiltered to pathways with at
   least 15 and no more than 300 genes. Filtering by size was done because
   smaller gene sets tend to be less reliable, while larger gene sets tend to

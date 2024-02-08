@@ -34,8 +34,8 @@ Fahy, E., & Subramaniam, S. (2020). RefMet: A reference
 }
 \seealso{
 \code{\link[Biobase]{ExpressionSet-class}},
-  \link[MotrpacRatTraining6moData]{METAB_FEATURE_ID_MAP},
-  \link[MotrpacRatTraining6moData]{METAB_NORM_DATA_NESTED},
+  \code{\link[MotrpacRatTraining6moData]{METAB_FEATURE_ID_MAP}},
+  \code{\link[MotrpacRatTraining6moData]{METAB_NORM_DATA_NESTED}},
   \href{https://www.metabolomicsworkbench.org/databases/refmet/index.php}{Metabolomics
   Workbench RefMet Database}
 }

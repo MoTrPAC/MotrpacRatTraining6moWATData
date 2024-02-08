@@ -11,12 +11,12 @@
 #'   \code{\link[Biobase:ExpressionSet-class]{Biobase::ExpressionSet}} with 9964
 #'   features and 60 samples.
 #'
-#' @details \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE} for details of
-#'   feature-to-gene mapping.
+#' @details See \code{\link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}} for
+#'   details of feature-to-gene mapping.
 #'
 #' @seealso \code{\link[Biobase]{ExpressionSet-class}},
-#'   \link[MotrpacRatTraining6moData]{PROT_WATSC_NORM_DATA},
-#'   \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}
+#'   \code{\link[MotrpacRatTraining6moData]{PROT_WATSC_NORM_DATA}},
+#'   \code{\link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}}
 #'
 #' @examples
 #' library(Biobase)
@@ -41,15 +41,15 @@
 #'   \code{\link[Biobase:ExpressionSet-class]{Biobase::ExpressionSet}} with
 #'   30304 features and 60 samples.
 #'
-#' @details \link[MotrpacRatTraining6moData]{RAT_TO_HUMAN_PHOSPHO} for details
-#'   of mapping between rat and human phosphorylation sites.
+#' @details \code{\link[MotrpacRatTraining6moData]{RAT_TO_HUMAN_PHOSPHO}} for
+#'   details of mapping between rat and human phosphorylation sites.
 #'
-#'   \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE} for details of
+#'   See \code{\link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}} for details of
 #'   feature-to-gene mapping.
 #'
 #' @seealso \code{\link[Biobase]{ExpressionSet-class}},
-#'   \link[MotrpacRatTraining6moData]{RAT_TO_HUMAN_PHOSPHO},
-#'   \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}
+#'   \code{\link[MotrpacRatTraining6moData]{RAT_TO_HUMAN_PHOSPHO}},
+#'   \code{\link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}}
 #'
 #' @examples
 #' library(Biobase)
@@ -82,15 +82,17 @@
 #'   \code{rin}, \code{pct_umi_dup}, and \code{median_5_3_bias} were
 #'   mean-imputed, centered, and scaled.
 #'
-#'   \link[MotrpacRatTraining6moData]{OUTLIERS} for sample outlier information.
+#'   See \code{\link[MotrpacRatTraining6moData]{OUTLIERS}} for sample outlier
+#'   information.
 #'
-#'   \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE} for details of
+#'   See \code{\link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}} for details of
 #'   feature-to-gene mapping.
 #'
 #' @seealso \code{\link[Biobase]{ExpressionSet-class}},
-#'   \link[MotrpacRatTraining6moData]{TRNSCRPT_WATSC_RAW_COUNTS},
-#'   \link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}, \link[edgeR]{DGEList},
-#'   \link[edgeR]{filterByExpr}, \link[edgeR]{calcNormFactors}
+#'   \code{\link[MotrpacRatTraining6moData]{TRNSCRPT_WATSC_RAW_COUNTS}},
+#'   \code{\link[MotrpacRatTraining6moData]{FEATURE_TO_GENE}},
+#'   \code{\link[edgeR]{DGEList}}, \code{\link[edgeR]{filterByExpr}},
+#'   \code{\link[edgeR]{calcNormFactors}}
 #'
 #' @examples
 #' library(Biobase)
@@ -116,8 +118,8 @@
 #'   features and 50 samples.
 #'
 #' @seealso \code{\link[Biobase]{ExpressionSet-class}},
-#'   \link[MotrpacRatTraining6moData]{METAB_FEATURE_ID_MAP},
-#'   \link[MotrpacRatTraining6moData]{METAB_NORM_DATA_NESTED},
+#'   \code{\link[MotrpacRatTraining6moData]{METAB_FEATURE_ID_MAP}},
+#'   \code{\link[MotrpacRatTraining6moData]{METAB_NORM_DATA_NESTED}},
 #'   \href{https://www.metabolomicsworkbench.org/databases/refmet/index.php}{Metabolomics
 #'   Workbench RefMet Database}
 #'
@@ -195,7 +197,7 @@
 #' ## Number of differential features (-ome-wide FDR < 0.05)
 #' # Convenience function
 #' f1 <- function(x) {
-#'   purrr::map(x, with, table(contrast, adj.P.Val < 0.05))
+#'   lapply(x, function(.x) with(.x, table(contrast, adj.P.Val < 0.05)))
 #' }
 #'
 #' f1(PROT_DA)     # Proteins
@@ -244,7 +246,7 @@
 #'
 #' @details Gene Ontology (Biological Process, Cellular Component, Molecular
 #'   Function) pathways from version 7.5.1 of the Molecular Signatures Database
-#'   (MSigDB). Obtained via \link[msigdbr]{msigdbr} (\code{organism =
+#'   (MSigDB). Obtained via \code{\link[msigdbr]{msigdbr}} (\code{organism =
 #'   "Rattus norvegicus"}) and reformatted. Prefiltered to pathways with at
 #'   least 15 and no more than 300 genes. Filtering by size was done because
 #'   smaller gene sets tend to be less reliable, while larger gene sets tend to
@@ -588,6 +590,10 @@
 #' @keywords datasets
 #'
 #' @name WAT_WGCNA
+
+#' @rdname WAT_WGCNA
+#' @format NULL
+#' @usage NULL
 "PROT_WGCNA"
 
 #' @rdname WAT_WGCNA
@@ -616,7 +622,7 @@
 #'   the FGSEA results were also used here.
 #'
 #' @seealso \code{\link[MotrpacRatTraining6moWAT]{fora2}},
-#'   \code{\link{WATSC_WGCNA}}, \code{\link{MSIGDB_PATHWAYS}}
+#'   \code{\link{WAT_WGCNA}}, \code{\link{MSIGDB_PATHWAYS}}
 #'
 #' @references Ashburner, M., Ball, C. A., Blake, J. A., Botstein, D., Butler,
 #'   H., Cherry, J. M., Davis, A. P., Dolinski, K., Dwight, S. S., Eppig, J. T.,
@@ -674,7 +680,7 @@
 
 #' @title Statistical analyses of scWAT phenotype data
 #'
-#' @description Analyses of phenotypic data from \code{\link[PHENO_WAT]}. See
+#' @description Analyses of phenotypic data from \code{\link{PHENO_WAT}}. See
 #'   \code{vignette("PHENO_WAT_STATS")} for details.
 #'
 #' @usage PHENO_WAT_STATS
