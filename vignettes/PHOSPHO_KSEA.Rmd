@@ -22,7 +22,6 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(MotrpacRatTraining6moWATData)
-library(MotrpacRatTraining6moWATData)
 library(MotrpacRatTraining6moWAT)
 library(dplyr)
 library(tidyr)
