@@ -4,9 +4,9 @@ author: "Tyler Sagendorf"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 ---
 
-This article contains generates volcano plots (Fig 2A; Extended Data Fig. 2A--D).
+This article contains generates volcano plots (Fig 2A; Extended Data Fig. 2A--D). By default, the chunks are not set to evaluate, since the volcano plots exceed the maximum dimensions. Run each chunk in this article individually (do not knit) to generate and save the volcano plots.
 
-```{r, include = FALSE}
+```{r, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -29,8 +29,6 @@ library(latex2exp)
 library(ggplot2)
 library(ggrepel)
 library(scales)
-
-save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
 ```
 
 ```{r}
@@ -150,7 +148,7 @@ point_labels <- MvF_volcano$data %>%
   ungroup()
 ```
 
-```{r, fig.height=2.3, fig.width=6.5}
+```{r eval=FALSE}
 MvF_volcano <- MvF_volcano +
   geom_label_repel(aes(x = logFC, y = -log10(adj.P.Val), 
                        label = feature_label),
@@ -170,13 +168,13 @@ MvF_volcano <- MvF_volcano +
 MvF_volcano
 ```
 
-```{r eval=save_plots}
+```{r eval=FALSE}
 ggsave(file.path("..", "..", "plots", "volcano_MvF_SED_all_omes.pdf"),
        MvF_volcano, height = 2.3, width = 6.5, units = "in",
        dpi = 400, bg = "white")
 ```
 
-```{r eval=save_plots, fig.height=55, fig.width=180, units="mm"}
+```{r eval=FALSE}
 ## Create volcano plots for each ome
 omes <- c("TRNSCRPT", "PROT", "PHOSPHO", "METAB")
 features <- c("Transcripts", "Proteins", "Phosphosites", "Metabolites")
@@ -424,7 +422,7 @@ for (i in seq_along(omes)) {
 ```
 
 
-## Session Info
+# Session Info
 
 ```{r}
 sessionInfo()
