@@ -71,7 +71,7 @@ table(TRNSCRPT_MSIGDB$gs_subcat) # how many gene sets remain?
 #  2864   347   498
 ```
 
-```{r}
+```{r eval=FALSE}
 # FGSEA
 TRNSCRPT_FGSEA <- map(TRNSCRPT_DA_SEP, function(res_i) {
   fgsea2(pathways = TRNSCRPT_MSIGDB,
@@ -114,7 +114,7 @@ table(PROT_MSIGDB$gs_subcat) # how many gene sets remain?
 #   234    99    78
 ```
 
-```{r}
+```{r eval=FALSE}
 # FGSEA
 PROT_FGSEA <- map(PROT_DA, function(res_i) {
   fgsea2(pathways = PROT_MSIGDB,
@@ -150,7 +150,7 @@ REFMET_SUBCLASSES <- fData(METAB_EXP) %>%
 nrow(REFMET_SUBCLASSES) # 19
 ```
 
-```{r}
+```{r eval=FALSE}
 # FGSEA
 METAB_FGSEA <- map(METAB_DA, function(res_i) {
   fgsea2(pathways = REFMET_SUBCLASSES,

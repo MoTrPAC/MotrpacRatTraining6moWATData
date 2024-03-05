@@ -66,7 +66,7 @@ length(MITOCARTA_PATHWAYS) # 68
 head(MITOCARTA_PATHWAYS)
 ```
 
-```{r}
+```{r eval=FALSE}
 ## FGSEA
 PROT_MITOCARTA_FGSEA <- map(PROT_DA, function(res_i) {
   stats <- rank_genes(res_i, genes = "entrez_gene")

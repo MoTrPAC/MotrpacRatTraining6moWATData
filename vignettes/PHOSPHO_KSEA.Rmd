@@ -97,7 +97,7 @@ human_to_rat <- fData(PHOSPHO_EXP) %>%
 head(human_to_rat)
 ```
 
-```{r}
+```{r eval=FALSE}
 # KSEA
 PHOSPHO_KSEA <- map(human_res, function(res_i)
 {
@@ -125,7 +125,7 @@ PHOSPHO_KSEA <- map(human_res, function(res_i)
 })
 ```
 
-```{r, eval=FALSE}
+```{r eval=FALSE}
 # Save
 usethis::use_data(PHOSPHO_KSEA, internal = FALSE,
                   overwrite = TRUE, version = 3, compress = "bzip2")

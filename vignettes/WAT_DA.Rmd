@@ -112,7 +112,7 @@ TRNSCRPT_DA <- map2(
 
 We will run differential analysis separately for each platform and then combine the results. This way, we can estimate separate mean-variance trends for each platform.
 
-```{r}
+```{r eval=FALSE}
 # Platforms for DEA
 assays <- unique(fData(METAB_EXP)[["dataset"]])
 

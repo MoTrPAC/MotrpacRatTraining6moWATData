@@ -9,8 +9,6 @@
 ^\.github$
 ^doc$
 ^Meta$
-^.*\.csl$
-^.*\.bib$
 ^plots$
 ^vignettes/articles$
 ^supplementary$
