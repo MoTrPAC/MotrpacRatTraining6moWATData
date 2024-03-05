@@ -4,7 +4,7 @@ author: "Tyler Sagendorf"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 ---
 
-This article generates heatmaps of the FGSEA results (Fig. 3C, D, E, G; Extended Data Figs. 3A--D, 5A--D, F).
+This article generates heatmaps of the FGSEA results (Fig. 3C, D, E, G; Extended Data Figs. 3A-D, 5A-D, F).
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -27,7 +27,7 @@ library(purrr)
 save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
 ```
 
-```{r}
+```{r, eval=save_plots}
 omes <- c("METAB", "PROT", "TRNSCRPT")
 
 for (ome in omes) {
