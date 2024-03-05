@@ -1,5 +1,5 @@
 ---
-title: "Heatmaps of Kinase--Substrate Enrichment Analysis Results"
+title: "Heatmaps of Kinase-Substrate Enrichment Analysis Results"
 author: "Tyler Sagendorf"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 ---
