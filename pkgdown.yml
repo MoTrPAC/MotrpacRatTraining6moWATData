@@ -1,9 +1,37 @@
-pandoc: 2.19.2
+pandoc: 3.1.11
 pkgdown: 2.0.7
 pkgdown_sha: ~
-articles: {}
-last_built: 2023-04-05T01:21Z
-urls:
-  reference: https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference
-  article: https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/articles
+articles:
+  ADIPOCYTE_SIZE_STATS: ADIPOCYTE_SIZE_STATS.html
+  ANALYTES_STATS: ANALYTES_STATS.html
+  MAIN_FGSEA: MAIN_FGSEA.html
+  PHENO_WAT_STATS: PHENO_WAT_STATS.html
+  PHOSPHO_KSEA: PHOSPHO_KSEA.html
+  PROT_MITOCARTA_FGSEA: PROT_MITOCARTA_FGSEA.html
+  WAT_DA: WAT_DA.html
+  WAT_WGCNA: WAT_WGCNA.html
+  WGCNA_MODULE_ORA: WGCNA_MODULE_ORA.html
+  FGSEA_heatmaps: FGSEA_heatmaps.html
+  KSEA_heatmaps: KSEA_heatmaps.html
+  METAB_TAG_heatmap: METAB_TAG_heatmap.html
+  MitoCarta_FGSEA_heatmaps: MitoCarta_FGSEA_heatmaps.html
+  WGCNA_METAB_module_heatmaps: WGCNA_METAB_module_heatmaps.html
+  WGCNA_correlation_heatmaps: WGCNA_correlation_heatmaps.html
+  WGCNA_eigenfeature_plots: WGCNA_eigenfeature_plots.html
+  WGCNA_module_ORA: WGCNA_module_ORA.html
+  limma_diagnostics: limma_diagnostics.html
+  lipid_regulatory_proteins_heatmap: lipid_regulatory_proteins_heatmap.html
+  plot_FGSEA_male_vs_female_summary: plot_FGSEA_male_vs_female_summary.html
+  plot_Hk2: plot_Hk2.html
+  plot_TAG_chain_length_vs_logFC: plot_TAG_chain_length_vs_logFC.html
+  plot_UpSet: plot_UpSet.html
+  plot_adipocyte_size_distribution: plot_adipocyte_size_distribution.html
+  plot_analytes: plot_analytes.html
+  plot_mito_reads_and_cardiolipin: plot_mito_reads_and_cardiolipin.html
+  plot_mtDNA: plot_mtDNA.html
+  plot_pct_fat_vs_leptin: plot_pct_fat_vs_leptin.html
+  plot_pre_post: plot_pre_post.html
+  plot_proteins: plot_proteins.html
+  volcano_plots: volcano_plots.html
+last_built: 2024-03-05T17:37Z
 

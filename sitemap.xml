@@ -1,84 +1,192 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/404.html</loc>
+    <loc>/404.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/LICENSE-text.html</loc>
+    <loc>/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/LICENSE.html</loc>
+    <loc>/LICENSE.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/authors.html</loc>
+    <loc>/articles/ADIPOCYTE_SIZE_STATS.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/index.html</loc>
+    <loc>/articles/ANALYTES_STATS.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/ADIPOCYTE_SIZE.html</loc>
+    <loc>/articles/FGSEA_heatmaps.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/ADIPOCYTE_SIZE_STATS.html</loc>
+    <loc>/articles/KSEA_heatmaps.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/GO_FGSEA.html</loc>
+    <loc>/articles/MAIN_FGSEA.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/METAB_EXP.html</loc>
+    <loc>/articles/METAB_TAG_heatmap.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/METAB_FGSEA.html</loc>
+    <loc>/articles/MitoCarta_FGSEA_heatmaps.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/METAB_TG_CONC.html</loc>
+    <loc>/articles/PHENO_WAT_STATS.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/MITO_DNA.html</loc>
+    <loc>/articles/PHOSPHO_KSEA.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/MotrpacRatTraining6moWATData-package.html</loc>
+    <loc>/articles/PROT_MITOCARTA_FGSEA.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/PHOSPHO_EXP.html</loc>
+    <loc>/articles/WAT_DA.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/PHOSPHO_KSEA.html</loc>
+    <loc>/articles/WAT_WGCNA.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/PLASMA_ANALYTES.html</loc>
+    <loc>/articles/WGCNA_METAB_module_heatmaps.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/PLASMA_ANALYTE_STATS.html</loc>
+    <loc>/articles/WGCNA_MODULE_ORA.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/PROT_EXP.html</loc>
+    <loc>/articles/WGCNA_correlation_heatmaps.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/PROT_MITOCARTA_FGSEA.html</loc>
+    <loc>/articles/WGCNA_eigenfeature_plots.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/PSP_KINASE_SUBSTRATE.html</loc>
+    <loc>/articles/WGCNA_module_ORA.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/TRNSCRPT_EXP.html</loc>
+    <loc>/articles/index.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/WATSC_DA.html</loc>
+    <loc>/articles/limma_diagnostics.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/WATSC_PHENO.html</loc>
+    <loc>/articles/lipid_regulatory_proteins_heatmap.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/WATSC_WGCNA.html</loc>
+    <loc>/articles/plot_FGSEA_male_vs_female_summary.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/index.html</loc>
+    <loc>/articles/plot_Hk2.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/module_ORA.html</loc>
+    <loc>/articles/plot_TAG_chain_length_vs_logFC.html</loc>
   </url>
   <url>
-    <loc>https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWATData/reference/msigdb_pathways.html</loc>
+    <loc>/articles/plot_UpSet.html</loc>
+  </url>
+  <url>
+    <loc>/articles/plot_adipocyte_size_distribution.html</loc>
+  </url>
+  <url>
+    <loc>/articles/plot_analytes.html</loc>
+  </url>
+  <url>
+    <loc>/articles/plot_mito_reads_and_cardiolipin.html</loc>
+  </url>
+  <url>
+    <loc>/articles/plot_mtDNA.html</loc>
+  </url>
+  <url>
+    <loc>/articles/plot_pct_fat_vs_leptin.html</loc>
+  </url>
+  <url>
+    <loc>/articles/plot_pre_post.html</loc>
+  </url>
+  <url>
+    <loc>/articles/plot_proteins.html</loc>
+  </url>
+  <url>
+    <loc>/articles/volcano_plots.html</loc>
+  </url>
+  <url>
+    <loc>/authors.html</loc>
+  </url>
+  <url>
+    <loc>/index.html</loc>
+  </url>
+  <url>
+    <loc>/news/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ADIPOCYTE_SIZE.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ADIPOCYTE_SIZE_STATS.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ANALYTES.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ANALYTES_EMM.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ANALYTES_STATS.html</loc>
+  </url>
+  <url>
+    <loc>/reference/GO_FGSEA.html</loc>
+  </url>
+  <url>
+    <loc>/reference/METAB_EXP.html</loc>
+  </url>
+  <url>
+    <loc>/reference/METAB_FGSEA.html</loc>
+  </url>
+  <url>
+    <loc>/reference/METAB_TG_CONC.html</loc>
+  </url>
+  <url>
+    <loc>/reference/MITOCARTA_HS.html</loc>
+  </url>
+  <url>
+    <loc>/reference/MITO_DNA.html</loc>
+  </url>
+  <url>
+    <loc>/reference/MotrpacRatTraining6moWATData-package.html</loc>
+  </url>
+  <url>
+    <loc>/reference/PHENO_WAT.html</loc>
+  </url>
+  <url>
+    <loc>/reference/PHENO_WAT_STATS.html</loc>
+  </url>
+  <url>
+    <loc>/reference/PHOSPHO_EXP.html</loc>
+  </url>
+  <url>
+    <loc>/reference/PHOSPHO_KSEA.html</loc>
+  </url>
+  <url>
+    <loc>/reference/PROT_EXP.html</loc>
+  </url>
+  <url>
+    <loc>/reference/PROT_MITOCARTA_FGSEA.html</loc>
+  </url>
+  <url>
+    <loc>/reference/PSP_KINASE_SUBSTRATE.html</loc>
+  </url>
+  <url>
+    <loc>/reference/TRNSCRPT_EXP.html</loc>
+  </url>
+  <url>
+    <loc>/reference/WAT_DA.html</loc>
+  </url>
+  <url>
+    <loc>/reference/WAT_WGCNA.html</loc>
+  </url>
+  <url>
+    <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/module_ORA.html</loc>
+  </url>
+  <url>
+    <loc>/reference/msigdb_pathways.html</loc>
   </url>
 </urlset>
