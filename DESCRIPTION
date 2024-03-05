@@ -3,7 +3,7 @@ Type: Package
 Title: Data and Analysis Results for the MoTrPAC PASS1B Rat White Adipose Tissue 
     Companion Paper
 Version: 2.0.0
-Date: 2024-02-08
+Date: 2024-03-04
 Authors@R: 
   c(
     person(given = "Tyler J.", family = "Sagendorf",
@@ -66,7 +66,7 @@ Remotes:
     github::MoTrPAC/MotrpacRatTraining6moData,
     github::MoTrPAC/MotrpacRatTraining6moWAT,
     github::MoTrPAC/MotrpacRatTrainingPhysiologyData
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 URL: 
     https://motrpac.github.io/MotrpacRatTraining6moWATData/, 
     https://github.com/MoTrPAC/MotrpacRatTraining6moWATData/
