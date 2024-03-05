@@ -2,7 +2,7 @@
 title: "Statistical analysis of adipocyte diameter"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Statistical analysis of}
+  %\VignetteIndexEntry{Statistical analysis of adipocyte diameter}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
