@@ -1,5 +1,5 @@
 ---
-title: "Statistical analysis of"
+title: "Statistical analysis of adipocyte diameter"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Statistical analysis of}
