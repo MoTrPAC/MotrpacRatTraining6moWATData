@@ -4,10 +4,10 @@
 <!-- badges: start -->
 
 ![R package
-version](https://img.shields.io/github/r-package/v/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData?label=R%20package)
-[![R-CMD-check](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/actions/workflows/check-and-pkgdown.yaml/badge.svg)](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/actions/workflows/check-and-pkgdown.yaml)
+version](https://img.shields.io/github/r-package/v/MoTrPAC/MotrpacRatTraining6moWATData?label=R%20package)
+[![R-CMD-check](https://github.com/MoTrPAC/MotrpacRatTraining6moWATData/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MoTrPAC/MotrpacRatTraining6moWATData/actions/workflows/R-CMD-check.yaml)
 ![Last
-commit](https://img.shields.io/github/last-commit/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/master)
+commit](https://img.shields.io/github/last-commit/MoTrPAC/MotrpacRatTraining6moWATData/master)
 
 <!-- badges: end -->
 
@@ -26,7 +26,7 @@ rat subcutaneous white adipose tissue”
   modules/clusters.
 
 The
-[data-raw/](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/tree/master/data-raw)
+[data-raw/](https://github.com/MoTrPAC/MotrpacRatTraining6moWATData/tree/master/data-raw)
 folder contains code to reproduce all analyses. Most R script names
 match the objects they create, though some scripts create multiple
 objects (such as WATSC_DA.R), and so are given more general names. Code
@@ -35,13 +35,12 @@ to reproduce figures will likely be added as vignettes at a later date.
 ## Installation
 
 ``` r
-devtools::install_github("PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData")
+devtools::install_github("MoTrPAC/MotrpacRatTraining6moWATData")
 ```
 
 ## MotrpacRatTraining6moWAT
 
-The <a
-href="https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWAT/"
+The <a href="https://motrpac.github.io/MotrpacRatTraining6moWAT/"
 target="_blank">MotrpacRatTraining6moWAT</a> R package contains helper
 functions for analysis and visualization of the data contained in
 MotrpacRatTraining6moWATData.
@@ -49,16 +48,15 @@ MotrpacRatTraining6moWATData.
 ## Getting Help
 
 For questions, bug reporting, and data requests for this package, please
-<a
-href="https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/issues"
+<a href="https://github.com/MoTrPAC/MotrpacRatTraining6moWATData/issues"
 target="_blank">submit a new issue</a> and include as many details as
 possible.
 
-If the concern is related to functions provided in the <a
-href="https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWAT"
+If the concern is related to functions provided in the
+<a href="https://github.com/MoTrPAC/MotrpacRatTraining6moWAT"
 target="_blank">MotrpacRatTraining6moWAT</a> package, please submit an
-issue <a
-href="https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWAT/issues"
+issue
+<a href="https://github.com/MoTrPAC/MotrpacRatTraining6moWAT/issues"
 target="_blank">here</a> instead.
 
 ## Acknowledgements

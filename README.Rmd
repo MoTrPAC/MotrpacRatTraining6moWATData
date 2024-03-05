@@ -15,9 +15,9 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 
-![R package version](https://img.shields.io/github/r-package/v/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData?label=R%20package)
-[![R-CMD-check](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/actions/workflows/check-and-pkgdown.yaml)
-![Last commit](https://img.shields.io/github/last-commit/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/master)
+![R package version](https://img.shields.io/github/r-package/v/MoTrPAC/MotrpacRatTraining6moWATData?label=R%20package)
+[![R-CMD-check](https://github.com/MoTrPAC/MotrpacRatTraining6moWATData/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MoTrPAC/MotrpacRatTraining6moWATData/actions/workflows/R-CMD-check.yaml)
+![Last commit](https://img.shields.io/github/last-commit/MoTrPAC/MotrpacRatTraining6moWATData/master)
 
 <!-- badges: end -->
 
@@ -28,28 +28,28 @@ Contains data and code necessary to reproduce analyses that appear in "Sexual di
 * Weighted Gene Co-expression Network Analysis for all -omes excluding proteomics.
 * Over-representation analysis (ORA) performed on WGCNA modules/clusters.
 
-The [data-raw/](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/tree/master/data-raw) folder contains code to reproduce all analyses. Most R script names match the objects they create, though some scripts create multiple objects (such as WATSC_DA.R), and so are given more general names. Code to reproduce figures will likely be added as vignettes at a later date.
+The [data-raw/](https://github.com/MoTrPAC/MotrpacRatTraining6moWATData/tree/master/data-raw) folder contains code to reproduce all analyses. Most R script names match the objects they create, though some scripts create multiple objects (such as WATSC_DA.R), and so are given more general names. Code to reproduce figures will likely be added as vignettes at a later date.
 
 ## Installation
 
 ``` r
-devtools::install_github("PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData")
+devtools::install_github("MoTrPAC/MotrpacRatTraining6moWATData")
 ```
 
 ## MotrpacRatTraining6moWAT
 
-The [MotrpacRatTraining6moWAT](https://pnnl-comp-mass-spec.github.io/MotrpacRatTraining6moWAT/){target="_blank"} R package contains helper functions for analysis and visualization of the data contained in MotrpacRatTraining6moWATData.
+The [MotrpacRatTraining6moWAT](https://motrpac.github.io/MotrpacRatTraining6moWAT/){target="_blank"} R package contains helper functions for analysis and visualization of the data contained in MotrpacRatTraining6moWATData.
 
 ## Getting Help
 
 For questions, bug reporting, and data requests for this package, please 
-[submit a new issue](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWATData/issues){target="_blank"} 
+[submit a new issue](https://github.com/MoTrPAC/MotrpacRatTraining6moWATData/issues){target="_blank"} 
 and include as many details as possible. 
 
 If the concern is related to functions provided in the 
-[MotrpacRatTraining6moWAT](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWAT){target="_blank"}
+[MotrpacRatTraining6moWAT](https://github.com/MoTrPAC/MotrpacRatTraining6moWAT){target="_blank"}
 package, please submit an issue 
-[here](https://github.com/PNNL-Comp-Mass-Spec/MotrpacRatTraining6moWAT/issues){target="_blank"} instead.
+[here](https://github.com/MoTrPAC/MotrpacRatTraining6moWAT/issues){target="_blank"} instead.
 
 ## Acknowledgements 
 
