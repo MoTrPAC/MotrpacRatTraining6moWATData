@@ -33,6 +33,7 @@ library(purrr)
 library(tidyr)
 library(tibble)
 library(emmeans)
+library(scales)
 
 save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
 ```

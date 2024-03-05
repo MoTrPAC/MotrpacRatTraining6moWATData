@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
 library(MotrpacRatTraining6moWATData)
 library(dplyr)
 library(ggplot2)
+library(scales)
 
 save_plots <- dir.exists(paths = file.path("..", "..", "plots"))
 ```
@@ -45,7 +46,7 @@ p <- ggplot(x, aes(x = fat_diff, y = leptin)) +
   scale_y_continuous(name = "Leptin (pg/mL)",
                      limits = c(0, NA),
                      breaks = 1e04 * (0:6),
-                     labels = label_scientific(digits = 1)) +
+                     labels = scales::label_scientific(digits = 1)) +
   scale_color_manual(name = "Timepoint",
                      values = c("#bebebe", "#238443", "black")) +
   guides(shape = guide_legend(title = "Sex")) +
