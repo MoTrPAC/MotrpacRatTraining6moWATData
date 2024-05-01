@@ -13,8 +13,8 @@ commit](https://img.shields.io/github/last-commit/MoTrPAC/MotrpacRatTraining6moW
 
 Contains data and code necessary to reproduce analyses that appear in
 “Sexual dimorphism and the multi-omic response to exercise training in
-rat subcutaneous white adipose tissue”
-(<https://doi.org/10.1101/2023.02.03.527012>).
+rat subcutaneous white adipose tissue”, published in Nature Metabolism
+(<https://doi.org/10.1038/s42255-023-00959-9>).
 
 - Differential analysis of transcriptomics, proteomics,
   phosphoproteomics, and metabolomics subcutaneous white adipose tissue
